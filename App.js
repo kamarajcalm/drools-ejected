@@ -1,21 +1,43 @@
-import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { Component } from 'react';
+import { View, Text } from 'react-native';
+import { Provider } from 'react-redux';
+import { createStore } from 'redux';
+import reducers from './reducers';
+import settings from './AppSettings';
+import * as Font from 'expo-font';
+import AppNavigator from './Navigation/AppNavigator';
+import { NavigationContainer } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+const fontFamily = settings.fontFamily
+export default class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      fontsLoaded: false,
+    };
+  }
+  async loadFonts() {
+    await Font.loadAsync({
+      // Load a font `Montserrat` from a static resource
+      Alegreya:require('./assets/fonts/Alegreya-VariableFont_wght.ttf'),
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
-}
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+    });
+    this.setState({ fontsLoaded: true });
+  }
+  componentDidMount() {
+    this.loadFonts();
+  }
+  render() {
+        if (this.state.fontsLoaded) {
+          return (
+            <Provider store={createStore(reducers)}>
+               <AppNavigator />
+            </Provider>
+          );
+        } else {
+          return null;
+        }
+      }
+  }
+
