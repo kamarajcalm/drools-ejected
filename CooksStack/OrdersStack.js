@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { View, Text } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
-import Orders from '../cookScreens/Orders';
 import ViewOrders from '../cookScreens/ViewOrders';
+import Orders from '../cookScreens/Orders';
 
 const Stack = createStackNavigator();
 export default class OrdersStack extends Component {

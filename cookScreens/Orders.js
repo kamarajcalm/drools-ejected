@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Dimensions, TouchableOpacity, StyleSheet, FlatList, Image} from 'react-native';
+import { View, Text, Dimensions, TouchableOpacity, StyleSheet, FlatList, Image, Alert} from 'react-native';
 const { height, width } = Dimensions.get('window')
 import settings from '../AppSettings'
 import { connect } from 'react-redux';
@@ -12,16 +12,191 @@ const themeColor = settings.themeColor
 import { StatusBar ,} from 'expo-status-bar';
 import { LinearGradient } from 'expo-linear-gradient';
 import Constants from 'expo-constants';
-import orders from '../data/orders'
-import { FontAwesome, MaterialCommunityIcons, MaterialIcons, SimpleLineIcons, Entypo, Fontisto, Feather, Ionicons, FontAwesome5 } from '@expo/vector-icons';
+import cookOrders from '../data/cookOrders';
+import { FontAwesome, MaterialCommunityIcons, MaterialIcons, SimpleLineIcons, Entypo, Fontisto, Feather, Ionicons, FontAwesome5, Foundation } from '@expo/vector-icons';
 import { set } from 'react-native-reanimated';
+import FlashMessage, { showMessage, hideMessage } from "react-native-flash-message";
+import Modal from 'react-native-modal';
+const screenHeight = Dimensions.get('screen').height
  class Orders extends Component {
     constructor(props) {
         super(props);
         this.state = {
+             cookOrders,
+             Modal:false,
+             selectedItem:null
         };
     }
-   
+     showSimpleMessage(content, color, type = "info", props = {}) {
+         const message = {
+             message: content,
+             backgroundColor: color,
+             icon: { icon: "auto", position: "left" },
+             type,
+             ...props,
+         };
+
+         showMessage(message);
+     }
+     createAlert = (item,index)=>{
+         Alert.alert(
+             `Complete ${item.item}`,
+             ``,
+             [
+                 {
+                     text: "No",
+                     onPress: () => console.log("Cancel Pressed"),
+                     style: "cancel"
+                 },
+                 { text: "Yes", onPress: () => { this.completeOrder(item,index) } }
+             ]
+         );
+     }
+     completeOrder = (item, index)=>{
+         this.showSimpleMessage("Completed SuccessFully", "#00A300", "success")
+         let duplicate = this.state.cookOrders
+         duplicate[index].isCompleted = true
+         this.setState({ cookOrders: duplicate})
+      
+     }
+     clearTable = (item, index)=>{
+           let duplicate =this.state.cookOrders
+           duplicate.splice(index,1)
+           this.setState({ cookOrders:duplicate})
+     }
+     clearAlert2 =(item,index)=>{
+         Alert.alert(
+             `Are you sure to clear Table ${item.tableNo}`,
+             ``,
+             [
+                 {
+                     text: "No",
+                     onPress: () => console.log("Cancel Pressed"),
+                     style: "cancel"
+                 },
+                 { text: "Yes", onPress: () => { this.clearTable(item, index) } }
+             ]
+         );
+     }
+     renderheader =()=>{
+         return(
+             <View style={{ alignItems: "center" }}>
+                 <Text style={[styles.text, { color: "#fff", textDecorationLine: "underline" }]}>Required Items :</Text>
+             </View>
+
+         )
+     }
+     startCooking = (item, index)=>{
+         this.showSimpleMessage("Started SuccessFully", "#00A300", "success")
+         let duplicate = this.state.cookOrders
+         duplicate[index].isStarted = true
+         this.setState({ cookOrders: duplicate })
+     }
+     validateButton =(item,index) =>{
+         if(item.isCompleted){
+             return(
+                 <View 
+                     style={{ height: height * 0.04,  alignItems: "center", justifyContent: "center", width: "60%" }}
+                 >
+                  <Text style={[styles.text,{color:"green"}]}>Completed</Text>
+                 </View>
+             )
+         }
+         if (item.isStarted){
+             return(
+                 <TouchableOpacity
+                     style={{ height: height * 0.04, backgroundColor: primaryColor, alignItems: "center", justifyContent: "center", width: "60%" }}
+                     onPress={() => {
+                         this.setState({ modal: true, selectedItem:item})
+
+                     }}
+
+                 >
+                     <Text style={[styles.text, { color: "#fff" }]}>Complete</Text>
+                 </TouchableOpacity>
+             )
+        
+         }
+         return(
+             <TouchableOpacity
+                 style={{ height: height * 0.04, backgroundColor: "#e58300", alignItems: "center", justifyContent: "center", width: "60%" }}
+                 onPress={() => {
+                     this.startCooking(item, index)
+
+                 }}
+
+             >
+                 <Text style={[styles.text, { color: "#fff" }]}>Start</Text>
+             </TouchableOpacity>
+         )
+      
+     }
+     increaseCount =()=>{
+         let duplicate =this.state.selectedItem
+         duplicate.completedCount = duplicate.completedCount+1
+         this.setState({ selectedItem: duplicate})
+         
+     }
+     decreaseCount =()=>{
+         let duplicate = this.state.selectedItem
+         duplicate.completedCount = duplicate.completedCount - 1
+         this.setState({ selectedItem: duplicate })
+     }
+     completeModal =()=>{
+         return(
+             <Modal 
+              deviceHeight={screenHeight}
+              isVisible={this.state.modal}
+             >
+             <View style={{flex:1,alignItems:"center",justifyContent:"center"}}>
+                   <View style={{height:height*0.4,backgroundColor:"#fff",width:width*0.9,borderRadius:10}}>
+                       <View style={{alignItems:"center",paddingVertical:10}}>
+                           <Text style={[styles.text,{color:primaryColor,fontSize:22}]}>Complete Order</Text>
+                       </View>
+                       <View style={{flexDirection:"row",paddingHorizontal:20,marginTop:10}}>
+                           <View style={{alignItems:"center",justifyContent:"center"}}>
+                                 <Text style={[styles.text]}>Item Name : </Text>
+                                
+                           </View>
+                             <View style={{ alignItems: "center", justifyContent: "center" }}>
+                                 <Text style={[styles.text, { color: "#000", fontSize: 20 }]}>{this.state?.selectedItem?.item} </Text>
+                            </View>   
+                       </View>
+                         <View style={{ flexDirection: "row", paddingHorizontal: 20,marginTop:10}}>
+                             <View style={{alignItems:"center",justifyContent:"center"}}>
+                                 <Text style={[styles.text]}>Total Count Required : </Text>
+                             </View>
+                             <View style={{alignItems:'center',justifyContent:"center"}}>
+                                 <Text style={[styles.text, { color: "#000", fontSize: 20 }]}>{this.state?.selectedItem?.count}</Text>
+
+                             </View>
+                         </View>
+                         <View style={{ paddingHorizontal: 20, marginTop: 10}}>
+                             <View>
+                                 <Text style={[styles.text]}>You have Completed :</Text>
+                             </View>
+                             <View style={{flexDirection:'row',width:width*0.3,alignItems:'center',justifyContent:"space-around",marginTop:10}}>
+                                 <TouchableOpacity style={{alignItems:"center",justifyContent:"center"}}
+                                  onPress={()=>{this.increaseCount()}}
+                                 >
+                                     <Ionicons name="add-circle-outline" size={24} color="black" />
+                                 </TouchableOpacity>
+                                 <View style={{alignItems:'center',justifyContent:"center"}}>
+                                     <Text style={[styles.text, { color: primaryColor, fontSize: 20 }]}>{this?.state?.selectedItem?.completedCount}</Text>
+                                 </View>
+                                 <TouchableOpacity 
+                                  onPress={()=>{this.decreaseCount()}}
+                                 >
+                                     <Feather name="minus-circle" size={24} color="black" />
+                                 </TouchableOpacity>
+                             </View>
+                         
+                         </View>
+                   </View>
+             </View>
+             </Modal>
+         )
+     }
     render() {
       
         return (
@@ -39,43 +214,43 @@ import { set } from 'react-native-reanimated';
 
                     <FlatList
                      
-                        data={orders}
-                        keyExtractor={(item, index) => item.tableNo}
-                        renderItem={({ item, index }) => {
+                    data={this.state.cookOrders}
+                    keyExtractor={(item, index) => index.toString()}
+                    ListHeaderComponent={this.renderheader()}
+                    renderItem={({ item, index }) => {
                             return (
-                              <TouchableOpacity style={{height:height*0.15,borderColor:"#333",borderBottomWidth:0.5,flexDirection:"row",paddingVertical:10}}
-                                    onPress={() => { this.props.navigation.navigate('ViewOrder',{item})}}
-                              >
+                               <View style={{borderColor:"#333",borderBottomWidth:0.5,padding: 20,}}>
+                                    <View style={{ marginTop: 10, flexDirection: "row", flex: 1 }} key={index}>
+                                        <View style={{ flexDirection: "row", flex: 0.5 }}>
+                                            <View style={{flexDirection:'row',flex:0.7}}>
+                                                <View>
+                                                    <Text style={[styles.text, { color: "#fff", fontSize: 20 }]}>{index + 1} . </Text>
+                                                </View>
+                                                <View>
+                                                    <Text style={[styles.text, { color: "#fff", fontSize: 20 }]}>{item.item}</Text>
+                                                </View>
+                                            </View>
+                                          
+                                            <View style={{flex:0.3,alignItems:"center",justifyContent:"center"}}>
+                                                <Text style={[styles.text,{color:"#fff",fontSize:18}]}> X {item.count}</Text>
+                                            </View>
+                                        </View>
+                                        <View style={{ flex: 0.5, alignItems: "center", justifyContent: "center" }}>
+                                               {
+                                                this.validateButton(item,index)
+                                               }
+                                        </View>
+                                    </View>
                                
-                                <View style={{ flex: 1, }}>
-                                        <View style={{flex:0.7,padding: 10,}}>
-                                            <View style={{flex:0.5}}> 
-                                                <View style={{ flex: 0.3 }}>
-                                                    <Text style={[styles.text, { fontSize: 18, color: "#fff" }]}>Table : {item.tableNo}</Text>
-                                                </View>
-                                                <View style={{ flex: 0.7, alignItems: "flex-end", paddingRight: 20 }}>
-                                                    <Text style={[styles.text, { fontSize: 18, color: "#454545" }]}># {index + 1}</Text>
-                                                </View>
-                                            </View>
-                                           <View style={{flex:0.5}}>
-                                               <Text style={[styles.text,{color:"#fff"}]}>10:00 am</Text>
-                                           </View>
-                                        </View>
-                                        <View style={{flexDirection:"row",flex:0.3,alignItems:"center",justifyContent:"space-around"}}>
-                                            <View>
-                                                <Text style={[styles.text,{color:"#eee"}]}>Items Count: {item.totalItems}</Text>
-                                            </View>
-                                            <View>
-                                                <Text style={[styles.text, { color: "#fafafa" }]}>Price : ₹{item.totalCost}</Text>
-                                            </View>
-                                        </View>
-                                 </View>
-                              </TouchableOpacity>
+                           
+                               </View>
                             )
                         }}
                     />
            
-        
+               {
+                   this.completeModal()
+               }
             </View>
        
         );

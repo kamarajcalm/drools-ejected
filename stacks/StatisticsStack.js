@@ -4,6 +4,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import Orders from '../screens/Orders';
 import History from '../screens/History';
 import Statistics from '../screens/Statistics';
+import StatisticsView from '../screens/StatisticsView';
 const Stack = createStackNavigator();
 export default class StatisticsStack extends Component {
     constructor(props) {
@@ -16,6 +17,7 @@ export default class StatisticsStack extends Component {
         return (
             <Stack.Navigator>
                 <Stack.Screen name="Statistics" component={Statistics} options={{ headerShown: false }} />
+                <Stack.Screen name="StatisticsView" component={StatisticsView} options={{ headerShown: false }} />
             </Stack.Navigator>
         );
     }

@@ -16,6 +16,7 @@ import HistoryStack from '../stacks/HistoryStack';
 import StatisticsStack from '../stacks/StatisticsStack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import MyTabBar from '../components/MyTabBar';
+import InventoryStack from '../stacks/InventoryStack';
 const Tab = createBottomTabNavigator();
 class AdminTab extends Component {
     constructor(props) {
@@ -32,7 +33,9 @@ class AdminTab extends Component {
             >
                 <Tab.Screen name="Orders" component={OrdersStack} />
                 <Tab.Screen name="History" component={HistoryStack} />
+                <Tab.Screen name="Inventory" component={InventoryStack} />
                 <Tab.Screen name="Statistics" component={StatisticsStack} />
+               
             </Tab.Navigator>
         );
     }

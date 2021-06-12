@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Dimensions, TouchableOpacity, StyleSheet} from 'react-native';
+import { View, Text, Dimensions, TouchableOpacity, StyleSheet, Keyboard} from 'react-native';
 const {height,width} = Dimensions.get('window')
 import settings from '../AppSettings'
 const gradients = settings.gradients
@@ -7,13 +7,29 @@ const primaryColor = settings.primaryColor
 const secondaryColor = settings.secondaryColor
 const fontFamily =settings.fontFamily
 import { LinearGradient } from 'expo-linear-gradient';
-import { FontAwesome, MaterialCommunityIcons, MaterialIcons, SimpleLineIcons, Entypo, Fontisto, Feather, Ionicons, FontAwesome5 } from '@expo/vector-icons';
+import { FontAwesome, MaterialCommunityIcons, MaterialIcons, SimpleLineIcons, Entypo, Fontisto, Feather, Ionicons, FontAwesome5, } from '@expo/vector-icons';
 export default class MyTabBar extends Component {
   constructor(props) {
     super(props);
     this.state = {
+        showTab: true
     };
   }
+  componentDidMount(){
+      Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
+      Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
+  }
+    componentWillUnmount() {
+        Keyboard.removeListener('keyboardDidShow', this._keyboardDidShow);
+        Keyboard.removeListener('keyboardDidHide', this._keyboardDidHide);
+    }
+    _keyboardDidShow = () => {
+        this.setState({ showTab: false })
+    };
+
+    _keyboardDidHide = () => {
+        this.setState({ showTab: true })
+    };
     icon = (label, isFocused)=>{
         if (label == "Orders"){
             return(
@@ -30,9 +46,15 @@ export default class MyTabBar extends Component {
                 <Ionicons name="stats-chart" size={24} color={isFocused ? primaryColor :secondaryColor} />
             )
         }
+        if (label == "Inventory") {
+            return (
+                <MaterialIcons name="inventory" size={24} color={isFocused ? primaryColor : secondaryColor}/>
+            )
+        }
     }
   render() {
       const { state, descriptors, navigation } = this.props
+      if (this.state.showTab) {
     return (
       <LinearGradient
        style={{height:height*0.07,flexDirection:"row",alignItems:"center",justifyContent:"center"}}
@@ -90,7 +112,10 @@ export default class MyTabBar extends Component {
             })}
       </LinearGradient>
     );
+  }else{
+      return null
   }
+}
 }
 const styles = StyleSheet.create({
     text: {

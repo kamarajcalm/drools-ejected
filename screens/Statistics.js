@@ -32,6 +32,52 @@ class Statistics extends Component {
                         <Text style={[styles.text, { color: "#fff", fontSize: 18 }]}>Statistics</Text>
                     </View>
                 </LinearGradient>
+                <View style={{flex:1,alignItems:"center",justifyContent:"space-around"}}>
+                   <TouchableOpacity style={{flexDirection:"row"}}
+                        onPress={() => { this.props.navigation.navigate("StatisticsView", { item:"Fast Moving Items"})}}
+                   >
+                       <View style={{alignItems:"center",justifyContent:"center"}}>
+                            <Text style={[styles.text]}>Fast Moving Items</Text>
+                       </View>
+                        <View style={{ marginLeft: 10, alignItems: "center", justifyContent: "center" }}>
+                            <Ionicons name="fast-food" size={24} color="black" />
+                       </View>
+                      
+                   </TouchableOpacity>
+                    <TouchableOpacity style={{ flexDirection: "row" }}
+                        onPress={() => { this.props.navigation.navigate("StatisticsView", { item: "Day Wise" }) }}
+                    >
+                        <View style={{ alignItems: "center", justifyContent: "center" }}>
+                            <Text style={[styles.text]}>Day Wise</Text>
+                        </View>
+                        <View style={{ marginLeft: 10, alignItems: "center", justifyContent: "center" }}>
+                            <MaterialIcons name="date-range" size={24} color="black" />
+                        </View>
+
+                    </TouchableOpacity>
+                    <TouchableOpacity style={{ flexDirection: "row" }}
+                        onPress={() => { this.props.navigation.navigate("StatisticsView", { item: "Time Wise" }) }}
+                    >
+                        <View style={{ alignItems: "center", justifyContent: "center" }}>
+                            <Text style={[styles.text]}>Time Wise</Text>
+                        </View>
+                        <View style={{ marginLeft: 10, alignItems: "center", justifyContent: "center" }}>
+                            <Ionicons name="time-sharp" size={24} color="black" />
+                        </View>
+
+                    </TouchableOpacity>
+                    <TouchableOpacity style={{ flexDirection: "row" }}
+                        onPress={() => { this.props.navigation.navigate("StatisticsView", { item: "Net Profit" }) }}
+                    >
+                        <View style={{ alignItems: "center", justifyContent: "center" }}>
+                            <Text style={[styles.text]}>Net Profit</Text>
+                        </View>
+                        <View style={{marginLeft:10,alignItems:"center",justifyContent:"center"}}>
+                            <MaterialCommunityIcons name="cash-100" size={24} color="black" />
+                        </View>
+
+                    </TouchableOpacity>
+                </View>
             </View>
         );
     }

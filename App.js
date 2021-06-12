@@ -8,6 +8,7 @@ import * as Font from 'expo-font';
 import AppNavigator from './Navigation/AppNavigator';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import FlashMessage from "react-native-flash-message";
 const fontFamily = settings.fontFamily
 export default class App extends Component {
   constructor(props) {
@@ -33,6 +34,10 @@ export default class App extends Component {
           return (
             <Provider store={createStore(reducers)}>
                <AppNavigator />
+              <FlashMessage
+                position="top"
+                hideStatusBar={false}
+              />
             </Provider>
           );
         } else {
