@@ -142,16 +142,22 @@ const screenHeight = Dimensions.get('screen').height
          duplicate.completedCount = duplicate.completedCount - 1
          this.setState({ selectedItem: duplicate })
      }
+     completeOrder =()=>{
+         this.setState({modal:false})
+         this.showSimpleMessage("order completed SuccessFully", "#00A300", "success")
+     }
      completeModal =()=>{
          return(
              <Modal 
+                 onBackdropPress={() => { this.setState({ modal:false})}}
+               statusBarTranslucent={true}
               deviceHeight={screenHeight}
               isVisible={this.state.modal}
              >
              <View style={{flex:1,alignItems:"center",justifyContent:"center"}}>
                    <View style={{height:height*0.4,backgroundColor:"#fff",width:width*0.9,borderRadius:10}}>
                        <View style={{alignItems:"center",paddingVertical:10}}>
-                           <Text style={[styles.text,{color:primaryColor,fontSize:22}]}>Complete Order</Text>
+                           <Text style={[styles.text,{color:primaryColor,fontSize:22,textDecorationLine:"underline"}]}>Complete Order</Text>
                        </View>
                        <View style={{flexDirection:"row",paddingHorizontal:20,marginTop:10}}>
                            <View style={{alignItems:"center",justifyContent:"center"}}>
@@ -173,24 +179,39 @@ const screenHeight = Dimensions.get('screen').height
                          </View>
                          <View style={{ paddingHorizontal: 20, marginTop: 10}}>
                              <View>
-                                 <Text style={[styles.text]}>You have Completed :</Text>
+                                 <Text style={[styles.text]}>Table Details :</Text>
                              </View>
-                             <View style={{flexDirection:'row',width:width*0.3,alignItems:'center',justifyContent:"space-around",marginTop:10}}>
-                                 <TouchableOpacity style={{alignItems:"center",justifyContent:"center"}}
-                                  onPress={()=>{this.increaseCount()}}
-                                 >
-                                     <Ionicons name="add-circle-outline" size={24} color="black" />
-                                 </TouchableOpacity>
-                                 <View style={{alignItems:'center',justifyContent:"center"}}>
-                                     <Text style={[styles.text, { color: primaryColor, fontSize: 20 }]}>{this?.state?.selectedItem?.completedCount}</Text>
-                                 </View>
-                                 <TouchableOpacity 
-                                  onPress={()=>{this.decreaseCount()}}
-                                 >
-                                     <Feather name="minus-circle" size={24} color="black" />
-                                 </TouchableOpacity>
-                             </View>
+                             {
+                                 this.state?.selectedItem?.tables.map((i,idx)=>{
+                                     return(
+                                         <View key={idx}
+                                          style={{flexDirection:"row",marginLeft:10,marginTop:10}}
+                                         >
+                                           
+                                             <View style={{alignItems:"center",justifyContent:"center"}}>
+                                                 <Text style={[styles.text, { color: '#000' }]}>Table : </Text>
+                                             </View>
+                                             <View style={{alignItems:"center",justifyContent:"center"}}>
+                                                 <Text style={[styles.text, { color: '#000' ,fontSize:20,fontWeight:"bold"}]}>{i.tableNO} </Text>
+                                             </View>
+                                             <View style={{alignItems:"center",justifyContent:"center"}}>
+                                                 <Text style={[styles.text, { color: '#000' }]}>X </Text>
+                                             </View>
+                                             <View>
+                                                 <Text style={[styles.text, { color: '#000' ,fontSize:20}]}>{i.count}</Text>
+                                             </View>
+                                         </View>
+                                     )
+                                 })
+                             }
                          
+                         </View>
+                         <View style={{alignItems:"center",paddingVertical:20}}>
+                             <TouchableOpacity style={{height:height*0.05,alignItems:"center",justifyContent:"center",backgroundColor:primaryColor,width:width*0.4}}
+                              onPress={()=>{this.completeOrder()}}
+                             >
+                                 <Text style={[styles.text,{color:"#fff"}]}>Complete</Text>
+                             </TouchableOpacity>
                          </View>
                    </View>
              </View>

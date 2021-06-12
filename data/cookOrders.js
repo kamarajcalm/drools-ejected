@@ -4,16 +4,16 @@ const cookOrders = [
             item: "Kabaab 1kg",
             count:3,
             isStarted:false,
-        completedCount: 3,
+            completedCount: 3,
             isCompleted: false,
             tables:[
                  {
-                     label:"1",
-                     key:"1"
+                   tableNO:"1",
+                   count:1
                  },
                 {
-                    label: "5",
-                    key: "5"
+                    tableNO: "5",
+                    count: 3
                 },
              ]
         },
@@ -25,12 +25,12 @@ const cookOrders = [
             isStarted: false,
             tables: [
                 {
-                    label: "1",
-                    key: "1"
+                    tableNO: "1",
+                    count: 1
                 },
                 {
-                    label: "5",
-                    key: "5"
+                    tableNO: "5",
+                    count: 3
                 },
             ]
         },
@@ -42,12 +42,12 @@ const cookOrders = [
             isStarted: false,
             tables: [
                 {
-                    label: "1",
-                    key: "1"
+                    tableNO: "1",
+                    count: 1
                 },
                 {
-                    label: "5",
-                    key: "5"
+                    tableNO: "5",
+                    count: 3
                 },
             ]
         },
