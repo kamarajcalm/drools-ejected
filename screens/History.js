@@ -64,34 +64,37 @@ class History extends Component {
                     keyExtractor={(item, index) => item.tableNo}
                     renderItem={({ item, index }) => {
                         return (
-                            <TouchableOpacity style={{ height: height * 0.15, borderColor: "#333", borderBottomWidth: 0.5, flexDirection: "row", paddingVertical: 10 }}
-                                onPress={() => { this.props.navigation.navigate('ViewOrder', { item }) }}
-                            >
-                              
-                                <View style={{ flex: 1, }}>
-                                    <View style={{ flex: 0.7, padding: 10, }}>
-                                        <View style={{ flex: 0.5 }}>
-                                            <View style={{ flex: 0.3 }}>
-                                                <Text style={[styles.text, { fontSize: 18, color: "#fff" }]}>Table : {item.tableNo}</Text>
-                                            </View>
-                                            <View style={{ flex: 0.7, alignItems: "flex-end", paddingRight: 20 }}>
-                                                <Text style={[styles.text, { fontSize: 18, color: "#454545" }]}># {index + 1}</Text>
+                            <TouchableOpacity style={{height:height*0.15,borderColor:"#333",borderBottomWidth:0.5,flexDirection:"row",paddingVertical:10}}
+                            onPress={() => { this.props.navigation.navigate('ViewOrder',{item})}}
+                      >
+                       
+                        <View style={{ flex: 1, }}>
+                                <View style={{flex:0.7,padding: 10,}}>
+                                    <View style={{flex:0.7,}}> 
+                                        <View style={{ flex: 0.5,}}>
+                                            <View>
+                                            <Text style={[styles.text, { fontSize: 18, color: "#fff" }]}>Table : {item.tableNo}</Text>
+
                                             </View>
                                         </View>
-                                        <View style={{ flex: 0.5 }}>
-                                            <Text style={[styles.text, { color: "#fff" }]}>10:00 am</Text>
+                                        <View style={{ flex: 0.5, alignItems: "flex-end", paddingRight: 20 }}>
+                                            <Text style={[styles.text, { fontSize: 18, color: "#454545" }]}># {index + 1}</Text>
                                         </View>
                                     </View>
-                                    <View style={{ flexDirection: "row", flex: 0.3, alignItems: "center", justifyContent: "space-around" }}>
-                                        <View>
-                                            <Text style={[styles.text, { color: "#eee" }]}>Items Count: {item.totalItems}</Text>
-                                        </View>
-                                        <View>
-                                            <Text style={[styles.text, { color: "#fafafa" }]}>Price : ₹{item.totalCost}</Text>
-                                        </View>
+                                   <View style={{flex:0.3}}>
+                                       <Text style={[styles.text,{color:"#fff"}]}>10:00 am</Text>
+                                   </View>
+                                </View>
+                                <View style={{flexDirection:"row",flex:0.3,alignItems:"center",justifyContent:"space-around"}}>
+                                    <View>
+                                        <Text style={[styles.text,{color:"#eee"}]}>Items Count: {item.totalItems}</Text>
+                                    </View>
+                                    <View>
+                                        <Text style={[styles.text, { color: "#fafafa" }]}>Price : ₹{item.totalCost}</Text>
                                     </View>
                                 </View>
-                            </TouchableOpacity>
+                         </View>
+                      </TouchableOpacity>
                         )
                     }}
                 />

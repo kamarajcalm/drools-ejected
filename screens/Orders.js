@@ -49,15 +49,18 @@ import { set } from 'react-native-reanimated';
                                
                                 <View style={{ flex: 1, }}>
                                         <View style={{flex:0.7,padding: 10,}}>
-                                            <View style={{flex:0.5}}> 
-                                                <View style={{ flex: 0.3 }}>
+                                            <View style={{flex:0.7,}}> 
+                                                <View style={{ flex: 0.5,}}>
+                                                    <View>
                                                     <Text style={[styles.text, { fontSize: 18, color: "#fff" }]}>Table : {item.tableNo}</Text>
+
+                                                    </View>
                                                 </View>
-                                                <View style={{ flex: 0.7, alignItems: "flex-end", paddingRight: 20 }}>
+                                                <View style={{ flex: 0.5, alignItems: "flex-end", paddingRight: 20 }}>
                                                     <Text style={[styles.text, { fontSize: 18, color: "#454545" }]}># {index + 1}</Text>
                                                 </View>
                                             </View>
-                                           <View style={{flex:0.5}}>
+                                           <View style={{flex:0.3}}>
                                                <Text style={[styles.text,{color:"#fff"}]}>10:00 am</Text>
                                            </View>
                                         </View>
