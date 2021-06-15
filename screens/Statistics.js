@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Dimensions, TouchableOpacity, StyleSheet, AsyncStorage} from 'react-native';
+import { View, Text, Dimensions, TouchableOpacity, StyleSheet, AsyncStorage, ScrollView} from 'react-native';
 const { height, width } = Dimensions.get('window')
 import settings from '../AppSettings'
 import { connect } from 'react-redux';
@@ -47,49 +47,67 @@ class Statistics extends Component {
                         <Text style={[styles.text, { color: "#fff", fontSize: 18 }]}>Statistics</Text>
                     </View>
                 </LinearGradient>
-                <View style={{flex:1,alignItems:"center",justifyContent:"space-around"}}>
-                   <TouchableOpacity style={{flexDirection:"row"}}
-                        onPress={() => { this.props.navigation.navigate("StatisticsView", { item:"Fast Moving Items"})}}
-                   >
-                       <View style={{alignItems:"center",justifyContent:"center"}}>
-                            <Text style={[styles.text]}>Fast Moving Items</Text>
-                       </View>
-                        <View style={{ marginLeft: 10, alignItems: "center", justifyContent: "center" }}>
-                            <Ionicons name="fast-food" size={24} color="black" />
-                       </View>
+                <ScrollView 
+                
+                 contentContainerStyle ={{alignItems:"center",}}
+                >
+                    <TouchableOpacity
+
+                        onPress={() => { this.props.navigation.navigate("StatisticsView", { item: "Fast Moving Items" }) }}
+                    >
+                    <LinearGradient
+                        style={[styles.cardStyle]}
+                            colors={gradients}
+                    >
+                       
+                            <View style={{ alignItems: "center", justifyContent: "center" }}>
+                                <Text style={[styles.text,{color:primaryColor}]}>Fast Moving Items</Text>
+                            </View>
+                            <View style={{ marginLeft: 10, alignItems: "center", justifyContent: "center" }}>
+                                <Ionicons name="fast-food" size={24} color={primaryColor} />
+                            </View>
+
                       
-                   </TouchableOpacity>
-                    <TouchableOpacity style={{ flexDirection: "row" }}
-                        onPress={() => { this.props.navigation.navigate("StatisticsView", { item: "Day Wise" }) }}
-                    >
-                        <View style={{ alignItems: "center", justifyContent: "center" }}>
-                            <Text style={[styles.text]}>Day Wise</Text>
-                        </View>
-                        <View style={{ marginLeft: 10, alignItems: "center", justifyContent: "center" }}>
-                            <MaterialIcons name="date-range" size={24} color="black" />
-                        </View>
-
+                    </LinearGradient>
                     </TouchableOpacity>
-                    <TouchableOpacity style={{ flexDirection: "row" }}
-                        onPress={() => { this.props.navigation.navigate("StatisticsView", { item: "Time Wise" }) }}
-                    >
-                        <View style={{ alignItems: "center", justifyContent: "center" }}>
-                            <Text style={[styles.text]}>Time Wise</Text>
-                        </View>
-                        <View style={{ marginLeft: 10, alignItems: "center", justifyContent: "center" }}>
-                            <Ionicons name="time-sharp" size={24} color="black" />
-                        </View>
-
-                    </TouchableOpacity>
-                    <TouchableOpacity style={{ flexDirection: "row" }}
+                    <TouchableOpacity
                         onPress={() => { this.props.navigation.navigate("StatisticsView", { item: "Net Profit" }) }}
                     >
-                        <View style={{ alignItems: "center", justifyContent: "center" }}>
-                            <Text style={[styles.text]}>Net Profit</Text>
-                        </View>
-                        <View style={{marginLeft:10,alignItems:"center",justifyContent:"center"}}>
-                            <MaterialCommunityIcons name="cash-100" size={24} color="black" />
-                        </View>
+                    <LinearGradient 
+                        style={[styles.cardStyle]}
+                        colors={gradients}
+                    
+                    >
+                       
+                            <View style={{ alignItems: "center", justifyContent: "center" }}>
+                                <Text style={[styles.text,{color:primaryColor}]}>Net Profit</Text>
+                            </View>
+                            <View style={{ marginLeft: 10, alignItems: "center", justifyContent: "center" }}>
+                                <MaterialIcons name="date-range" size={24} color={primaryColor} />
+                            </View>
+
+                    </LinearGradient>
+                  
+
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        onPress={() => { this.props.navigation.navigate("ProfilePage") }}
+                    >
+                        <LinearGradient
+                            style={[styles.cardStyle]}
+                            colors={gradients}
+
+                        >
+
+                            <View style={{ alignItems: "center", justifyContent: "center" }}>
+                                <Text style={[styles.text,{color:primaryColor}]}>Profile</Text>
+                            </View>
+                            <View style={{ marginLeft: 10, alignItems: "center", justifyContent: "center" }}>
+                                <FontAwesome5 name="hotel" size={24} color={primaryColor} />
+                            </View>
+
+                        </LinearGradient>
+
 
                     </TouchableOpacity>
                     <TouchableOpacity 
@@ -99,7 +117,7 @@ class Statistics extends Component {
                     >
                         <Text>Logout</Text>
                     </TouchableOpacity>
-                </View>
+                </ScrollView>
             </View>
         );
     }
@@ -107,6 +125,16 @@ class Statistics extends Component {
 const styles = StyleSheet.create({
     text: {
         fontFamily
+    },
+    cardStyle:{
+        flexDirection: "row", 
+        height: height * 0.25, 
+        backgroundColor: "red",
+        width: width * 0.9,
+        borderRadius: 5, 
+        alignItems: "center", 
+        justifyContent: "center",
+        marginTop: 20,
     }
 })
 const mapStateToProps = (state) => {
