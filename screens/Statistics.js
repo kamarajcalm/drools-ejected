@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Dimensions, TouchableOpacity, StyleSheet} from 'react-native';
+import { View, Text, Dimensions, TouchableOpacity, StyleSheet, AsyncStorage} from 'react-native';
 const { height, width } = Dimensions.get('window')
 import settings from '../AppSettings'
 import { connect } from 'react-redux';
@@ -10,6 +10,7 @@ const secondaryColor = settings.secondaryColor
 const fontFamily =settings.fontFamily
 import { LinearGradient } from 'expo-linear-gradient';
 import Constants from 'expo-constants';
+import { CommonNavigationAction, CommonActions } from '@react-navigation/native'
 import { FontAwesome, MaterialCommunityIcons, MaterialIcons, SimpleLineIcons, Entypo, Fontisto, Feather, Ionicons, FontAwesome5 } from '@expo/vector-icons';
 class Statistics extends Component {
     constructor(props) {
@@ -17,7 +18,21 @@ class Statistics extends Component {
         this.state = {
         };
     }
+    logout =()=>{
+        AsyncStorage.clear();
+        return this.props.navigation.dispatch(
+            CommonActions.reset({
+                index: 0,
+                routes: [
+                    {
+                        name: 'DefaultScreen',
 
+                    },
+
+                ],
+            })
+        )
+    }
     render() {
     
         return (
@@ -76,6 +91,13 @@ class Statistics extends Component {
                             <MaterialCommunityIcons name="cash-100" size={24} color="black" />
                         </View>
 
+                    </TouchableOpacity>
+                    <TouchableOpacity 
+                     onPress={()=>{
+                         this.logout()
+                     }}
+                    >
+                        <Text>Logout</Text>
                     </TouchableOpacity>
                 </View>
             </View>

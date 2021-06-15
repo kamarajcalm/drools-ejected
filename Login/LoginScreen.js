@@ -9,34 +9,96 @@ const primaryColor = settings.primaryColor
 const secondaryColor = settings.secondaryColor
 const fontFamily = settings.fontFamily
 const themeColor = settings.themeColor
+const url =settings.url
 import { LinearGradient } from 'expo-linear-gradient';
 import Constants from 'expo-constants';
 import { StatusBar, } from 'expo-status-bar';
+import {CommonNavigationAction,CommonActions} from '@react-navigation/native';
+import FlashMessage, { showMessage, hideMessage } from "react-native-flash-message";
 import { FontAwesome, MaterialCommunityIcons, MaterialIcons, SimpleLineIcons, Entypo, Fontisto, Feather, Ionicons, FontAwesome5 } from '@expo/vector-icons';
 class LoginScreen extends Component {
     constructor(props) {
         super(props);
         this.state = {
             user:true,
-            mobile:""
+            mobile:"",
+            password:""
         };
     }
+    showSimpleMessage(content, color, type = "info", props = {}) {
+        const message = {
+            message: content,
+            backgroundColor: color,
+            icon: { icon: "auto", position: "left" },
+            type,
+            ...props,
+        };
+
+        showMessage(message);
+    }
     login =async()=>{
-        AsyncStorage.setItem('login', "true")
-        if(this.state.mobile=="1"){
-            this.props.navigation.navigate('AdminTab')
-        }else{
-            this.props.navigation.navigate('CookTab')
+        if (this.state.mobile == "") {
+            return this.showSimpleMessage(`please enter username`, "#dd7030")
         }
+        if (this.state.password == "") {
+            return this.showSimpleMessage(`please enter password`, "#dd7030")
+        }
+        this.setState({ loading: true })
+        var data = new FormData()
+        data.append("username", this.state.mobile)
+        data.append("password", this.state.password)
+        fetch(`${url}/api/profile/login/?mode=api`, {
+            method: 'POST',
+            body: data,
+            headers: {
+
+            }
+        }).then((response) => {
+            if (response.status == 200) {
+                var sessionid = response.headers.get('set-cookie').split('sessionid=')[1].split(';')[0]
+                AsyncStorage.setItem('sessionid', sessionid)
+                console.log(sessionid, "ppp")
+                var d = response.json()
+                return d
+            }
+            else {
+                return undefined
+            }
+        })
+            .then((responseJson) => {
+                if (responseJson == undefined) {
+                    this.setState({ loading: false })
+                    return this.showSimpleMessage(`incorrect username or password`, "#dd7030")
+                }
+                console.log(responseJson, "ress")
+                AsyncStorage.setItem('csrf', responseJson.csrf_token)
+                AsyncStorage.setItem('login', "true")
+                return this.props.navigation.dispatch(
+                    CommonActions.reset({
+                        index: 0,
+                        routes: [
+                            {
+                                name: 'DefaultScreen',
+
+                            },
+
+                        ],
+                    })
+                )
+            })
+            .catch((err) => {
+                this.setState({ loading: false })
+                return this.showSimpleMessage(`${err?.toString()}`, "#dd7030")
+            })
     }
     render() {
 
         return (
             <View style={{ flex: 1 ,marginTop:Constants.statusBarHeight,backgroundColor:themeColor}}>
-                <StatusBar backgroundColor={themeColor} style={"light"}/>
-                <View style={{flex:0.3,alignItems:"center",justifyContent:"center"}}>
+                <StatusBar style={"dark"} />
+                <View style={{flex:0.3,alignItems:"center",justifyContent:"center",backgroundColor:"#fff"}}>
                    <Image 
-                        source={{ uri:"https://design.jboss.org/jbossrules/logo/final/drools_logo_600px.png"}}
+                        source={require('../assets/512x512_jpg.jpg')}
                      style={{height:"100%",width:"100%",}}
                      resizeMode={"contain"}
                    />
@@ -45,7 +107,7 @@ class LoginScreen extends Component {
                     <View style={{marginTop:20}}>
                         <TextInput
                             value={this.state.mobile}
-                            keyboardType={"numeric"}
+                          
                             style={{ height: height * 0.06, width: width * 0.9, backgroundColor: "#eee",borderRadius:5 ,paddingLeft:10}}
                             placeholder={"Mobile"}
                             selectionColor={themeColor}
@@ -58,6 +120,8 @@ class LoginScreen extends Component {
                             placeholder={"Password"}
                             secureTextEntry={true}
                             selectionColor={themeColor}
+                            value={this.state.password}
+                            onChangeText={(password) => { this.setState({ password }) }}
                         />
                     </View>
                     <View style={{ marginTop: 30 }}>

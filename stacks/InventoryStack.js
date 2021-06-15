@@ -6,6 +6,9 @@ import ViewOrders from '../screens/ViewOrders';
 import Inventory from '../screens/Inventory';
 import ViewItems from '../screens/ViewItems';
 import ViewStock from '../screens/ViewStock';
+import ViewCategories from '../screens/ViewCategories';
+import ViewIngredients from '../screens/ViewIngredients';
+import AddItems from '../screens/AddItems';
 const Stack = createStackNavigator();
 export default class InventoryStack extends Component {
     constructor(props) {
@@ -17,9 +20,12 @@ export default class InventoryStack extends Component {
     render() {
         return (
             <Stack.Navigator>
-                <Stack.Screen name="Inventory" component={Inventory} options={{ headerShown: false }} />
-                <Stack.Screen name="ViewItems" component={ViewItems} options={{ headerShown: false }} />
-                <Stack.Screen name="ViewStock" component={ViewStock} options={{ headerShown: false }} />
+                <Stack.Screen name="Inventory" component={Inventory} options={{ headerShown:false }} />
+                <Stack.Screen name="ViewItems" component={ViewItems} options={{ headerShown:false }} />
+                <Stack.Screen name="ViewStock" component={ViewStock} options={{ headerShown:false }} />
+                <Stack.Screen name="ViewCategories" component={ViewCategories} options={{ headerShown:false }}/>
+                <Stack.Screen name="ViewIngredients" component={ViewIngredients} options={{ headerShown:false }}/>
+                <Stack.Screen name="AddItems" component={AddItems} options={{ headerShown:false}}/>
             </Stack.Navigator>
         );
     }

@@ -1,10 +1,10 @@
 {
   "expo": {
-    "name": "drools",
-    "slug": "drools",
+    "name": "Drools",
+    "slug": "Drools",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/AppLogo.png",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
@@ -21,9 +21,14 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/AppLogo.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "package": "in.poa.drools"
+    },
+    "notification": {
+      "icon": "./assets/notification.png",
+      "color": "#fff"
     },
     "web": {
       "favicon": "./assets/favicon.png"

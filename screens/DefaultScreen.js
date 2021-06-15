@@ -11,6 +11,7 @@ const themeColor = settings.themeColor
 const fontFamily = settings.fontFamily
 import { LinearGradient } from 'expo-linear-gradient';
 import Constants from 'expo-constants';
+import { CommonNavigationAction, CommonActions } from '@react-navigation/native'
 import { FontAwesome, MaterialCommunityIcons, MaterialIcons, SimpleLineIcons, Entypo, Fontisto, Feather, Ionicons, FontAwesome5 } from '@expo/vector-icons';
 class DefaultScreen extends Component {
     constructor(props) {
@@ -21,9 +22,31 @@ class DefaultScreen extends Component {
     getUser = async()=>{
        let login = await AsyncStorage.getItem("login")
        if(login){
-           return this.props.navigation.navigate('LoginScreen')
+           return this.props.navigation.dispatch(
+               CommonActions.reset({
+                   index: 0,
+                   routes: [
+                       {
+                           name: 'AdminTab',
+
+                       },
+
+                   ],
+               })
+           )
        }else{
-           return this.props.navigation.navigate('LoginScreen')
+           return this.props.navigation.dispatch(
+               CommonActions.reset({
+                   index: 0,
+                   routes: [
+                       {
+                           name: 'LoginScreen',
+
+                       },
+
+                   ],
+               })
+           )
        }
     }
     componentDidMount(){

@@ -13,15 +13,16 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { FontAwesome, MaterialCommunityIcons, MaterialIcons, SimpleLineIcons, Entypo, Fontisto, Feather, Ionicons, FontAwesome5 } from '@expo/vector-icons';
 import Constants from 'expo-constants';
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
-import Items from './Items';
+import Categories from './Categories';
 import Stocks from './Stocks';
+import InventoryOrders from './InventoryOrders';
 class Inventory extends Component {
   constructor(props) {
     super(props);
       const routes = [
-          { key: 'Items', title: 'Items' },
+          { key: 'Categories', title: 'Categories' },
           { key: 'Stocks', title: 'Stocks'},
-     
+          { key: 'Orders', title: 'Orders' },
 
       ];
     this.state = {
@@ -32,14 +33,22 @@ class Inventory extends Component {
     renderScene = ({ route, }) => {
         switch (route.key) {
 
-            case 'Items':
-                return <Items navigation={this.props.navigation}/>
+            case 'Categories':
+                return <Categories navigation={this.props.navigation}/>
             case 'Stocks':
                 return <Stocks navigation ={this.props.navigation}/>
+            case 'Orders':
+                return <InventoryOrders navigation={this.props.navigation} />
             default:
                 return null;
         }
     };
+    getStocks =()=>{
+        
+    }
+    componentDidMount(){
+        this.getStocks()
+    }
   render() {
       const { index, routes } = this.state
     return (

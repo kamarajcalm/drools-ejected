@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, TextInput, Dimensions, TouchableOpacity, StyleSheet, ActivityIndicator, FlatList} from 'react-native';
+import { View, Text, TextInput, Dimensions, TouchableOpacity, StyleSheet, ActivityIndicator, FlatList, Alert} from 'react-native';
 const { height, width } = Dimensions.get('window')
 import settings from '../AppSettings'
 const gradients = settings.gradients
@@ -8,7 +8,11 @@ const secondaryColor = settings.secondaryColor
 const fontFamily = settings.fontFamily
 const themeColor = settings.themeColor
 import FlashMessage, { showMessage, hideMessage } from "react-native-flash-message";
-export default class Items extends Component {
+import HttpsClient from '../HttpsClient';
+const url =settings.url
+import { FontAwesome, MaterialCommunityIcons, MaterialIcons, SimpleLineIcons, Entypo, Fontisto, Feather, Ionicons, FontAwesome5 } from '@expo/vector-icons';
+
+export default class Categories extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -27,17 +31,23 @@ export default class Items extends Component {
 
         showMessage(message);
     }
-    addCategory =()=>{
-        if(this.state.categoryName ==""){
+    addCategory = async()=>{
+        if (this.state.categoryName == "") {
             return this.showSimpleMessage("Please add Name", "#dd7030",)
         }
-       let pushObj ={
-            name:this.state.categoryName
+        let api =`${url}/api/drools/category/`
+        let sendData ={
+            title: this.state.categoryName
         }
-        let duplicate =this.state.Items
-        duplicate.push(pushObj)
-        this.setState({ Items: duplicate, categoryName:""})
-        this.showSimpleMessage("Added SuccessFully", "#00A300", "success")
+      let post =await HttpsClient.post(api,sendData)
+      if(post.type =="success"){
+          this.setState({ categoryName:""})
+          this.getCategories()
+         return this.showSimpleMessage("Added SuccessFully", "#00A300", "success")
+      }else{
+          return this.showSimpleMessage("Try again", "#dd7030",)
+      }
+
     }
     header =()=>{
         return(
@@ -47,15 +57,56 @@ export default class Items extends Component {
                         <Text style={[styles.text, { textDecorationLine: "underline", color: "#000" }]}>Item</Text>
                     </View>
                 </View>
-              <View style={{flex:0.5,alignItems:"center",justifyContent:"center"}}>
+              <View style={{flex:0.25,alignItems:"center",justifyContent:"center"}}>
                     <View>
                         <Text style={[styles.text, { textDecorationLine: "underline", color: "#000" }]}>Action</Text>
                     </View>
               </View>
-            
+                <View style={{ flex: 0.25, alignItems: "center", justifyContent: "center" }}>
+                    <View>
+                        <Text style={[styles.text, { textDecorationLine: "underline", color: "#000" }]}></Text>
+                    </View>
+                </View>
             </View>
         )
  
+    }
+    
+    getCategories =async()=>{
+        let api = `${url}/api/drools/category/`
+        const data = await HttpsClient.get(api)
+       if(data.type =="success"){
+           this.setState({ Items:data.data})
+       }
+    }
+    componentDidMount(){
+        this.getCategories();
+    }
+    deleteItem = async (item, index) => {
+        let duplicate = this.state.Items
+        let api = `${url}/api/drools/category/${item.id}/`
+        let del = await HttpsClient.delete(api)
+        if (del.type == "success") {
+            duplicate.splice(index, 1)
+            this.setState({ Items: duplicate })
+            return this.showSimpleMessage("deleted SuccessFully", "#00A300", "success")
+        } else {
+            return this.showSimpleMessage("try again ", "red", "danger")
+        }
+    }
+    createAlert = (item, index) => {
+        Alert.alert(
+            "Do you want to delete?",
+            ``,
+            [
+                {
+                    text: "No",
+                    onPress: () => console.log("Cancel Pressed"),
+                    style: "cancel"
+                },
+                { text: "Yes", onPress: () => { this.deleteItem(item, index) } }
+            ]
+        );
     }
   render() {
     return (
@@ -87,18 +138,24 @@ export default class Items extends Component {
                     <View style={{ flexDirection: "row", paddingVertical: 10,}}>
                         <View style={{flex:0.5,alignItems:"center",justifyContent:"center"}}>
                             <View>
-                                <Text style={[styles.text, { color: "#000" }]}>{index + 1}. {item.name}</Text>
+                                <Text style={[styles.text, { color: "#000" }]}>{index + 1}. {item.title}</Text>
                             </View>
                         </View>
-                        <View style={{flex:0.5,alignItems:"center",justifyContent:"center"}}>
+                        <View style={{flex:0.25,alignItems:"center",justifyContent:"center"}}>
                             <TouchableOpacity 
-                              onPress={()=>{this.props.navigation.navigate('ViewItems',{item})}}
+                                onPress={() => { this.props.navigation.navigate('ViewCategories',{item})}}
                             
                             >
                                 <Text style={[styles.text, { textDecorationLine: "underline", color: "#000" }]}>View</Text>
                             </TouchableOpacity>
                         </View>
-                    
+                        <View style={{ flex: 0.25, alignItems: "center", justifyContent: "center" }}>
+                            <TouchableOpacity 
+                             onPress ={()=>{this.createAlert(item,index)}}
+                            >
+                                <Entypo name="circle-with-cross" size={24} color="red" />
+                            </TouchableOpacity>
+                        </View>
                     </View>
                 )
               }}
