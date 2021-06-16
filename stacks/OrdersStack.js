@@ -3,6 +3,9 @@ import { View, Text } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
 import Orders from '../screens/Orders';
 import ViewOrders from '../screens/ViewOrders';
+import CreateNormalOrder from '../screens/CreateNormalOrder';
+import CreateTakeAway from '../screens/CreateTakeAway';
+import SeacrchDishes from '../screens/SeacrchDishes';
 const Stack = createStackNavigator();
 export default class OrdersStack extends Component {
   constructor(props) {
@@ -16,6 +19,9 @@ export default class OrdersStack extends Component {
         <Stack.Navigator>
             <Stack.Screen name="Orders" component={Orders} options={{ headerShown: false }}/>
             <Stack.Screen name="ViewOrder" component={ViewOrders} options={{ headerShown: false }}/>
+            <Stack.Screen name="CreateNormalOrder" component={CreateNormalOrder} options={{ headerShown: false }}/>
+            <Stack.Screen name="CreateTakeAway" component={CreateTakeAway} options={{ headerShown: false }}/>
+        <Stack.Screen name="SearchDishes" component={SeacrchDishes} options={{ headerShown: false }}/>
         </Stack.Navigator>
     );
   }

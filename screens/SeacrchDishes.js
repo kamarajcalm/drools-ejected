@@ -1,0 +1,213 @@
+import React, { Component } from 'react';
+import { View, Text, Dimensions, TouchableOpacity, StyleSheet, FlatList, Image,TextInput } from 'react-native';
+const { height, width } = Dimensions.get('window')
+import settings from '../AppSettings'
+import { connect } from 'react-redux';
+import { selectTheme } from '../actions';
+const gradients = settings.gradients
+const primaryColor = settings.primaryColor
+const secondaryColor = settings.secondaryColor
+const fontFamily = settings.fontFamily
+const themeColor = settings.themeColor
+const url =settings.url
+import { StatusBar, } from 'expo-status-bar';
+import { LinearGradient } from 'expo-linear-gradient';
+import Constants from 'expo-constants';
+import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
+import orders from '../data/orders'
+import { FontAwesome, AntDesign, MaterialCommunityIcons, MaterialIcons, SimpleLineIcons, Entypo, Fontisto, Feather, Ionicons, FontAwesome5 } from '@expo/vector-icons';
+import HttpsClient from '../HttpsClient';
+
+class SeacrchDishes extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            searchText:"",
+            categories:[],
+            items:[],
+            selectedItems:[],
+            selectedCategory:null
+        };
+    }
+    searchDishes =async(text)=>{
+        this.setState({ selectedCategory:null})
+        let api = `${url}/api/drools/items/?search=${text}`
+        let data =await HttpsClient.get(api)
+     
+        if(data.type =="success"){
+             data.data.forEach((i)=>{
+                i.selected =false
+             })
+            this.setState({ items:data.data})
+        }
+    }
+    getCategories = async () => {
+        let api = `${url}/api/drools/category/`
+        const data = await HttpsClient.get(api)
+        if (data.type == "success") {
+            this.setState({ categories:data.data})
+        }
+    }
+    getItems = async () => {
+        let api = `${url}/api/drools/items/?category=${this.state.selectedCategory.id}`
+        let data = await HttpsClient.get(api)
+        console.log(data)
+        if (data.type == "success") {
+            this.setState({ items: data.data })
+        }
+    }
+    selectDish = (item,idx) => {
+
+        let data = this.state.selectedItems
+        let duplicate = this.state.items
+        duplicate[idx].selected = !duplicate[idx].selected
+        this.setState({ items:duplicate})
+        var found = data.find(function (element) {
+            return element.id === item.id;
+        });
+        if (found) {
+            let index = data.indexOf(found)
+            data.splice(index, 1)
+            this.setState({ selectedItems: data })
+        } else {
+            let pushObj ={
+                quantity:1,
+                id:item.id,
+                comments:"",
+                title:item.title
+
+            }
+            data.push(pushObj)
+            this.setState({ selectedItems: data })
+        }
+
+
+    }
+    componentDidMount(){
+        this.getCategories()
+    }
+    validateColor =(item)=>{
+        console.log(item)
+      if(item.selected){
+          return "green"
+      }
+
+      return primaryColor
+    }
+    validateBackground = (item)=>{
+      if(this.state.selectedCategory == item){
+          return primaryColor
+      }
+      return "#fafafa"
+    }
+    selectCategory =(item)=>{
+       this.setState({selectedCategory:item},()=>{
+           this.getItems()
+       })
+
+    }
+    render() {
+        return (
+            <View style={{ flex: 1 }}>
+                {/* Headers */}
+                <LinearGradient
+                    style={{ height: height * 0.12, flexDirection: "row", alignItems: "center", justifyContent: "center" }}
+                    colors={gradients}
+                >
+                    <View style={{ marginTop: Constants.statusBarHeight, flex: 1, flexDirection: "row" }}>
+                        <TouchableOpacity style={{ flex: 0.1, alignItems: "center", justifyContent: "center" }}
+                            onPress={() => {
+                                 this.props.route.params.backFunction(this.state.selectedItems)
+                                 this.props.navigation.goBack() 
+                                }}
+                        >
+                            <Ionicons name="caret-back" size={24} color={secondaryColor} />
+                        </TouchableOpacity>
+                        <View style={{ flex: 0.9, alignItems: "center", justifyContent: "center" }}>
+                         <TextInput 
+                           style={{height:height*0.05,width:"90%",backgroundColor:"#fff",borderRadius:5,paddingLeft:5}}
+                           selectionColor ={primaryColor}
+                           placeholder={"search Dishes"}
+                                onChangeText={(text) => { this.searchDishes(text)}}
+                         />
+
+                        </View>
+                     
+                    </View>
+
+                
+                </LinearGradient>
+                <FlatList
+                  style={{height:height*0.07}}
+                  horizontal={true}
+                  data={this.state.categories}
+                  keyExtractor ={(item,index)=>index.toString()}
+                  renderItem ={({item,index})=>{
+                      return(
+                          <TouchableOpacity style={{
+                              height:height*0.05,
+                              width:width*0.4,
+                              alignItems:"center",
+                              justifyContent:"center",
+                              borderRadius:10,
+                              backgroundColor:this.validateBackground(item),
+                              marginLeft:10,
+                              marginTop:10
+                              }}
+                              onPress ={()=>{this.selectCategory(item)}}
+                              >
+                              <Text style={[styles.text]}>{item.title}</Text>
+                          </TouchableOpacity>
+                      )
+                  }}
+                />
+                  <FlatList 
+                    data ={this.state.items}
+                    keyExtractor={(item,index)=>index.toString()}
+                    renderItem ={({item,index})=>{
+                       return(
+                           <View style={{height:height*0.15,backgroundColor:"#eee",marginTop:10,width:width*0.9,alignSelf:"center",justifyContent:"center"}}>
+                               <View style={{alignItems:"center",marginTop:5}}>
+                                   <Text style={[styles.text,{fontSize:22}]}>{item.title}</Text>
+                               </View>
+                               <View style={{marginTop:10,alignItems:"center"}}>
+                                   <TouchableOpacity style={{backgroundColor:this.validateColor(item),alignItems:"center",justifyContent:"center",height:height*0.05,width:width*0.3}}
+                                    onPress ={()=>{this.selectDish(item,index)}}
+                                   >
+                                       <Text style={[styles.text,{color:"#fff"}]}>{item.selected?"Remove":"Add"}</Text>
+                                   </TouchableOpacity>
+                               </View>
+                           </View>
+                       )
+                    }}
+                  />
+                  <View style={{position:"absolute",width,bottom:30,alignItems:"center",justifyContent:"space-around",flexDirection:"row"}}>
+                       <View style={{height:height*0.05,width:width*0.3,backgroundColor:primaryColor,alignItems:"center",justifyContent:"center"}}>
+                           <Text style={[styles.text,{color:"#fff",}]}>Selected ({this.state.selectedItems.length})</Text>
+                       </View>
+                       <TouchableOpacity 
+                        style={{ height: height * 0.05, width: width * 0.3, backgroundColor: primaryColor, alignItems: "center", justifyContent: "center" }}
+                        onPress={() => {
+                            this.props.route.params.backFunction(this.state.selectedItems)
+                            this.props.navigation.goBack()
+                        }}
+                       >
+                        <Text style={[styles.text, { color: "#fff", }]}>Proceed</Text>
+                       </TouchableOpacity>
+                  </View>
+            </View>
+        );
+    }
+}
+const styles = StyleSheet.create({
+    text: {
+        fontFamily
+    }
+})
+const mapStateToProps = (state) => {
+
+    return {
+        theme: state.selectedTheme,
+    }
+}
+export default connect(mapStateToProps, { selectTheme })(SeacrchDishes);
