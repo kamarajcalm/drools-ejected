@@ -22,11 +22,13 @@ class SeacrchDishes extends Component {
     constructor(props) {
         super(props);
         this.state = {
+           
             searchText:"",
             categories:[],
             items:[],
             selectedItems:[],
-            selectedCategory:null
+            selectedCategory:null,
+     
         };
     }
     searchDishes =async(text)=>{
@@ -57,7 +59,6 @@ class SeacrchDishes extends Component {
         }
     }
     selectDish = (item,idx) => {
-
         let data = this.state.selectedItems
         let duplicate = this.state.items
         duplicate[idx].selected = !duplicate[idx].selected
@@ -75,7 +76,6 @@ class SeacrchDishes extends Component {
                 id:item.id,
                 comments:"",
                 title:item.title
-
             }
             data.push(pushObj)
             this.setState({ selectedItems: data })
@@ -84,6 +84,7 @@ class SeacrchDishes extends Component {
 
     }
     componentDidMount(){
+      
         this.getCategories()
     }
     validateColor =(item)=>{
@@ -106,6 +107,25 @@ class SeacrchDishes extends Component {
        })
 
     }
+    handleNavigation =async()=>{
+        if(this.state.addItem){
+            let api = `${url}/api/drools/addCart/`
+            let sendData = {
+                items: this.state.selectedItems,
+                cart: this.state.item.id,
+                edit_cart: true
+            }
+            let post = await HttpsClient.post(api,sendData)
+            if(post.type =="success"){
+                this.props.navigation.goBack()
+            }
+           
+        }else{
+            this.props.route.params.backFunction(this.state.selectedItems)
+            this.props.navigation.goBack()
+        }
+      
+    }
     render() {
         return (
             <View style={{ flex: 1 }}>
@@ -117,8 +137,8 @@ class SeacrchDishes extends Component {
                     <View style={{ marginTop: Constants.statusBarHeight, flex: 1, flexDirection: "row" }}>
                         <TouchableOpacity style={{ flex: 0.1, alignItems: "center", justifyContent: "center" }}
                             onPress={() => {
-                                 this.props.route.params.backFunction(this.state.selectedItems)
-                                 this.props.navigation.goBack() 
+                                this.props.route.params.backFunction(this.state.selectedItems)
+                                this.props.navigation.goBack()
                                 }}
                         >
                             <Ionicons name="caret-back" size={24} color={secondaryColor} />

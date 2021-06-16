@@ -120,6 +120,11 @@ class CreateNormalOrder extends Component {
         duplicate[index].quantity = duplicate[index].quantity - 1
         this.setState({ dishes: duplicate })
     }
+    deleteItem = (index)=>{
+        let duplicate = this.state.dishes
+        duplicate.splice(index,1)
+        this.setState({ dishes: duplicate })
+    }
     footer =()=>{
         return(
             <View style={{marginVertical:20,alignItems:"center"}}>
@@ -225,6 +230,14 @@ class CreateNormalOrder extends Component {
                                                     />
                                                 </View>
 
+                                            </View>
+                                            <View style ={{position:"absolute",right: 5,top:5}}>
+                                                 <TouchableOpacity 
+                                                  onPress ={()=>{this.deleteItem(index)}}
+                                                 
+                                                 >
+                                                    <Entypo name="circle-with-cross" size={24} color="red" />
+                                                 </TouchableOpacity>
                                             </View>
                                         </View>
                                     )
