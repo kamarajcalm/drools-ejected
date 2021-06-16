@@ -34,6 +34,16 @@ class ViewOrders extends Component {
             this.setState({ item: data.data })
         }
     }
+    completeOrder =async()=>{
+        let api = `${url}/api/drools/createOrder/`
+        let sendData ={
+            status:"Completed",
+            payment_status:"Paid",
+            cart_id:this.state.item.id
+        }
+        let post = await HttpsClient.post(api,sendData)
+        console.log(post)
+    }
     componentDidMount(){
         this._unsubscribe = this.props.navigation.addListener('focus', () => {
             this.getOrders()
@@ -68,7 +78,9 @@ class ViewOrders extends Component {
                     </View>
                 </View> 
                 <View style={{alignItems:"center",marginTop:20,flexDirection:"row",justifyContent:"space-around"}}>
-                    <TouchableOpacity style={{height:height*0.05,width:width*0.4,alignItems:"center",justifyContent:"center",backgroundColor:primaryColor}}>
+                    <TouchableOpacity style={{height:height*0.05,width:width*0.4,alignItems:"center",justifyContent:"center",backgroundColor:primaryColor}}
+                     onPress={()=>{this.completeOrder()}}
+                    >
                         <Text style={[styles.text,{color:"#fff"}]}>Complete Order</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={{ height: height * 0.05, width: width * 0.4, alignItems: "center", justifyContent: "center", backgroundColor: primaryColor }}
