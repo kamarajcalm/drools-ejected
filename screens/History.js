@@ -9,27 +9,61 @@ const primaryColor = settings.primaryColor
 const secondaryColor = settings.secondaryColor
 const fontFamily = settings.fontFamily
 const themeColor = settings.themeColor
+const url =settings.url
 import { LinearGradient } from 'expo-linear-gradient';
 import Constants from 'expo-constants';
 import orders from '../data/orders';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import momemt from 'moment';
 import { FontAwesome, MaterialCommunityIcons, MaterialIcons, SimpleLineIcons, Entypo, Fontisto, Feather, Ionicons, FontAwesome5 } from '@expo/vector-icons';
+import HttpsClient from '../HttpsClient';
 class History extends Component {
     constructor(props) {
         super(props);
         this.state = {
             show:false,
-            today:momemt(new Date()).format("YYYY-MM-DD")
+            today:momemt(new Date()).format("YYYY-MM-DD"),
+            orders:[]
         };
     }
     hideDatePicker = () => {
         this.setState({show:false})
     };
     handleConfirm = (date) => {
-        this.setState({ today:momemt(date).format("YYYY-MM-DD")})
+        this.setState({ today:momemt(date).format("YYYY-MM-DD")},()=>{
+            this.getOrders()
+        })
         this.hideDatePicker();
     };
+    getOrders = async () => {
+        let api = `${url}/api/drools/cart/?date=${this.state.today}`
+        const data = await HttpsClient.get(api)
+        console.log(api)
+        if (data.type == "success") {
+            this.setState({ orders: data.data })
+        }
+    }
+    componentDidMount() {
+        this.getOrders()
+        this._unsubscribe = this.props.navigation.addListener('focus', () => {
+            this.getOrders()
+
+        });
+    }
+    componentWillUnmount() {
+        this._unsubscribe()
+    }
+    validateColor = (item) => {
+        if (item.cart_status == "Pending") {
+            return "orange"
+        }
+        if (item.cart_status == "Completed") {
+            return "green"
+        }
+        if (item.cart_status == "Declined") {
+            return "red"
+        }
+    }
     render() {
      
         return (
@@ -59,42 +93,46 @@ class History extends Component {
                     </View>
                 </LinearGradient>
                 <FlatList
-
-                    data={orders}
-                    keyExtractor={(item, index) => item.tableNo}
+                    style={{ backgroundColor: "#333" }}
+                    data={this.state.orders}
+                    keyExtractor={(item, index) => index.toString()}
                     renderItem={({ item, index }) => {
                         return (
-                            <TouchableOpacity style={{height:height*0.15,borderColor:"#333",borderBottomWidth:0.5,flexDirection:"row",paddingVertical:10}}
-                            onPress={() => { this.props.navigation.navigate('ViewOrder',{item})}}
-                      >
-                       
-                        <View style={{ flex: 1, }}>
-                                <View style={{flex:0.7,padding: 10,}}>
-                                    <View style={{flex:0.7,}}> 
-                                        <View style={{ flex: 0.5,}}>
-                                            <View>
-                                            <Text style={[styles.text, { fontSize: 18, color: "#fff" }]}>Table : {item.tableNo}</Text>
+                            <TouchableOpacity style={{ height: height * 0.18, borderColor: "#fff", borderBottomWidth: 0.5, flexDirection: "row", paddingVertical: 10 }}
+                                onPress={() => { this.props.navigation.navigate('ViewOrders2', { item }) }}
+                            >
 
+                                <View style={{ flex: 1, }}>
+                                    <View style={{ flex: 0.7, padding: 10, }}>
+                                        <View style={{ flex: 0.7, }}>
+                                            <View style={{ flex: 0.5, }}>
+                                                <View>
+                                                    <Text style={[styles.text, { fontSize: 18, color: primaryColor }]}>Table : {item.table}</Text>
+
+                                                </View>
+                                            </View>
+                                            <View style={{ flex: 0.5, alignItems: "flex-end", paddingRight: 20 }}>
+                                                <Text style={[styles.text, { fontSize: 18, color: "#fff" }]}># {item.id}</Text>
                                             </View>
                                         </View>
-                                        <View style={{ flex: 0.5, alignItems: "flex-end", paddingRight: 20 }}>
-                                            <Text style={[styles.text, { fontSize: 18, color: "#454545" }]}># {index + 1}</Text>
+                                        <View style={{ flex: 0.2 }}>
+                                            <Text style={[styles.text, { color: "#fff" }]}>10:00 am</Text>
                                         </View>
                                     </View>
-                                   <View style={{flex:0.3}}>
-                                       <Text style={[styles.text,{color:"#fff"}]}>10:00 am</Text>
-                                   </View>
-                                </View>
-                                <View style={{flexDirection:"row",flex:0.3,alignItems:"center",justifyContent:"space-around"}}>
-                                    <View>
-                                        <Text style={[styles.text,{color:"#eee"}]}>Items Count: {item.totalItems}</Text>
+                                    <View style={{ flexDirection: "row", flex: 0.25, alignItems: "center", justifyContent: "space-around" }}>
+                                        <Text style={[styles.text, { color: this.validateColor(item) }]}>{item.cart_status}</Text>
+                                        <Text style={[styles.text, { color: primaryColor }]}>{item.order_type}</Text>
                                     </View>
-                                    <View>
-                                        <Text style={[styles.text, { color: "#fafafa" }]}>Price : ₹{item.totalCost}</Text>
+                                    <View style={{ flexDirection: "row", flex: 0.15, alignItems: "center", justifyContent: "space-around" }}>
+                                        <View>
+                                            <Text style={[styles.text, { color: "#eee" }]}>Items Count: {item.items.length}</Text>
+                                        </View>
+                                        <View>
+                                            <Text style={[styles.text, { color: "#fafafa" }]}>Price : ₹{item.cart_bill}</Text>
+                                        </View>
                                     </View>
                                 </View>
-                         </View>
-                      </TouchableOpacity>
+                            </TouchableOpacity>
                         )
                     }}
                 />

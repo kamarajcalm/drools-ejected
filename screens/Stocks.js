@@ -294,7 +294,7 @@ export default class Stocks extends Component {
                                     <TouchableOpacity 
                                      onPress={()=>{this.props.navigation.navigate('ViewIngredients',{item})}}
                                     >
-                                        <Text style={[styles.text, { textDecorationLine: "underline", color: "#000" }]}>Edit</Text>
+                                        <Text style={[styles.text, { textDecorationLine: "underline", color: "#000" }]}>View</Text>
                                     </TouchableOpacity>
                                 </View>
                                 <TouchableOpacity style={{flex:0.1,alignItems:"center",justifyContent:"center"}}

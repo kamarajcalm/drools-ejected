@@ -52,7 +52,7 @@ class ViewIngredients extends Component {
         showMessage(message);
     }
     getItems = async()=>{
-        const api = `${url}/api/drools/ingridientsub/?main=${this.state.item.id}`
+        const api = `${url}/api/drools/ingridientsub/?main=${this.state.item.id}&stock=inStock`
         let data = await HttpsClient.get(api)
         if(data.type =="success"){
             this.setState({ items:data.data})

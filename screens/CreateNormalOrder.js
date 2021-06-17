@@ -96,7 +96,7 @@ class CreateNormalOrder extends Component {
              return this.showSimpleMessage("Order placed SuccessFully", "green","success")
 
          }else{
-             return this.showSimpleMessage("SomeThing Went Wrong", "red", "danger")
+             return this.showSimpleMessage(`${post.data[0]}`, "red", "danger")
          }
     }
    componentDidMount(){

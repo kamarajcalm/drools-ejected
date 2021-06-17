@@ -27,7 +27,7 @@ import HttpsClient from '../HttpsClient';
     };
   }
      getOrders = async()=>{
-         let api = `${url}/api/drools/cart/?order_types=Dining`
+         let api = `${url}/api/drools/cart/?order_type=Dining&cart_status=Pending`
          const data = await HttpsClient.get(api)
          console.log(api)
          if(data.type =="success"){
@@ -45,7 +45,7 @@ import HttpsClient from '../HttpsClient';
         this._unsubscribe()
    }
      validateColor =(item)=>{
-         if (item.order_type =="Pending"){
+         if (item.cart_status =="Pending"){
              return "orange"
          }
      }
@@ -80,7 +80,7 @@ import HttpsClient from '../HttpsClient';
                                            </View>
                                         </View>
                                         <View style={{ flexDirection: "row", flex: 0.25, alignItems: "center", justifyContent: "space-around" }}>
-                                            <Text style={[styles.text,{color:this.validateColor(item)}]}>{item.order_type}</Text>
+                                            <Text style={[styles.text, { color: this.validateColor(item) }]}>{item.cart_status}</Text>
                                         </View>
                                         <View style={{flexDirection:"row",flex:0.15,alignItems:"center",justifyContent:"space-around"}}>
                                             <View>

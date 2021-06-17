@@ -112,7 +112,7 @@ class ViewItems extends Component {
     modal =()=>{
           return(
               <Modal
-                 style={{flex:1}}
+                
                   statusBarTranslucent={true}
                   onBackdropPress={() => { this.setState({modal:false})}}
                   deviceHeight={screenHeight}
@@ -133,7 +133,7 @@ class ViewItems extends Component {
                                   value ={this.state.searchName}
                                   style={{height:height*0.05,width:width*0.8,backgroundColor:"#eee",borderRadius:5,marginTop:5}}
                                   selectionColor={primaryColor}
-                                      onChangeText={(searchName) => { this.searchItems(searchName)}}
+                                  onChangeText={(searchName) => { this.searchItems(searchName)}}
                                 />
                             </View>
                           {this.state.searchResults.length > 0 && <View style={{ position: "relative", backgroundColor: "#fff", height: height * 0.1, width: width * 0.6, top: 0, alignSelf: "center" }}>
