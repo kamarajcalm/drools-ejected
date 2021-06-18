@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Dimensions, TouchableOpacity, StyleSheet, ScrollView, FlatList } from 'react-native';
+import { View, Text, Dimensions, TouchableOpacity, StyleSheet, ScrollView, FlatList,ActivityIndicator } from 'react-native';
 const { height, width } = Dimensions.get('window')
 import settings from '../AppSettings'
 import { connect } from 'react-redux';
@@ -8,6 +8,7 @@ const gradients = settings.gradients
 const primaryColor = settings.primaryColor
 const secondaryColor = settings.secondaryColor
 const fontFamily = settings.fontFamily
+const url = settings.url
 import { LinearGradient } from 'expo-linear-gradient';
 import Constants from 'expo-constants';
 import {
@@ -28,36 +29,45 @@ const data = {
     ]
 };
 const items = [
-    {
-        item: "kabab",
-        count: 90
-    },
-    {
-        item: "chickenFry",
-        count: 80
-    },
-    {
-        item: "FishFry",
-        count: 80
-    },
+    { label: 'ALLMONTH', value: 0 },
+    { label: 'January', value: 1 },
+    { label: 'February', value: 2 },
+    { label: 'March', value: 3 },
+    { label: 'April', value: 4 },
+    { label: 'May', value: 5 },
+    { label: 'June', value: 6 },
+    { label: 'July', value: 7 },
+    { label: 'August', value: 8 },
+    { label: 'September', value: 9 },
+    { label: 'October', value: 10 },
+    { label: 'November', value: 11 },
+    { label: 'December', value: 12 },
+
 ]
 import DropDownPicker from 'react-native-dropdown-picker';
+import HttpsClient from '../HttpsClient';
 export default class TimeWise extends Component {
     constructor(props) {
+        let years = []
+        let year = new Date().getFullYear()
+        for (let i = 0; i <= 5; i++) {
+            let pushObj = {
+                label: year - i,
+                value: year - i
+            }
+            years.push(pushObj)
+        }
+
         super(props);
         this.state = {
             open: false,
-            value: null,
-            items: [
-                { label: '10-12 am', value: '10-12 am' },
-                { label: '12-2 pm', value: '12-2 pm' },
-                { label: '2-4 pm', value: '2-4 pm' },
-                { label: '4-6 pm', value: '4-6 pm' },
-                { label: '6-8 pm', value: '6-8 pm' },
-                { label: '8-10 pm', value: '8-10 pm' },
-                { label: '10-12 pm', value: '10-12 pm' },
-
-            ]
+            value: items[0].value,
+            items: items,
+            loading: true,
+            data: null,
+            years,
+            open2: false,
+            value2: years[0].value,
         };
     }
     setOpen = (open) => {
@@ -67,9 +77,9 @@ export default class TimeWise extends Component {
     }
 
     setValue = (callback) => {
-        this.setState(state => ({
-            value: callback(state.value)
-        }));
+        this.setState(state => ({ value: callback(state.value) }), () => {
+            this.getData()
+        });
     }
 
     setItems = (callback) => {
@@ -77,12 +87,53 @@ export default class TimeWise extends Component {
             items: callback(state.items)
         }));
     }
-    render() {
-        const { open, value, } = this.state;
-        return (
-            <View style={{ flex: 1, }}>
+    setOpen2 = (open2) => {
+        this.setState({
+            open2
+        });
+    }
+
+    setValue2 = (callback) => {
+        this.setState(state => ({ value2: callback(state.value2) }), () => {
+            this.getData()
+        });
+    }
+
+    setItems2 = (callback) => {
+        this.setState(state => ({
+            items: callback(state.items)
+        }));
+    }
+    getData = async () => {
+        let api = `${url}/api/drools/peakTime/?month=${this.state.value}&year=${this.state.value2}`
+        let data = await HttpsClient.get(api)
+        console.log(data)
+        if (data.type == "success") {
+            let set = {
+                labels: data.data.labels,
+                datasets: [
+                    {
+                        data: data.data.data
+                    }
+                ]
+            }
+
+            this.setState({ data: set, loading: false })
+        }
+    }
+    componentDidMount(){
+      this.getData()
+    }
+    validate =(open,value,open2,value2)=>{
+        if(this.state.loading){
+            return(
+              <ActivityIndicator  size="large" color={primaryColor}/>
+            )
+        }
+        return(
+           <>
                 <ScrollView
-                    style={{  }}
+                    style={{}}
                     horizontal={true}
                     // i needed the scrolling to start from the end not the start
                     showsHorizontalScrollIndicator={false} // to hide scroll bar
@@ -90,9 +141,9 @@ export default class TimeWise extends Component {
                     <BarChart
                         showValuesOnTopOfBars
                         style={{}}
-                        data={data}
-                        width={width * 1.5}
-                        height={height }
+                        data={this.state.data}
+                        width={width *2}
+                        height={height}
                         chartConfig={{
                             backgroundColor: "#000000",
                             decimalPlaces: 0,
@@ -104,10 +155,11 @@ export default class TimeWise extends Component {
                             fillShadowGradient: primaryColor,
                             fillShadowGradientOpacity: 1,
                         }}
-                        verticalLabelRotation={30}
+                        verticalLabelRotation={90}
                     />
+
                 </ScrollView>
-            
+
                 <View style={{ position: "absolute", top: 10, width: width * 0.4, right: 20 }}>
                     <DropDownPicker
                         style={{ height: height * 0.05 }}
@@ -121,6 +173,30 @@ export default class TimeWise extends Component {
                         placeholder="select a time"
                     />
                 </View>
+                <View style={{ position: "absolute", top: 10, width: width * 0.4, left: 20 }}>
+                    <DropDownPicker
+                        style={{ height: height * 0.05 }}
+                        containerStyle={{ height: height * 0.05 }}
+                        open={open2}
+                        value={value2}
+                        items={this.state.years}
+                        setOpen={this.setOpen2}
+                        setValue={this.setValue2}
+                        setItems={this.setItems2}
+                        placeholder="select a time"
+                    />
+                </View>
+           </>
+        )
+    }
+    render() {
+        const { open, value,open2,value2 } = this.state;
+        return (
+            <View style={{ flex: 1, }}>
+                {
+                    this.validate(open, value, open2, value2)
+                }
+             
             </View>
         );
     }
