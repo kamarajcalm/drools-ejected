@@ -7,6 +7,7 @@ import Statistics from '../screens/Statistics';
 import StatisticsView from '../screens/StatisticsView';
 import ProfilePage from '../screens/ProfilePage';
 import Tables from '../screens/Tables';
+import ExpenseScreen from '../screens/ExpenseScreen';
 const Stack = createStackNavigator();
 export default class StatisticsStack extends Component {
     constructor(props) {
@@ -22,6 +23,7 @@ export default class StatisticsStack extends Component {
                 <Stack.Screen name="StatisticsView" component={StatisticsView} options={{ headerShown: false }} />
                 <Stack.Screen name="ProfilePage" component={ProfilePage} options={{ headerShown: false }} />
                 <Stack.Screen name="Tables" component={Tables} options={{ headerShown: false }} />
+                <Stack.Screen name="ExpenseScreen" component={ExpenseScreen} options={{ headerShown: false }} />
             </Stack.Navigator>
         );
     }

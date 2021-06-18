@@ -21,7 +21,22 @@ class DefaultScreen extends Component {
     }
     getUser = async()=>{
        let login = await AsyncStorage.getItem("login")
+       let user = await AsyncStorage.getItem("user")
        if(login){
+           if (user =="Cook"){
+               return this.props.navigation.dispatch(
+                   CommonActions.reset({
+                       index: 0,
+                       routes: [
+                           {
+                               name:'CookTab',
+
+                           },
+
+                       ],
+                   })
+               )
+           }
            return this.props.navigation.dispatch(
                CommonActions.reset({
                    index: 0,

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Dimensions, TouchableOpacity, StyleSheet, ScrollView, FlatList } from 'react-native';
+import { View, Text, Dimensions, TouchableOpacity, StyleSheet, ScrollView, FlatList,ActivityIndicator } from 'react-native';
 const { height, width } = Dimensions.get('window')
 import settings from '../AppSettings'
 import { connect } from 'react-redux';
@@ -8,6 +8,7 @@ const gradients = settings.gradients
 const primaryColor = settings.primaryColor
 const secondaryColor = settings.secondaryColor
 const fontFamily = settings.fontFamily
+const url = settings.url
 import { LinearGradient } from 'expo-linear-gradient';
 import Constants from 'expo-constants';
 import {
@@ -30,95 +31,127 @@ const data = {
     ]
 };
 const items = [
-    {
-        item: "kabab",
-        count: 90
-    },
-    {
-        item: "chickenFry",
-        count: 80
-    },
-    {
-        item: "FishFry",
-        count: 80
-    },
+    { label: 'ALLMONTH', value: 0 },
+    { label: 'January', value:1},
+    { label: 'February', value: 2 },
+    { label: 'March', value:3 },
+    { label: 'April', value:4 },
+    { label: 'May', value:5 },
+    { label: 'June', value: 6 },
+    { label: 'July', value: 7},
+    { label: 'August', value:8 },
+    { label: 'September', value: 9},
+    { label: 'October', value: 10 },
+    { label: 'November', value:11 },
+    { label: 'December', value: 12 },
+
 ]
 import moment from 'moment';
+import DropDownPicker from 'react-native-dropdown-picker';
+import HttpsClient from '../HttpsClient';
 export default class NetProfit extends Component {
     constructor(props) {
+        let years =  []
+        let year = new Date().getFullYear()
+       for(let i=0; i<=5;i++){
+            let pushObj ={
+                label:year-i,
+                value:year-i
+            }
+           years.push(pushObj)
+       }
+       
         super(props);
         this.state = {
             fromDate:moment(new Date).format("YYYY-MM-DD"),
             toDate: moment(new Date).format("YYYY-MM-DD"),
             show:false,
-            show2:false
+            show2:false,
+            open: false,
+            value:items[0].value,
+            items:items,
+            loading:true,
+            data:null,
+            years,
+            open2: false,
+            value2: years[0].value,
         };
     }
-    hideDatePicker = () => {
-        this.setState({show:false})
-    };
+    getData = async () => {
+        let api = `${url}/api/drools/netProfit/?month=${this.state.value}&year=${this.state.value2}`
+        let data = await HttpsClient.get(api)
+       
+        if (data.type == "success") {
+            let set = {
+                labels: data.data.labels,
+                datasets: [
+                    {
+                        data: data.data.data
+                    }
+                ]
+            }
 
-    handleConfirm = (date) => {
-        let fromDate = moment(date).format("YYYY-MM-DD")
-        this.setState({ fromDate})
-        this.hideDatePicker();
-    };
-    hideDatePicker2 = () => {
-        this.setState({ show2: false })
-    };
+            this.setState({ data: set, loading: false })
+        }
+    }
+    componentDidMount(){
+        this.getData()
+    }
+    setOpen = (open) => {
+        this.setState({
+            open
+        });
+    }
 
-    handleConfirm2 = (date) => {
-        let toDate = moment(date).format("YYYY-MM-DD")
-        this.setState({ toDate })
-        this.hideDatePicker2();
-    };
-    render() {
-        return (
-            <View style={{ flex: 1, }}>
-                 <LinearGradient
-                    style={{ }}
-                    colors={gradients}
-                >
-                    <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-around", height: height * 0.1 }}>
-                        <TouchableOpacity style={{ flexDirection: "row" }}
-                         onPress={()=>{this.setState({show:true})}}
-                        >
-                            <View style={{alignItems:"center",justifyContent:"center"}}>
-                                <Text style={[styles.text,{color:"#fff"}]}>{this.state.fromDate}</Text>
-                            </View>
-                            <View style={{alignItems:"center",justifyContent:"center",marginLeft:10}}>
-                                <Fontisto name="date" size={24} color="#fff" />
-                            </View>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={{ flexDirection: "row" }}
-                            onPress={() => { this.setState({ show2: true }) }}
-                        >
-                            <View style={{alignItems:"center",justifyContent:"center"}}>
-                                <Text style={[styles.text,{color:"#fff"}]}>{this.state.toDate}</Text>
-                            </View>
-                            <View style={{ alignItems: "center", justifyContent: "center",marginLeft:10 }}>
-                                <Fontisto name="date" size={24} color="#fff" />
-                            </View>
-                        </TouchableOpacity>
-                    </View>
-                    <View style={{alignItems:"center",flexDirection:"row",justifyContent:"center",paddingVertical:10}}>
-                        <Text style={[styles.text,{color:'#fff'}]}>Total Sales : </Text>
-                        <Text style={[styles.text,{color:primaryColor,fontSize:22}]}> ₹ 5000</Text>
-                    </View>
-                </LinearGradient>
- 
+    setValue = (callback) => {
+        this.setState(state =>({value:callback(state.value)}),()=>{
+           this.getData()
+        });
+    }
+
+    setItems = (callback) => {
+        this.setState(state => ({
+            items: callback(state.items)
+        }));
+    }
+    setOpen2 = (open2) => {
+        this.setState({
+            open2
+        });
+    }
+
+    setValue2 = (callback) => {
+        this.setState(state => ({ value2: callback(state.value2) }), () => {
+            this.getData()
+        });
+    }
+
+    setItems2 = (callback) => {
+        this.setState(state => ({
+            items: callback(state.items)
+        }));
+    }
+    loading = (open, value, open2, value2)=>{
+        if(this.state.loading){
+            return(
+                <ActivityIndicator size="large"  color={primaryColor}/>
+            )
+        }
+        return(
+            <>
                 <ScrollView
-                    style={{}}
+                    style={{marginTop:50}}
+
                     horizontal={true}
                     // i needed the scrolling to start from the end not the start
                     showsHorizontalScrollIndicator={false} // to hide scroll bar
                 >
                     <BarChart
                         showValuesOnTopOfBars
-                        style={{}}
-                        data={data}
-                        width={width * 1.5}
-                        height={height*0.82}
+                        
+                        data={this.state.data}
+                        width={width * 1.7}
+                        height={height * 0.92}
                         chartConfig={{
                             backgroundColor: "#000000",
                             decimalPlaces: 0,
@@ -133,19 +166,44 @@ export default class NetProfit extends Component {
                         verticalLabelRotation={30}
                     />
                 </ScrollView>
-                <DateTimePickerModal
-                    isVisible={this.state.show}
-                    mode="date"
-                    onConfirm={this.handleConfirm}
-                    onCancel={this.hideDatePicker}
-                />
-                <DateTimePickerModal
-                    testID="44"
-                    isVisible={this.state.show2}
-                    mode="date"
-                    onConfirm={this.handleConfirm2}
-                    onCancel={this.hideDatePicker2}
-                />
+                <View style={{ position: "absolute", top: 10, width: width * 0.4, right: 20 }}>
+                    <DropDownPicker
+                        style={{ height: height * 0.05 }}
+                        containerStyle={{ height: height * 0.05 }}
+                        open={open}
+                        value={value}
+                        items={this.state.items}
+                        setOpen={this.setOpen}
+                        setValue={this.setValue}
+                        setItems={this.setItems}
+                        placeholder="select a time"
+                    />
+                </View>
+                <View style={{ position: "absolute", top: 10, width: width * 0.4, left: 20 }}>
+                    <DropDownPicker
+                        style={{ height: height * 0.05 }}
+                        containerStyle={{ height: height * 0.05 }}
+                        open={open2}
+                        value={value2}
+                        items={this.state.years}
+                        setOpen={this.setOpen2}
+                        setValue={this.setValue2}
+                        setItems={this.setItems2}
+                        placeholder="select a time"
+                    />
+                </View>
+            </>
+        )
+    }
+    render() {
+        const { open, value, open2, value2 } = this.state;
+        return (
+            <View style={{ flex: 1,backgroundColor:"#000"}}>
+               {
+                    this.loading(open, value, open2, value2)
+               }
+ 
+             
             </View>
         );
     }

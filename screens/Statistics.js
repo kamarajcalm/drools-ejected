@@ -71,6 +71,25 @@ class Statistics extends Component {
                     </LinearGradient>
                     </TouchableOpacity>
                     <TouchableOpacity
+
+                        onPress={() => { this.props.navigation.navigate("StatisticsView", { item: "Time Wise" }) }}
+                    >
+                        <LinearGradient
+                            style={[styles.cardStyle]}
+                            colors={gradients}
+                        >
+
+                            <View style={{ alignItems: "center", justifyContent: "center" }}>
+                                <Text style={[styles.text, { color: primaryColor }]}>Fast Moving Items Time Wise</Text>
+                            </View>
+                            <View style={{ marginLeft: 10, alignItems: "center", justifyContent: "center" }}>
+                                <Ionicons name="fast-food" size={24} color={primaryColor} />
+                            </View>
+
+
+                        </LinearGradient>
+                    </TouchableOpacity>
+                    <TouchableOpacity
                         onPress={() => { this.props.navigation.navigate("StatisticsView", { item: "Net Profit" }) }}
                     >
                     <LinearGradient 
@@ -80,7 +99,7 @@ class Statistics extends Component {
                     >
                        
                             <View style={{ alignItems: "center", justifyContent: "center" }}>
-                                <Text style={[styles.text,{color:primaryColor}]}>Net Profit</Text>
+                                <Text style={[styles.text,{color:primaryColor}]}>Net Profit </Text>
                             </View>
                             <View style={{ marginLeft: 10, alignItems: "center", justifyContent: "center" }}>
                                 <MaterialIcons name="date-range" size={24} color={primaryColor} />

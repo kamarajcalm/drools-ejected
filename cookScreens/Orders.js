@@ -9,6 +9,7 @@ const primaryColor = settings.primaryColor
 const secondaryColor = settings.secondaryColor
 const fontFamily =settings.fontFamily
 const themeColor = settings.themeColor
+const url = settings.url
 import { StatusBar ,} from 'expo-status-bar';
 import { LinearGradient } from 'expo-linear-gradient';
 import Constants from 'expo-constants';
@@ -17,16 +18,35 @@ import { FontAwesome, MaterialCommunityIcons, MaterialIcons, SimpleLineIcons, En
 import { set } from 'react-native-reanimated';
 import FlashMessage, { showMessage, hideMessage } from "react-native-flash-message";
 import Modal from 'react-native-modal';
+import HttpsClient from '../HttpsClient';
 const screenHeight = Dimensions.get('screen').height
  class Orders extends Component {
     constructor(props) {
         super(props);
         this.state = {
-             cookOrders,
+             cookOrders:[],
              Modal:false,
              selectedItem:null
         };
     }
+     getOrders = async ()=>{
+         let api = `${url}/api/drools/cookOrders/`
+         let data =await HttpsClient.get(api)
+         console.log(data)
+         if(data.type =="success"){
+             this.setState({ cookOrders:data.data})
+         }
+     }
+     componentDidMount() {
+         this.getOrders()
+         this._unsubscribe = this.props.navigation.addListener('focus', () => {
+             this.getOrders()
+
+         });
+     }
+     componentWillUnmount() {
+         this._unsubscribe()
+     }
      showSimpleMessage(content, color, type = "info", props = {}) {
          const message = {
              message: content,
@@ -92,45 +112,7 @@ const screenHeight = Dimensions.get('screen').height
          duplicate[index].isStarted = true
          this.setState({ cookOrders: duplicate })
      }
-     validateButton =(item,index) =>{
-         if(item.isCompleted){
-             return(
-                 <View 
-                     style={{ height: height * 0.04,  alignItems: "center", justifyContent: "center", width: "60%" }}
-                 >
-                  <Text style={[styles.text,{color:"green"}]}>Completed</Text>
-                 </View>
-             )
-         }
-         if (item.isStarted){
-             return(
-                 <TouchableOpacity
-                     style={{ height: height * 0.04, backgroundColor: primaryColor, alignItems: "center", justifyContent: "center", width: "60%" }}
-                     onPress={() => {
-                         this.setState({ modal: true, selectedItem:item})
 
-                     }}
-
-                 >
-                     <Text style={[styles.text, { color: "#fff" }]}>Complete</Text>
-                 </TouchableOpacity>
-             )
-        
-         }
-         return(
-             <TouchableOpacity
-                 style={{ height: height * 0.04, backgroundColor: "#e58300", alignItems: "center", justifyContent: "center", width: "60%" }}
-                 onPress={() => {
-                     this.startCooking(item, index)
-
-                 }}
-
-             >
-                 <Text style={[styles.text, { color: "#fff" }]}>Start</Text>
-             </TouchableOpacity>
-         )
-      
-     }
      increaseCount =()=>{
          let duplicate =this.state.selectedItem
          duplicate.completedCount = duplicate.completedCount+1
@@ -140,7 +122,7 @@ const screenHeight = Dimensions.get('screen').height
      decreaseCount =()=>{
          let duplicate = this.state.selectedItem
          duplicate.completedCount = duplicate.completedCount - 1
-         this.setState({ selectedItem: duplicate })
+         this.setState({ selectedItem:duplicate})
      }
      completeOrder =()=>{
          this.setState({modal:false})
@@ -149,10 +131,10 @@ const screenHeight = Dimensions.get('screen').height
      completeModal =()=>{
          return(
              <Modal 
-                 onBackdropPress={() => { this.setState({ modal:false})}}
+               onBackdropPress={() => { this.setState({ modal:false})}}
                statusBarTranslucent={true}
-              deviceHeight={screenHeight}
-              isVisible={this.state.modal}
+               deviceHeight={screenHeight}
+               isVisible={this.state.modal}
              >
              <View style={{flex:1,alignItems:"center",justifyContent:"center"}}>
                    <View style={{height:height*0.4,backgroundColor:"#fff",width:width*0.9,borderRadius:10}}>
@@ -228,8 +210,19 @@ const screenHeight = Dimensions.get('screen').height
                         style={{ height: height * 0.12, flexDirection: "row", alignItems: "center", justifyContent: "center" }}
                         colors={gradients}
                     >
-                    <View style={{marginTop:Constants.statusBarHeight}}>
-                            <Text style={[styles.text, { color: "#fff",fontSize: 18 }]}>Orders</Text>
+                    <View style={{marginTop:Constants.statusBarHeight,flexDirection:"row"}}>
+                        <TouchableOpacity 
+                        style ={{flex:0.2,alignItems:"center",justifyContent:"center"}}
+                        >
+
+                        </TouchableOpacity>
+                        <View style={{flex:0.6,alignItems:"center",justifyContent:"center"}}>
+                            <Text style={[styles.text, { color: "#fff", fontSize: 18 }]}>Orders</Text>
+                        </View>
+                        <View style={{flex:0.2,alignItems:"center",justifyContent:"center"}}>
+
+                        </View>
+                           
                     </View>
                     </LinearGradient>
 
@@ -248,18 +241,25 @@ const screenHeight = Dimensions.get('screen').height
                                                     <Text style={[styles.text, { color: "#fff", fontSize: 20 }]}>{index + 1} . </Text>
                                                 </View>
                                                 <View>
-                                                    <Text style={[styles.text, { color: "#fff", fontSize: 20 }]}>{item.item}</Text>
+                                                    <Text style={[styles.text, { color: "#fff", fontSize: 20 }]}>{item.title}</Text>
                                                 </View>
                                             </View>
                                           
                                             <View style={{flex:0.3,alignItems:"center",justifyContent:"center"}}>
-                                                <Text style={[styles.text,{color:"#fff",fontSize:18}]}> X {item.count}</Text>
+                                                <Text style={[styles.text, { color: "#fff", fontSize: 18 }]}> X {item.itemcount}</Text>
                                             </View>
                                         </View>
                                         <View style={{ flex: 0.5, alignItems: "center", justifyContent: "center" }}>
-                                               {
-                                                this.validateButton(item,index)
-                                               }
+                                            <TouchableOpacity
+                                                style={{ height: height * 0.04, backgroundColor: "#e58300", alignItems: "center", justifyContent: "center", width: "60%" }}
+                                                onPress={() => {
+                                                   this.props.navigation.navigate('ViewOrder',{item})
+
+                                                }}
+
+                                            >
+                                                <Text style={[styles.text, { color: "#fff" }]}>View</Text>
+                                            </TouchableOpacity>
                                         </View>
                                     </View>
                                
