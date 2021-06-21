@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "520848864157",
+    "project_id": "drools-229cf",
+    "storage_bucket": "drools-229cf.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:520848864157:android:e03dd5e3ff0d1e4d4a7574",
+        "android_client_info": {
+          "package_name": "in.poa.drools"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "520848864157-v6t5ad4347hkfj6oa1iuretsgge79m80.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBSAOSLxYL37Y95Q85VLlWq_TqQhZEvstQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "520848864157-v6t5ad4347hkfj6oa1iuretsgge79m80.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

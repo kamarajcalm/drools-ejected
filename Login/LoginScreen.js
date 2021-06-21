@@ -15,6 +15,7 @@ import Constants from 'expo-constants';
 import { StatusBar, } from 'expo-status-bar';
 import {CommonNavigationAction,CommonActions} from '@react-navigation/native';
 import FlashMessage, { showMessage, hideMessage } from "react-native-flash-message";
+import * as Notifications from 'expo-notifications';
 import { FontAwesome, MaterialCommunityIcons, MaterialIcons, SimpleLineIcons, Entypo, Fontisto, Feather, Ionicons, FontAwesome5 } from '@expo/vector-icons';
 class LoginScreen extends Component {
     constructor(props) {
@@ -22,7 +23,8 @@ class LoginScreen extends Component {
         this.state = {
             user:true,
             mobile:"",
-            password:""
+            password:"",
+            token: null,
         };
     }
     showSimpleMessage(content, color, type = "info", props = {}) {
@@ -89,8 +91,41 @@ class LoginScreen extends Component {
             })
             .catch((err) => {
                 this.setState({ loading: false })
-                return this.showSimpleMessage(`${err?.toString()}`, "#dd7030")
+                return this.showSimpleMessage(`${err?.toString()} ${url}`, "#dd7030")
             })
+    }
+    componentDidMount(){
+        this.registerForPushNotificationsAsync().then(token => this.setState({ token }));
+    }
+    registerForPushNotificationsAsync = async function () {
+        let token;
+        if (Constants.isDevice) {
+            const { status: existingStatus } = await Notifications.getPermissionsAsync();
+            let finalStatus = existingStatus;
+            if (existingStatus !== 'granted') {
+                const { status } = await Notifications.requestPermissionsAsync();
+                finalStatus = status;
+            }
+            if (finalStatus !== 'granted') {
+                alert('Failed to get push token for push notification!');
+                return;
+            }
+            token = (await Notifications.getExpoPushTokenAsync()).data;
+            alert(token)
+        } else {
+            alert('Must use physical device for Push Notifications');
+        }
+
+        if (Platform.OS === 'android') {
+            Notifications.setNotificationChannelAsync('default', {
+                name: 'default',
+                importance: Notifications.AndroidImportance.MAX,
+                vibrationPattern: [0, 250, 250, 250],
+                lightColor: '#FF231F7C',
+            });
+        }
+
+        return token;
     }
     render() {
 

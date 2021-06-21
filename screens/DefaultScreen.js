@@ -11,8 +11,17 @@ const themeColor = settings.themeColor
 const fontFamily = settings.fontFamily
 import { LinearGradient } from 'expo-linear-gradient';
 import Constants from 'expo-constants';
-import { CommonNavigationAction, CommonActions } from '@react-navigation/native'
+import { CommonNavigationAction, CommonActions } from '@react-navigation/native';
+import * as Notifications from 'expo-notifications';
 import { FontAwesome, MaterialCommunityIcons, MaterialIcons, SimpleLineIcons, Entypo, Fontisto, Feather, Ionicons, FontAwesome5 } from '@expo/vector-icons';
+Notifications.setNotificationHandler({
+    handleNotification: async () => ({
+        shouldShowAlert: true,
+        shouldPlaySound: true,
+        shouldSetBadge: true,
+    }),
+});
+
 class DefaultScreen extends Component {
     constructor(props) {
         super(props);

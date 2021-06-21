@@ -10,8 +10,10 @@ const secondaryColor = settings.secondaryColor
 const fontFamily = settings.fontFamily
 import { LinearGradient } from 'expo-linear-gradient';
 import Constants from 'expo-constants';
-import { CommonNavigationAction, CommonActions } from '@react-navigation/native'
+import { CommonNavigationAction, CommonActions } from '@react-navigation/native';
+import * as Notifications from 'expo-notifications';
 import { FontAwesome, MaterialCommunityIcons, MaterialIcons, SimpleLineIcons, Entypo, Fontisto, Feather, Ionicons, FontAwesome5 } from '@expo/vector-icons';
+
 class Profile extends Component {
     constructor(props) {
         super(props);
@@ -32,6 +34,15 @@ class Profile extends Component {
                 ],
             })
         )
+    }
+    componentDidMount(){
+        Notifications.setNotificationHandler({
+            handleNotification: async () => ({
+                shouldShowAlert: true,
+                shouldPlaySound: false,
+                shouldSetBadge: false,
+            }),
+        });
     }
     render() {
 

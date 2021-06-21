@@ -19,6 +19,14 @@ import { set } from 'react-native-reanimated';
 import FlashMessage, { showMessage, hideMessage } from "react-native-flash-message";
 import Modal from 'react-native-modal';
 import HttpsClient from '../HttpsClient';
+import * as Notifications from 'expo-notifications';
+Notifications.setNotificationHandler({
+    handleNotification: async () => ({
+        shouldShowAlert: true,
+        shouldPlaySound: false,
+        shouldSetBadge: false,
+    }),
+});
 const screenHeight = Dimensions.get('screen').height
  class Orders extends Component {
     constructor(props) {
@@ -38,14 +46,19 @@ const screenHeight = Dimensions.get('screen').height
          }
      }
      componentDidMount() {
+       
          this.getOrders()
          this._unsubscribe = this.props.navigation.addListener('focus', () => {
              this.getOrders()
 
          });
+         this.subscription = Notifications.addNotificationReceivedListener(notification => {
+            this.getOrders()
+         });
      }
      componentWillUnmount() {
          this._unsubscribe()
+         this.subscription.remove()
      }
      showSimpleMessage(content, color, type = "info", props = {}) {
          const message = {
