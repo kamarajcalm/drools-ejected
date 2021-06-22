@@ -20,6 +20,7 @@ import NormalOrders from './NormalOrders';
 import TakeAway from './TakeAway';
 import CreateOnline from './CreateOnline';
 import { BluetoothManager, BluetoothEscposPrinter, BluetoothTscPrinter, } from 'react-native-bluetooth-escpos-printer';
+import OnlineOrders from './OnlineOrders';
 
  class Orders extends Component {
     constructor(props) {
@@ -42,7 +43,7 @@ import { BluetoothManager, BluetoothEscposPrinter, BluetoothTscPrinter, } from '
              case 'Take Away':
                  return <TakeAway navigation={this.props.navigation} />
              case 'Online':
-                 return <CreateOnline navigation={this.props.navigation} />
+                 return <OnlineOrders navigation={this.props.navigation} />
              default:
                  return null;
          }

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Dimensions, TouchableOpacity, StyleSheet, AsyncStorage, ScrollView} from 'react-native';
+import { View, Text, Dimensions, TouchableOpacity, StyleSheet, AsyncStorage, ScrollView, Image} from 'react-native';
 const { height, width } = Dimensions.get('window')
 import settings from '../AppSettings'
 import { connect } from 'react-redux';
@@ -57,17 +57,19 @@ class Statistics extends Component {
                     >
                     <LinearGradient
                         style={[styles.cardStyle]}
-                            colors={gradients}
+                        colors={gradients}
                     >
                        
+                         
+                            <Image 
+                                source={{ uri:"https://us.123rf.com/450wm/subbotina/subbotina1905/subbotina190500024/123093476-hamburger-and-double-cheeseburger-with-fries-wooden-table.jpg?ver=6"}}
+                                style={{height:100,width:100}}
+                            
+                            />
+                             
                             <View style={{ alignItems: "center", justifyContent: "center" }}>
-                                <Text style={[styles.text,{color:primaryColor}]}>Fast Moving Items</Text>
+                                <Text style={[styles.text, { color: primaryColor, fontSize: 22 }]}>Fast Moving Items</Text>
                             </View>
-                            <View style={{ marginLeft: 10, alignItems: "center", justifyContent: "center" }}>
-                                <Ionicons name="fast-food" size={24} color={primaryColor} />
-                            </View>
-
-                      
                     </LinearGradient>
                     </TouchableOpacity>
                     <TouchableOpacity
@@ -79,13 +81,15 @@ class Statistics extends Component {
                             colors={gradients}
                         >
 
-                            <View style={{ alignItems: "center", justifyContent: "center" }}>
-                                <Text style={[styles.text, { color: primaryColor }]}>Fast Moving Items Time Wise</Text>
-                            </View>
-                            <View style={{ marginLeft: 10, alignItems: "center", justifyContent: "center" }}>
-                                <Ionicons name="fast-food" size={24} color={primaryColor} />
-                            </View>
+                          
+                            <Image
+                                source={{ uri: "https://media.wired.co.uk/photos/606d9ab87aff197af7c7296f/master/pass/wired-timezones-hero.jpg" }}
+                                style={{ height: 100, width: 100 }}
 
+                            />
+                            <View style={{ alignItems: "center", justifyContent: "center" }}>
+                                <Text style={[styles.text, { color: primaryColor, fontSize: 22 }]}>Fast Moving Items Time Wise</Text>
+                            </View>
 
                         </LinearGradient>
                     </TouchableOpacity>
@@ -98,11 +102,14 @@ class Statistics extends Component {
                     
                     >
                        
+                         
+                            <Image
+                                source={{ uri: "https://biznakenya.com/wp-content/uploads/2016/08/Profitable-Business-in-Kenya.jpg" }}
+                                style={{ height: 100, width: 100 }}
+
+                            />
                             <View style={{ alignItems: "center", justifyContent: "center" }}>
-                                <Text style={[styles.text,{color:primaryColor}]}>Net Profit </Text>
-                            </View>
-                            <View style={{ marginLeft: 10, alignItems: "center", justifyContent: "center" }}>
-                                <MaterialIcons name="date-range" size={24} color={primaryColor} />
+                                <Text style={[styles.text, { color: primaryColor, fontSize: 22 }]}>Net Profit </Text>
                             </View>
 
                     </LinearGradient>
@@ -118,13 +125,16 @@ class Statistics extends Component {
 
                         >
 
-                            <View style={{ alignItems: "center", justifyContent: "center" }}>
-                                <Text style={[styles.text,{color:primaryColor}]}>Profile</Text>
-                            </View>
-                            <View style={{ marginLeft: 10, alignItems: "center", justifyContent: "center" }}>
-                                <FontAwesome5 name="hotel" size={24} color={primaryColor} />
-                            </View>
+                          
+                            <Image
+                                source={require("../assets/512x512_jpg.jpg")}
+                                style={{ height: 100, width: 100 }}
 
+                            /> 
+
+                            <View style={{ alignItems: "center", justifyContent: "center" }}>
+                                <Text style={[styles.text, { color: primaryColor, fontSize: 22 }]}>Profile</Text>
+                            </View>
                         </LinearGradient>
 
 
@@ -140,13 +150,13 @@ const styles = StyleSheet.create({
         fontFamily
     },
     cardStyle:{
-        flexDirection: "row", 
+     
         height: height * 0.25, 
         backgroundColor: "red",
         width: width * 0.9,
         borderRadius: 5, 
         alignItems: "center", 
-        justifyContent: "center",
+        justifyContent: "space-around",
         marginTop: 20,
     }
 })

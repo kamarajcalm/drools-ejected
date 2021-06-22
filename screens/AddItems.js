@@ -279,6 +279,7 @@ class AddItems extends Component {
                 sendData.bodyType = "formData"
         }
         let post = await HttpsClient.post(api,sendData)
+        console.log(post,"pppp")
         if(post.type =="success"){
             this.setState({ creating: false })
         this.showSimpleMessage("Added SuccessFully", "#00A300", "success")

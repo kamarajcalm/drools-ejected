@@ -9,7 +9,7 @@ const primaryColor = settings.primaryColor
 const secondaryColor = settings.secondaryColor
 const fontFamily = settings.fontFamily
 const themeColor = settings.themeColor
-const url =settings.url
+const url = settings.url
 import { StatusBar, } from 'expo-status-bar';
 import { LinearGradient } from 'expo-linear-gradient';
 import Constants from 'expo-constants';
@@ -19,7 +19,7 @@ import { FontAwesome, AntDesign, MaterialCommunityIcons, MaterialIcons, SimpleLi
 import HttpsClient from '../HttpsClient';
 import moment from 'moment';
 import axios from 'axios';
-class TakeAway extends Component {
+class OnlineOrders extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -27,12 +27,12 @@ class TakeAway extends Component {
         };
     }
     getOrders = async () => {
-        let api = `${url}/api/drools/cart/?order_type=Takeaway&cart_status=Pending`
+        let api = `${url}/api/drools/cart/?order_type=Online&cart_status=Pending`
         const data = await HttpsClient.get(api)
-        console.log(data , "ooooo")
+        console.log(data, "ooooo")
         if (data.type == "success") {
-            this.setState({ orders: data.data},()=>{
-               
+            this.setState({ orders: data.data }, () => {
+
             })
         }
     }
@@ -52,7 +52,7 @@ class TakeAway extends Component {
         }
     }
     render() {
-        
+
         return (
             <View style={{ flex: 1 }}>
                 <FlatList
@@ -60,7 +60,7 @@ class TakeAway extends Component {
                     data={this.state.orders}
                     keyExtractor={(item, index) => index.toString()}
                     renderItem={({ item, index }) => {
-                      
+
                         return (
                             <TouchableOpacity style={{ height: height * 0.18, borderColor: "#fff", borderBottomWidth: 0.5, flexDirection: "row", paddingVertical: 10 }}
                                 onPress={() => { this.props.navigation.navigate('ViewOrder', { item }) }}
@@ -110,7 +110,7 @@ class TakeAway extends Component {
                     borderRadius: 20
                 }}>
                     <TouchableOpacity
-                        onPress={() => { this.props.navigation.navigate("CreateTakeAway",) }}
+                        onPress={() => { this.props.navigation.navigate("CreateOnline",) }}
                     >
                         <AntDesign name="pluscircle" size={40} color={primaryColor} />
                     </TouchableOpacity>
@@ -130,4 +130,4 @@ const mapStateToProps = (state) => {
         theme: state.selectedTheme,
     }
 }
-export default connect(mapStateToProps, { selectTheme })(TakeAway);
+export default connect(mapStateToProps, { selectTheme })(OnlineOrders);
