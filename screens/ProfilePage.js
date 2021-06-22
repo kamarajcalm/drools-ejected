@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Dimensions, TouchableOpacity, StyleSheet, FlatList, Image } from 'react-native';
+import { View, Text, Dimensions, TouchableOpacity, StyleSheet, FlatList,Image,Alert} from 'react-native';
 const { height, width } = Dimensions.get('window')
 import settings from '../AppSettings'
 import { connect } from 'react-redux';
@@ -14,6 +14,7 @@ import Constants from 'expo-constants';
 import orders from '../data/orders';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import momemt from 'moment';
+import { CommonNavigationAction, CommonActions } from '@react-navigation/native'
 import { FontAwesome, MaterialCommunityIcons, MaterialIcons, SimpleLineIcons, Entypo, Fontisto, Feather, Ionicons, FontAwesome5 } from '@expo/vector-icons';
 class ProfilePage extends Component {
     constructor(props) {
@@ -22,7 +23,35 @@ class ProfilePage extends Component {
        
         };
     }
+    logOut =()=>{
+        AsyncStorage.clear();
+        return this.props.navigation.dispatch(
+            CommonActions.reset({
+                index: 0,
+                routes: [
+                    {
+                        name: 'DefaultScreen',
 
+                    },
+
+                ],
+            })
+        )
+    }
+    createAlert = (item, index) => {
+        Alert.alert(
+            `Do You Want To Logout`,
+            ``,
+            [
+                {
+                    text: "No",
+                    onPress: () => console.log("Cancel Pressed"),
+                    style: "cancel"
+                },
+                { text: "Yes", onPress: () => { this.logOut() } }
+            ]
+        );
+    }
     render() {
 
         return (
@@ -78,6 +107,54 @@ class ProfilePage extends Component {
                             </View>
                             <View style={{ alignItems: "center", justifyContent: "center", marginLeft: 20 }}>
                                 <Text style={[styles.text, { color: "#fff" }]}>Expenses</Text>
+                            </View>
+                        </View>
+
+                        <View style={{ flex: 0.2, alignItems: "center", justifyContent: 'center' }}>
+                            <Entypo name="triangle-right" size={24} color="#fff" />
+                        </View>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={{ flexDirection: "row", height: height * 0.05, paddingHorizontal: 20, width, marginTop: 20 }}
+                        onPress={() => { this.props.navigation.navigate('Discounts') }}
+                    >
+                        <View style={{ flex: 0.8, flexDirection: "row" }}>
+                            <View style={{ alignItems: "center", justifyContent: "center" }}>
+                                <MaterialIcons name="money-off" size={24} color="#fff" />
+                            </View>
+                            <View style={{ alignItems: "center", justifyContent: "center", marginLeft: 20 }}>
+                                <Text style={[styles.text, { color: "#fff" }]}>Discounts</Text>
+                            </View>
+                        </View>
+
+                        <View style={{ flex: 0.2, alignItems: "center", justifyContent: 'center' }}>
+                            <Entypo name="triangle-right" size={24} color="#fff" />
+                        </View>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={{ flexDirection: "row", height: height * 0.05, paddingHorizontal: 20, width, marginTop: 20 }}
+                        onPress={() => { this.props.navigation.navigate('BlueToothDevices')}}
+                    >
+                        <View style={{ flex: 0.8, flexDirection: "row" }}>
+                            <View style={{ alignItems: "center", justifyContent: "center" }}>
+                                <Feather name="bluetooth" size={24} color="#fff" />
+                            </View>
+                            <View style={{ alignItems: "center", justifyContent: "center", marginLeft: 20 }}>
+                                <Text style={[styles.text, { color: "#fff" }]}>BlueTooth Devices</Text>
+                            </View>
+                        </View>
+
+                        <View style={{ flex: 0.2, alignItems: "center", justifyContent: 'center' }}>
+                            <Entypo name="triangle-right" size={24} color="#fff" />
+                        </View>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={{ flexDirection: "row", height: height * 0.05, paddingHorizontal: 20, width, marginTop: 20 }}
+                        onPress={() => { this.createAlert() }}
+                    >
+                        <View style={{ flex: 0.8, flexDirection: "row" }}>
+                            <View style={{ alignItems: "center", justifyContent: "center" }}>
+                                <Entypo name="log-out" size={24} color="#fff" />
+                            </View>
+                            <View style={{ alignItems: "center", justifyContent: "center", marginLeft: 20 }}>
+                                <Text style={[styles.text, { color: "#fff" }]}>Logout</Text>
                             </View>
                         </View>
 

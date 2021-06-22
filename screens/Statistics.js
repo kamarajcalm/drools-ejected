@@ -129,13 +129,7 @@ class Statistics extends Component {
 
 
                     </TouchableOpacity>
-                    <TouchableOpacity 
-                     onPress={()=>{
-                         this.logout()
-                     }}
-                    >
-                        <Text>Logout</Text>
-                    </TouchableOpacity>
+              
                 </ScrollView>
             </View>
         );

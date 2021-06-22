@@ -111,6 +111,7 @@ class LoginScreen extends Component {
                 return;
             }
             token = (await Notifications.getExpoPushTokenAsync()).data;
+            console.log(token,"ppp")
             alert(token)
         } else {
             alert('Must use physical device for Push Notifications');

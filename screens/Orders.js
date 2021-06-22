@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { View, Text, Dimensions, TouchableOpacity, StyleSheet, FlatList, Image} from 'react-native';
+import { View, Text, Dimensions, TouchableOpacity, StyleSheet, FlatList, Image, AsyncStorage} from 'react-native';
 const { height, width } = Dimensions.get('window')
 import settings from '../AppSettings'
 import { connect } from 'react-redux';
-import { selectTheme } from '../actions';
+import { selectTheme ,bluetoothStatus} from '../actions';
 const gradients = settings.gradients
 const primaryColor = settings.primaryColor
 const secondaryColor = settings.secondaryColor
@@ -19,7 +19,7 @@ import { FontAwesome, MaterialCommunityIcons, MaterialIcons, SimpleLineIcons, En
 import NormalOrders from './NormalOrders';
 import TakeAway from './TakeAway';
 import CreateOnline from './CreateOnline';
-
+import { BluetoothManager, BluetoothEscposPrinter, BluetoothTscPrinter, } from 'react-native-bluetooth-escpos-printer';
 
  class Orders extends Component {
     constructor(props) {
@@ -47,6 +47,32 @@ import CreateOnline from './CreateOnline';
                  return null;
          }
      };
+     enableBluetooth =async()=>{
+         BluetoothManager.enableBluetooth().then(async(r) => {
+             const address = await AsyncStorage.getItem("bluetoothAddress")
+             const name = await AsyncStorage.getItem("bluetoothName")
+             if(address==null){
+                 alert("please connect bluetooth Printer")
+                 return 
+             }
+             BluetoothManager.connect(address) // the device address scanned.
+                 .then((s) => {
+                     alert("Printer connected")
+                     this.props.bluetoothStatus(true)
+                  
+                 }, (e) => {
+                     this.setState({
+                         loading: false
+                     })
+                     alert(e);
+                 })
+         }, (err) => {
+             alert(err)
+         });
+     }
+     componentDidMount(){
+         this.enableBluetooth()
+     }
     render() {
         const { index, routes } = this.state
         return (
@@ -99,6 +125,7 @@ const mapStateToProps = (state) => {
 
     return {
         theme: state.selectedTheme,
+        bluetooth:state.bluetoothStatus
     }
 }
-export default connect(mapStateToProps, { selectTheme })(Orders);
+export default connect(mapStateToProps, { selectTheme, bluetoothStatus })(Orders);

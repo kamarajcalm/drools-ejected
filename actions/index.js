@@ -4,3 +4,9 @@ export const selectTheme = (theme) => {
         payload: theme
     }
 }
+export const bluetoothStatus = (status) => {
+    return {
+        type: 'BLUETOOTH_STATUS',
+        payload:status
+    }
+}

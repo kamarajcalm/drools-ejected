@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Dimensions, TouchableOpacity, StyleSheet, FlatList, Image, TextInput, KeyboardAvoidingView, Platform, ScrollView,Alert} from 'react-native';
+import { View, Text, Dimensions, TouchableOpacity, StyleSheet, FlatList, Image, TextInput, KeyboardAvoidingView, Platform,Alert} from 'react-native';
 const { height, width } = Dimensions.get('window')
 import settings from '../AppSettings'
 import { connect } from 'react-redux';
@@ -20,6 +20,15 @@ import FlashMessage, { showMessage, hideMessage } from "react-native-flash-messa
 import moment from 'moment';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import HttpsClient from '../HttpsClient';
+import DropDownPicker from 'react-native-dropdown-picker';
+import { ScrollView} from 'react-native-gesture-handler';
+const orderStatus = [
+  
+    {
+        label: "Loss",
+        value: "Loss"
+    },
+]
 
 const screenHeight = Dimensions.get("screen").height
 class ViewIngredients extends Component {
@@ -37,8 +46,29 @@ class ViewIngredients extends Component {
             items:[],
             edit:true,
             selectedItem:null,
-          
+            ordervalue:null,
+            open: false,
         };
+    
+    }
+    setOpen = (open) => {
+        this.setState({
+            open
+        });
+    }
+
+    setValue = (callback) => {
+
+        this.setState(state => ({
+            ordervalue: callback(state.value)
+        }));
+    }
+
+    setItems = (callback) => {
+
+        this.setState(state => ({
+            items: callback(state.items)
+        }));
     }
     showSimpleMessage(content, color, type = "info", props = {}) {
         const message = {
@@ -52,7 +82,8 @@ class ViewIngredients extends Component {
         showMessage(message);
     }
     getItems = async()=>{
-        const api = `${url}/api/drools/ingridientsub/?main=${this.state.item.id}&stock=inStock`
+        const api = `${url}/api/drools/ingridientsub/?main=${this.state.item.id}&status=InStock`
+        console.log(api)
         let data = await HttpsClient.get(api)
         if(data.type =="success"){
             this.setState({ items:data.data})
@@ -92,7 +123,11 @@ class ViewIngredients extends Component {
             quantity: Number(this.state.Quantity),
             price: Number(this.state.price),
             expiry_date: this.state.expiryDate,
-            main: this.state.item.id
+            main: this.state.item.id,
+           
+        }
+        if(this.state.ordervalue){
+            sendData.status = this.state.ordervalue
         }
         let api = `${url}/api/drools/ingridientsub/${this.state.selectedItem.id}/`
         let patch = await HttpsClient.patch(api,sendData)
@@ -184,7 +219,21 @@ class ViewIngredients extends Component {
                                      </View>
                                 </TouchableOpacity>
                             </View>
-                        
+                             {
+                                this.state.edit && <View style={{ marginVertical: 40 ,}}>
+                                    <DropDownPicker
+                                        style={{ height: height * 0.05 }}
+                                        containerStyle={{ height: height * 0.05 }}
+                                        open={this.state.open}
+                                        value={this.state.ordervalue}
+                                        items={orderStatus}
+                                        setOpen={this.setOpen}
+                                        setValue={this.setValue}
+                                        setItems={this.setItems}
+                                        placeholder="select a Status"
+                                    />
+                                </View>
+                             }
                             <View style={{ alignItems: "center" }}>
                                 {!this.state.edit?<TouchableOpacity style={{ height: height * 0.05, width: width * 0.4, alignItems: "center", justifyContent: "center", backgroundColor: primaryColor }}
                                     onPress={() => { this.addItem() }}

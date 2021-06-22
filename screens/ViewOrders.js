@@ -20,6 +20,9 @@ import HttpsClient from '../HttpsClient';
 import Modal from "react-native-modal";
 import DropDownPicker from 'react-native-dropdown-picker';
 import FlashMessage, { showMessage, hideMessage } from "react-native-flash-message";
+import { BluetoothManager, BluetoothEscposPrinter, BluetoothTscPrinter, } from 'react-native-bluetooth-escpos-printer';
+import moment from 'moment';
+
 const orderStatus =[
     {
         label:"Completed",
@@ -67,7 +70,7 @@ class ViewOrders extends Component {
     getOrders = async () => {
         let api = `${url}/api/drools/cart/${this.state.item.id}/`
         const data = await HttpsClient.get(api)
-  
+        console.log(api,"pjioio")
         if (data.type == "success") {
             this.setState({ item: data.data })
         }
@@ -89,6 +92,84 @@ class ViewOrders extends Component {
 
             this.showSimpleMessage(`${post.data.failed}`, "red", "failure")
         }
+    }
+    getSubtotal =()=>{
+        let total =0
+        this.state.item.items.forEach((item)=>{
+           total +=  item.quantity
+        })
+        return total
+    }
+    print = async () => {
+        await BluetoothEscposPrinter.printerAlign(BluetoothEscposPrinter.ALIGN.CENTER);
+        await BluetoothEscposPrinter.setBlob(0);
+        await BluetoothEscposPrinter.printText("Drools\n\r", {
+            encoding: 'GBK',
+            codepage: 0,
+            widthtimes: 3,
+            heigthtimes: 3,
+            fonttype: 1,
+        });
+        await BluetoothEscposPrinter.setBlob(0);
+        await BluetoothEscposPrinter.printText("# 109 , Ground floor , 5th main corner , 60 ft road , AGB layout, Hesaragatta road\n\r", {
+            encoding: 'GBK',
+            codepage: 0,
+            widthtimes: 0,
+            heigthtimes: 0,
+            fonttype: 1,
+        });
+        await BluetoothEscposPrinter.printText("Bangalore 560090\n\r", {});
+        await BluetoothEscposPrinter.printText("PHONE:8976979769\n\r", {});
+        await BluetoothEscposPrinter.printText("GSTIN:GDFTJLPHF3534\n\r", {});
+        await BluetoothEscposPrinter.printText("\n\r", {});
+        let columnWidths = [16, 16]
+        await BluetoothEscposPrinter.printColumn(columnWidths,
+            [BluetoothEscposPrinter.ALIGN.LEFT, BluetoothEscposPrinter.ALIGN.RIGHT],
+            [`BILLNO:${this.state.item.id}`, `DATE:${moment(new Date()).format("DD/MM/YYYY")}`], { fonttype: 0 });
+        await BluetoothEscposPrinter.printText("\n\r", {});
+        await BluetoothEscposPrinter.printText("--------------------------------\n\r", {});
+        let columnWidts = [10, 6, 8, 8]
+        await BluetoothEscposPrinter.printColumn(columnWidts,
+            [BluetoothEscposPrinter.ALIGN.LEFT, BluetoothEscposPrinter.ALIGN.CENTER, BluetoothEscposPrinter.ALIGN.CENTER, BluetoothEscposPrinter.ALIGN.RIGHT],
+            ["ITEM", 'QTY', 'Price', 'Amt'], {});
+        await BluetoothEscposPrinter.printText("--------------------------------\n\r", {});
+        this.state.item.items.forEach(async (i) => {
+            let columnWidth = [10, 6, 8, 8]
+            await BluetoothEscposPrinter.printColumn(columnWidth,
+                [BluetoothEscposPrinter.ALIGN.LEFT, BluetoothEscposPrinter.ALIGN.CENTER, BluetoothEscposPrinter.ALIGN.CENTER, BluetoothEscposPrinter.ALIGN.RIGHT],
+                [`${i.itemTitle}`, `${i.quantity}`, `${i.item_price}`, `${i.total_price}`], {});
+        })
+        await BluetoothEscposPrinter.printText("--------------------------------\n\r", {});
+        let columnWidth4 = [10, 6, 8, 8]
+        await BluetoothEscposPrinter.printColumn(columnWidth4,
+            [BluetoothEscposPrinter.ALIGN.LEFT, BluetoothEscposPrinter.ALIGN.CENTER, BluetoothEscposPrinter.ALIGN.CENTER, BluetoothEscposPrinter.ALIGN.RIGHT],
+            ["SUBTOTAL", `${this.getSubtotal()}`, '', `${this.state.item.total_price}`], {});
+        await BluetoothEscposPrinter.printText("--------------------------------\n\r", {});
+
+        this.state.item.items.forEach(async (i) => {
+            let columnWidth = [9, 12, 11]
+            await BluetoothEscposPrinter.printColumn(columnWidth,
+                [BluetoothEscposPrinter.ALIGN.LEFT, BluetoothEscposPrinter.ALIGN.CENTER, BluetoothEscposPrinter.ALIGN.RIGHT],
+                [``, `CGST @9.00%`, `2.916.80`], {});
+        })
+        await BluetoothEscposPrinter.printText("--------------------------------\n\r", {});
+        let columnWidth5 = [16, 16]
+        await BluetoothEscposPrinter.printColumn(columnWidth5,
+            [BluetoothEscposPrinter.ALIGN.LEFT, BluetoothEscposPrinter.ALIGN.RIGHT],
+            ["TOTAL", "Rs.1,000.00"], { fonttype: 0 });
+        await BluetoothEscposPrinter.printText("--------------------------------\n\r", {});
+        await BluetoothEscposPrinter.printText("\n\r", {});
+        await BluetoothEscposPrinter.printerAlign(BluetoothEscposPrinter.ALIGN.CENTER);
+        await BluetoothEscposPrinter.printText("THANK YOU\n\r", {
+            encoding: 'GBK',
+            codepage: 0,
+            widthtimes: 0,
+            heigthtimes: 0,
+            fonttype: 1,
+        });
+        await BluetoothEscposPrinter.printText("\n\r", {});
+        await BluetoothEscposPrinter.printText("\n\r", {});
+        await BluetoothEscposPrinter.printText("\n\r", {});
     }
     componentDidMount(){
         this._unsubscribe = this.props.navigation.addListener('focus', () => {
@@ -135,6 +216,23 @@ class ViewOrders extends Component {
                         <Text style={[styles.text, { color: "#fff" }]}>Add Items</Text>
                     </TouchableOpacity>
                 </View>
+                <View style={{alignItems:"center",justifyContent:"center",marginVertical:30,flexDirection:"row"}}>
+                    <TouchableOpacity style={{ height: height * 0.05, width: width * 0.4, alignItems: "center", justifyContent: "center", backgroundColor: "green" }}
+                        onPress={() => {this.print()}}
+                    >
+                        <Text style={[styles.text, { color: "#fff" }]}>Print</Text>
+                    </TouchableOpacity>
+
+                    <View style={{ flexDirection: "row" ,marginLeft:10}}>
+                        <View>
+                            <Text style={[styles.text, { color: "#fff" }]}>status:</Text>
+                        </View>
+                     
+                        <View style={{ marginLeft: 10, width: 10, height: 10, backgroundColor: this.props.bluetooth ? "green" : "red" ,borderRadius:10,marginTop:5}}>
+
+                        </View>
+                    </View>
+                </View>
             </View>
         )
     }
@@ -179,7 +277,7 @@ class ViewOrders extends Component {
     completeModal = ()=>{
         return(
             <Modal
-                 statusBarTranslucent ={true}
+                statusBarTranslucent ={true}
                 isVisible={this.state.modal}
                 deviceHeight={screenHeight}
                 onBackdropPress={() => { this.setState({ modal: false }) }}
@@ -237,8 +335,17 @@ class ViewOrders extends Component {
             </Modal>
         )
     }
+    validateColor =(item)=>{
+        if (item.item_status =="Pending"){
+            return "orange"
+        }
+        if (item.item_status == "Finished") {
+            return "green"
+        }
+        return "red"
+    }
     render() {
-
+         console.log(this.props.bluetoothStatus,"bluuruu")
         return (
             <View style={{ flex: 1, backgroundColor: themeColor }}>
                 <StatusBar style={"light"} />
@@ -286,14 +393,15 @@ class ViewOrders extends Component {
                                     <View>
                                         <Text style={[styles.text, { color: "#fff", fontSize: 18 }]}>{item.itemTitle}</Text>
                                     </View>
-                                    {/* <View>
-                                        <Text style={[styles.text, { color: "#fff" }]}>1 plate | ₹ {item.itemPrice}</Text>
-                                    </View> */}
+                                    <View>
+                                        <Text style={[styles.text, { color: this.validateColor(item) }]}> {item.item_status}</Text>
+                                    </View>
                                 </View>
-                                <View style={{flex:0.2,alignItems:"center",justifyContent:"center"}}>
+                                <View style={{flex:0.2,alignItems:"center",justifyContent:"center",flexDirection:"row"}}>
                                      <View>
                                         <Text style={[styles.text, { color: primaryColor, fontSize: 22 }]}>₹ {item.total_price}</Text>
                                      </View>
+                                   
                                 </View>
                             </View>
                         )
@@ -324,6 +432,7 @@ const mapStateToProps = (state) => {
 
     return {
         theme: state.selectedTheme,
+        bluetooth:state.bluetoothStatus
     }
 }
 export default connect(mapStateToProps, { selectTheme })(ViewOrders);

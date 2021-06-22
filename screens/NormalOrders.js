@@ -17,6 +17,7 @@ import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
 import orders from '../data/orders'
 import { FontAwesome, AntDesign, MaterialCommunityIcons, MaterialIcons, SimpleLineIcons, Entypo, Fontisto, Feather, Ionicons, FontAwesome5 } from '@expo/vector-icons';
 import HttpsClient from '../HttpsClient';
+import moment from 'moment';
 
  class NormalOrders extends Component {
   constructor(props) {
@@ -48,6 +49,7 @@ import HttpsClient from '../HttpsClient';
          if (item.cart_status =="Pending"){
              return "orange"
          }
+       
      }
   render() {
     return (
@@ -63,7 +65,7 @@ import HttpsClient from '../HttpsClient';
                               >
                                
                                 <View style={{ flex: 1, }}>
-                                        <View style={{flex:0.7,padding: 10,}}>
+                                        <View style={{flex:0.7,padding:10}}>
                                             <View style={{flex:0.7,}}> 
                                                 <View style={{ flex: 0.5,}}>
                                                     <View>
@@ -76,7 +78,7 @@ import HttpsClient from '../HttpsClient';
                                                 </View>
                                             </View>
                                            <View style={{flex:0.2}}>
-                                               <Text style={[styles.text,{color:"#fff"}]}>10:00 am</Text>
+                                               <Text style={[styles.text,{color:"#fff"}]}>{moment(item.created).format("hh:mm a")}</Text>
                                            </View>
                                         </View>
                                         <View style={{ flexDirection: "row", flex: 0.25, alignItems: "center", justifyContent: "space-around" }}>

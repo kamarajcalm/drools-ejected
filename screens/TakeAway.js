@@ -17,7 +17,8 @@ import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
 import orders from '../data/orders'
 import { FontAwesome, AntDesign, MaterialCommunityIcons, MaterialIcons, SimpleLineIcons, Entypo, Fontisto, Feather, Ionicons, FontAwesome5 } from '@expo/vector-icons';
 import HttpsClient from '../HttpsClient';
-
+import moment from 'moment';
+import axios from 'axios';
 class TakeAway extends Component {
     constructor(props) {
         super(props);
@@ -28,9 +29,11 @@ class TakeAway extends Component {
     getOrders = async () => {
         let api = `${url}/api/drools/cart/?order_type=Takeaway&cart_status=Pending`
         const data = await HttpsClient.get(api)
-        console.log(api)
+        console.log(data , "ooooo")
         if (data.type == "success") {
-            this.setState({ orders: data.data})
+            this.setState({ orders: data.data},()=>{
+               
+            })
         }
     }
     componentDidMount() {
@@ -44,11 +47,12 @@ class TakeAway extends Component {
         this._unsubscribe()
     }
     validateColor = (item) => {
-        if (item.order_type == "Pending") {
+        if (item.cart_status == "Pending") {
             return "orange"
         }
     }
     render() {
+        
         return (
             <View style={{ flex: 1 }}>
                 <FlatList
@@ -56,6 +60,8 @@ class TakeAway extends Component {
                     data={this.state.orders}
                     keyExtractor={(item, index) => index.toString()}
                     renderItem={({ item, index }) => {
+                        console.log(item,"itemmmmmm")
+                        console.log("hererrerre")
                         return (
                             <TouchableOpacity style={{ height: height * 0.18, borderColor: "#fff", borderBottomWidth: 0.5, flexDirection: "row", paddingVertical: 10 }}
                                 onPress={() => { this.props.navigation.navigate('ViewOrder', { item }) }}
@@ -75,11 +81,11 @@ class TakeAway extends Component {
                                             </View>
                                         </View>
                                         <View style={{ flex: 0.2 }}>
-                                            <Text style={[styles.text, { color: "#fff" }]}>10:00 am</Text>
+                                            <Text style={[styles.text, { color: "#fff" }]}>{moment(item.created).format('hh:mm a')}</Text>
                                         </View>
                                     </View>
                                     <View style={{ flexDirection: "row", flex: 0.25, alignItems: "center", justifyContent: "space-around" }}>
-                                        <Text style={[styles.text, { color: this.validateColor(item) }]}>{item.order_type}</Text>
+                                        <Text style={[styles.text, { color: this.validateColor(item) }]}>{item.cart_status}</Text>
                                     </View>
                                     <View style={{ flexDirection: "row", flex: 0.15, alignItems: "center", justifyContent: "space-around" }}>
                                         <View>

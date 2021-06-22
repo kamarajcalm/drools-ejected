@@ -20,6 +20,8 @@ import HttpsClient from '../HttpsClient';
 import Modal from "react-native-modal";
 import DropDownPicker from 'react-native-dropdown-picker';
 import FlashMessage, { showMessage, hideMessage } from "react-native-flash-message";
+import { BluetoothManager, BluetoothEscposPrinter, BluetoothTscPrinter, } from 'react-native-bluetooth-escpos-printer';
+import moment from 'moment';
 const orderStatus = [
     {
         label: "Completed",
@@ -53,6 +55,84 @@ class ViewOrders2 extends Component {
             paymentvalue: paymentStatus[0].value,
         };
     }
+    getSubtotal = () => {
+        let total = 0
+        this.state.item.items.forEach((item) => {
+            total += item.quantity
+        })
+        return total
+    }
+    print = async () => {
+        await BluetoothEscposPrinter.printerAlign(BluetoothEscposPrinter.ALIGN.CENTER);
+        await BluetoothEscposPrinter.setBlob(0);
+        await BluetoothEscposPrinter.printText("Drools\n\r", {
+            encoding: 'GBK',
+            codepage: 0,
+            widthtimes: 3,
+            heigthtimes: 3,
+            fonttype: 1,
+        });
+        await BluetoothEscposPrinter.setBlob(0);
+        await BluetoothEscposPrinter.printText("# 109 , Ground floor , 5th main corner , 60 ft road , AGB layout, Hesaragatta road\n\r", {
+            encoding: 'GBK',
+            codepage: 0,
+            widthtimes: 0,
+            heigthtimes: 0,
+            fonttype: 1,
+        });
+        await BluetoothEscposPrinter.printText("Bangalore 560090\n\r", {});
+        await BluetoothEscposPrinter.printText("PHONE:8976979769\n\r", {});
+        await BluetoothEscposPrinter.printText("GSTIN:GDFTJLPHF3534\n\r", {});
+        await BluetoothEscposPrinter.printText("\n\r", {});
+        let columnWidths = [16, 16]
+        await BluetoothEscposPrinter.printColumn(columnWidths,
+            [BluetoothEscposPrinter.ALIGN.LEFT, BluetoothEscposPrinter.ALIGN.RIGHT],
+            [`BILLNO:${this.state.item.id}`, `DATE:${moment(this.state.item.created).format("DD/MM/YYYY")}`], { fonttype: 0 });
+        await BluetoothEscposPrinter.printText("\n\r", {});
+        await BluetoothEscposPrinter.printText("--------------------------------\n\r", {});
+        let columnWidts = [10, 6, 8, 8]
+        await BluetoothEscposPrinter.printColumn(columnWidts,
+            [BluetoothEscposPrinter.ALIGN.LEFT, BluetoothEscposPrinter.ALIGN.CENTER, BluetoothEscposPrinter.ALIGN.CENTER, BluetoothEscposPrinter.ALIGN.RIGHT],
+            ["ITEM", 'QTY', 'Price', 'Amt'], {});
+        await BluetoothEscposPrinter.printText("--------------------------------\n\r", {});
+        this.state.item.items.forEach(async (i) => {
+            let columnWidth = [10, 6, 8, 8]
+            await BluetoothEscposPrinter.printColumn(columnWidth,
+                [BluetoothEscposPrinter.ALIGN.LEFT, BluetoothEscposPrinter.ALIGN.CENTER, BluetoothEscposPrinter.ALIGN.CENTER, BluetoothEscposPrinter.ALIGN.RIGHT],
+                [`${i.itemTitle}`, `${i.quantity}`, `${i.item_price}`, `${i.total_price}`], {});
+        })
+        await BluetoothEscposPrinter.printText("--------------------------------\n\r", {});
+        let columnWidth4 = [10, 6, 8, 8]
+        await BluetoothEscposPrinter.printColumn(columnWidth4,
+            [BluetoothEscposPrinter.ALIGN.LEFT, BluetoothEscposPrinter.ALIGN.CENTER, BluetoothEscposPrinter.ALIGN.CENTER, BluetoothEscposPrinter.ALIGN.RIGHT],
+            ["SUBTOTAL", `${this.getSubtotal()}`, '', `${this.state.item.total_price}`], {});
+        await BluetoothEscposPrinter.printText("--------------------------------\n\r", {});
+
+        this.state.item.items.forEach(async (i) => {
+            let columnWidth = [9, 12, 11]
+            await BluetoothEscposPrinter.printColumn(columnWidth,
+                [BluetoothEscposPrinter.ALIGN.LEFT, BluetoothEscposPrinter.ALIGN.CENTER, BluetoothEscposPrinter.ALIGN.RIGHT],
+                [``, `CGST @9.00%`, `2.916.80`], {});
+        })
+        await BluetoothEscposPrinter.printText("--------------------------------\n\r", {});
+        let columnWidth5 = [16, 16]
+        await BluetoothEscposPrinter.printColumn(columnWidth5,
+            [BluetoothEscposPrinter.ALIGN.LEFT, BluetoothEscposPrinter.ALIGN.RIGHT],
+            ["TOTAL", "Rs.1,000.00"], { fonttype: 0 });
+        await BluetoothEscposPrinter.printText("--------------------------------\n\r", {});
+        await BluetoothEscposPrinter.printText("\n\r", {});
+        await BluetoothEscposPrinter.printerAlign(BluetoothEscposPrinter.ALIGN.CENTER);
+        await BluetoothEscposPrinter.printText("THANK YOU\n\r", {
+            encoding: 'GBK',
+            codepage: 0,
+            widthtimes: 0,
+            heigthtimes: 0,
+            fonttype: 1,
+        });
+        await BluetoothEscposPrinter.printText("\n\r", {});
+        await BluetoothEscposPrinter.printText("\n\r", {});
+        await BluetoothEscposPrinter.printText("\n\r", {});
+    }
     showSimpleMessage(content, color, type = "info", props = {}) {
         const message = {
             message: content,
@@ -64,6 +144,7 @@ class ViewOrders2 extends Component {
 
         showMessage(message);
     }
+
     getOrders = async () => {
         let api = `${url}/api/drools/cart/${this.state.item.id}/`
         const data = await HttpsClient.get(api)
@@ -135,6 +216,23 @@ class ViewOrders2 extends Component {
                         <Text style={[styles.text, { color: "#fff" }]}>Add Items</Text>
                     </TouchableOpacity>
                 </View> */}
+                <View style={{ alignItems: "center", justifyContent: "center", marginVertical: 30, flexDirection: "row" }}>
+                    <TouchableOpacity style={{ height: height * 0.05, width: width * 0.4, alignItems: "center", justifyContent: "center", backgroundColor: "green" }}
+                        onPress={() => { this.print() }}
+                    >
+                        <Text style={[styles.text, { color: "#fff" }]}>Print</Text>
+                    </TouchableOpacity>
+
+                    <View style={{ flexDirection: "row", marginLeft: 10 }}>
+                        <View>
+                            <Text style={[styles.text, { color: "#fff" }]}>status:</Text>
+                        </View>
+
+                        <View style={{ marginLeft: 10, width: 10, height: 10, backgroundColor: this.props.bluetooth ? "green" : "red", borderRadius: 10, marginTop: 5 }}>
+
+                        </View>
+                    </View>
+                </View>
             </View>
         )
     }
@@ -324,6 +422,7 @@ const mapStateToProps = (state) => {
 
     return {
         theme: state.selectedTheme,
+        bluetooth: state.bluetoothStatus
     }
 }
 export default connect(mapStateToProps, { selectTheme })(ViewOrders2);
