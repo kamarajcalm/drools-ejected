@@ -133,6 +133,7 @@ export default class TimeWise extends Component {
         return(
            <>
                 <ScrollView
+                    bounces={false}
                     style={{}}
                     horizontal={true}
                     // i needed the scrolling to start from the end not the start
@@ -140,10 +141,10 @@ export default class TimeWise extends Component {
                 >
                     <BarChart
                         showValuesOnTopOfBars
-                        style={{}}
+                        style={{marginTop:height*0.07}}
                         data={this.state.data}
                         width={width *2}
-                        height={height}
+                        height={height*0.8}
                         chartConfig={{
                             backgroundColor: "#000000",
                             decimalPlaces: 0,
@@ -192,7 +193,7 @@ export default class TimeWise extends Component {
     render() {
         const { open, value,open2,value2 } = this.state;
         return (
-            <View style={{ flex: 1, }}>
+            <View style={{ flex: 1,backgroundColor:"#000" }}>
                 {
                     this.validate(open, value, open2, value2)
                 }

@@ -134,7 +134,7 @@ class CreateOnline extends Component {
                             <Ionicons name="caret-back" size={24} color={secondaryColor} />
                         </TouchableOpacity>
                         <View style={{ flex: 0.6, alignItems: "center", justifyContent: "center" }}>
-                            <Text style={[styles.text, { color: "#fff", fontSize: 18 }]}>Create TakeAway Order</Text>
+                            <Text style={[styles.text, { color: "#fff", fontSize: 18 }]}>Create Online Order</Text>
 
                         </View>
                         <View style={{ flex: 0.2, alignItems: "center", justifyContent: "center" }}>

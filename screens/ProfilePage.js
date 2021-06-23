@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Dimensions, TouchableOpacity, StyleSheet, FlatList,Image,Alert} from 'react-native';
+import { View, Text, Dimensions, TouchableOpacity, StyleSheet, FlatList,Image,Alert,AsyncStorage} from 'react-native';
 const { height, width } = Dimensions.get('window')
 import settings from '../AppSettings'
 import { connect } from 'react-redux';

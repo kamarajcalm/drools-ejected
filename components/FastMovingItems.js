@@ -137,6 +137,7 @@ export default class FastMovingItems extends Component {
              
             </LinearGradient>
             <ScrollView
+                bounces={false}
                 style={{ }}
                 horizontal={true}
                 // i needed the scrolling to start from the end not the start

@@ -141,7 +141,7 @@ export default class NetProfit extends Component {
             <>
                 <ScrollView
                     style={{marginTop:50}}
-
+                     bounces={false}
                     horizontal={true}
                     // i needed the scrolling to start from the end not the start
                     showsHorizontalScrollIndicator={false} // to hide scroll bar

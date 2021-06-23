@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Dimensions, TouchableOpacity, StyleSheet, FlatList, Image ,TextInput, ScrollView} from 'react-native';
+import { View, Text, Dimensions, TouchableOpacity, StyleSheet, FlatList, Image ,TextInput,ScrollView } from 'react-native';
 const { height, width } = Dimensions.get('window')
 import settings from '../AppSettings'
 import { connect } from 'react-redux';
@@ -19,6 +19,7 @@ import { FontAwesome, AntDesign, MaterialCommunityIcons, MaterialIcons, SimpleLi
 import HttpsClient from '../HttpsClient';
 import DropDownPicker from 'react-native-dropdown-picker';
 import FlashMessage, { showMessage, hideMessage } from "react-native-flash-message";
+
 class CreateNormalOrder extends Component {
     constructor(props) {
         super(props);
@@ -32,7 +33,9 @@ class CreateNormalOrder extends Component {
     }
     getTables = async () => {
         let api = `${url}/api/drools/tables/`
+        console.log(api,"appppiiii")
         let data = await HttpsClient.get(api)
+        console.log(data,"dd")
         if (data.type == "success") {
            let tables= []
            data.data.forEach((i)=>{
@@ -42,7 +45,7 @@ class CreateNormalOrder extends Component {
                     }
                tables.push(pushObj)
            })
-           console.log(tables)
+           console.log(tables,"tabllllllee")
            this.setState({tables})
         }
     }
@@ -100,6 +103,7 @@ class CreateNormalOrder extends Component {
          }
     }
    componentDidMount(){
+       
        this.getTables();
    }
     backFunction =(dishes)=>{
@@ -165,7 +169,7 @@ class CreateNormalOrder extends Component {
                 <ScrollView>
                 <View style={{padding:20}}>
                     <Text style={[styles.text, {fontSize:22}]}>Select Table :</Text>
-                    <View style={{marginTop:10}}>
+                    <View style={{marginTop:10,height:this.state.open?height*0.3:height*0.1}}>
                         <DropDownPicker
                             style={{ height: height * 0.05 }}
                             containerStyle={{ height: height * 0.05 }}

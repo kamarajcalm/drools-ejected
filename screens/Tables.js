@@ -83,6 +83,7 @@ class Tables extends Component {
         let post = await HttpsClient.post(api,sendData)
         if(post.type =="success"){
              this.setState({modal:false,person:""})
+             this.getTables()
             return this.showSimpleMessage("Added SucessFully", "green","success")
         }else{
             return this.showSimpleMessage("Try again", "red", "danger")
