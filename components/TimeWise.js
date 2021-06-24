@@ -142,7 +142,7 @@ export default class TimeWise extends Component {
                 >
                     <BarChart
                         showValuesOnTopOfBars
-                        style={{}}
+                        style={{marginTop:height*0.07}}
                         data={this.state.data}
                         width={width *2.5}
                         height={height*0.8}
