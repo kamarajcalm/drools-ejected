@@ -24,15 +24,19 @@ import moment from 'moment';
       console.log(props)
     super(props);
     this.state = {
-        orders:[]
+        orders:[],
+        refreshing:false
     };
   }
      getOrders = async()=>{
+         this.setState({ refreshing:true})
          let api = `${url}/api/drools/cart/?order_type=Dining&cart_status=Pending`
          const data = await HttpsClient.get(api)
          console.log(api)
          if(data.type =="success"){
-             this.setState({orders:data.data})
+             this.setState({ orders: data.data, refreshing:false})
+         }else{
+             this.setState({refreshing:false})
          }
      }
    componentDidMount (){
@@ -55,6 +59,9 @@ import moment from 'moment';
     return (
       <View style={{flex:1}}>
             <FlatList
+
+                        refreshing={this.state.refreshing}
+                        onRefresh={()=>{this.getOrders()}}
                         style={{backgroundColor:"#333"}}
                         data={this.state.orders}
                         keyExtractor={(item, index) => index.toString()}
@@ -64,7 +71,10 @@ import moment from 'moment';
                                     onPress={() => { this.props.navigation.navigate('ViewOrder',{item})}}
                               >
                                
-                                <View style={{ flex: 1, }}>
+                                <LinearGradient 
+                                   style={{flex:1,}}
+                                   colors={gradients}
+                                >
                                         <View style={{flex:0.7,padding:10}}>
                                             <View style={{flex:0.7,}}> 
                                                 <View style={{ flex: 0.5,}}>
@@ -84,7 +94,7 @@ import moment from 'moment';
                                         <View style={{ flexDirection: "row", flex: 0.25, alignItems: "center", justifyContent: "space-around" }}>
                                             <Text style={[styles.text, { color: this.validateColor(item) }]}>{item.cart_status}</Text>
                                         </View>
-                                        <View style={{flexDirection:"row",flex:0.15,alignItems:"center",justifyContent:"space-around"}}>
+                                        <View style={{flexDirection:"row",flex:1,alignItems:"center",justifyContent:"space-around"}}>
                                             <View>
                                                 <Text style={[styles.text,{color:"#eee"}]}>Items Count: {item.items.length}</Text>
                                             </View>
@@ -92,7 +102,7 @@ import moment from 'moment';
                                                 <Text style={[styles.text, { color: "#fafafa" }]}>Price : ₹{item.cart_bill}</Text>
                                             </View>
                                         </View>
-                                 </View>
+                                 </LinearGradient>
                               </TouchableOpacity>
                             )
                         }}

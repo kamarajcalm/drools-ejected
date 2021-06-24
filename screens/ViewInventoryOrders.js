@@ -47,6 +47,7 @@ class ViewInventoryOrders extends Component {
             selectedItem:null,
             modal:false,
             Amount2:"",
+            quantity:""
         };
     }
     print = async () => {
@@ -148,7 +149,8 @@ class ViewInventoryOrders extends Component {
         let api = `${url}/api/drools/orders/${this.state.item.id}/`
         let sendData ={
             order_status:this.state.ordervalue,
-            amount:this.state.Amount
+            amount:this.state.Amount,
+            arriving_date:moment(new Date()).format("YYYY-MM-DD")
         }
         let patch = await HttpsClient.patch(api,sendData)
         if(patch.type =="success"){
@@ -164,9 +166,11 @@ class ViewInventoryOrders extends Component {
             return this.showSimpleMessage("Please add Amount", "#dd7030",)
         }
         let api = `${url}/api/drools/ingridientsub/${this.state.selectedItem.id}/`
+        console.log(api,"kkkk")
         let sendData ={
             status:"InStock",
-            price:this.state.Amount2
+            price:this.state.Amount2,
+            quantity:this.state.quantity
         }
         let patch =await HttpsClient.patch(api,sendData)
         console.log(patch)
@@ -220,7 +224,16 @@ class ViewInventoryOrders extends Component {
                     <ScrollView style={{ height: height * 0.3, backgroundColor: "#fff", width: width * 0.9, borderRadius: 10 }}>
 
 
-
+                        <View style={{ marginTop: 10 }}>
+                            <Text style={[styles.text, { color: "#000", fontSize: 22 }]}>Enter Quantity :</Text>
+                            <TextInput
+                                value={this.state.quantity.toString()}
+                                style={{ height: height * 0.05, width: width * 0.6, backgroundColor: "#eee", borderRadius: 5, paddingLeft: 5, marginTop: 10 }}
+                                selectionColor={primaryColor}
+                                keyboardType={"numeric"}
+                                onChangeText={(quantity) => {this.setState({ quantity })}}
+                            />
+                        </View>
                        
                         <View style={{ marginTop: 10 }}>
                             <Text style={[styles.text, { color: "#000", fontSize: 22 }]}>Enter Amount :</Text>
@@ -232,7 +245,7 @@ class ViewInventoryOrders extends Component {
                                 onChangeText={(Amount2) => { this.setState({ Amount2 }) }}
                             />
                         </View>
-
+           
                         <View style={{ alignItems: "center", marginTop: 10 }}>
                             <TouchableOpacity
                                 style={{ height: height * 0.05, width: width * 0.4, backgroundColor: primaryColor, alignItems: 'center', justifyContent: "center" }}
@@ -277,7 +290,7 @@ class ViewInventoryOrders extends Component {
                             <View>
                                 <Text style={[styles.text, { color: "#000", fontSize: 22 }]}>Order Status :</Text>
                             </View>
-                            <View style={{ marginTop: 10 }}>
+                            <View style={{ marginTop: 10 ,height:this.state.open?height*0.1:height*0.05}}>
                                 <DropDownPicker
                                     style={{ height: height * 0.05 }}
                                     containerStyle={{ height: height * 0.05 }}
@@ -287,13 +300,13 @@ class ViewInventoryOrders extends Component {
                                     setOpen={this.setOpen}
                                     setValue={this.setValue}
                                     setItems={this.setItems}
-                                    placeholder="select a Table"
+                                    placeholder="select a Status"
                                 />
                             </View>
                              <View style={{marginTop:10}}>
                                  <Text style={[styles.text, { color: "#000", fontSize: 22}]}>Enter Amount :</Text>
                                  <TextInput 
-                                  value={this.state.Amount}
+                                  value={this.state.Amount.toString()}
                                   style={{height:height*0.05,width:width*0.6,backgroundColor:"#eee",borderRadius:5,paddingLeft:5,marginTop:10}}
                                   selectionColor={primaryColor}
                                   keyboardType={"numeric"}
@@ -301,7 +314,7 @@ class ViewInventoryOrders extends Component {
                                  />
                              </View>
                
-                          <View style={{alignItems:"center",marginTop:10}}>
+                          <View style={{alignItems:"center",marginTop:10,marginVertical:20}}>
                               <TouchableOpacity 
                                style={{height:height*0.05,width:width*0.4,backgroundColor:primaryColor,alignItems:'center',justifyContent:"center"}}
                                onPress={()=>{this.edit()}}
@@ -344,8 +357,14 @@ class ViewInventoryOrders extends Component {
              </View>
         )
     }
+    setEdit =()=>{
+        let total = 0
+        this.state.item.items.forEach((i)=>{
+            total += i.price
+        })
+        this.setState({ Amount: total, editmodal:true})
+    }
     render() {
-
         return (
             <View style={{ flex: 1, backgroundColor: themeColor }}>
                 <StatusBar style={"light"} />
@@ -403,7 +422,7 @@ class ViewInventoryOrders extends Component {
                                </View>
                                <View style={{flex:0.5,alignItems:"center",justifyContent:"center"}}>
                                    <TouchableOpacity style={{ height: height * 0.05, width: width * 0.3, alignItems: "center", justifyContent: "center", backgroundColor:primaryColor }}
-                                       onPress={() => {this.setState({selectedItem:item,modal:true}) }}
+                                       onPress={() => { this.setState({ selectedItem: item, modal: true, quantity:item.quantity}) }}
                                    >
                                        <Text style={[styles.text, { color: "#fff" }]}>Edit</Text>
                                    </TouchableOpacity>
@@ -415,7 +434,7 @@ class ViewInventoryOrders extends Component {
         
               <View style ={{position:"absolute",bottom:30,width,alignItems:"center",justifyContent:"space-around",flexDirection:"row"}}>
                      <TouchableOpacity style={{height:height*0.05,width:width*0.4,alignItems:"center",justifyContent:"center",backgroundColor:primaryColor}}
-                      onPress={()=>{this.setState({editmodal:true})}}
+                      onPress={()=>{this.setEdit()}}
                      >
                           <Text style={[styles.text,{color:"#fff"}]}>Edit</Text>
                      </TouchableOpacity>   

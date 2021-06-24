@@ -25,7 +25,9 @@ class CreateTakeAway extends Component {
         this.state = {
           
             Items: [],
-            dishes: []
+            dishes: [],
+            name:"",
+            phone:""
         };
     }
     getTables = async () => {
@@ -67,7 +69,9 @@ class CreateTakeAway extends Component {
             tablepk:false,
             add_cart:true,
             type:"Takeaway",
-            user:true
+            user:true,
+            customer_name:this.state.name,
+            customer_mobile:this.state.phone
         }
         let post = await HttpsClient.post(api, sendData)
         console.log(post)
@@ -98,7 +102,11 @@ class CreateTakeAway extends Component {
     decreaseQuantity = (item, index) => {
         let duplicate = this.state.dishes
         duplicate[index].quantity = duplicate[index].quantity - 1
+        if (duplicate[index].quantity == 0) {
+            duplicate.splice(index, 1)
+        }
         this.setState({ dishes: duplicate })
+      
     }
     deleteItem = (index) => {
         let duplicate = this.state.dishes
@@ -144,7 +152,25 @@ class CreateTakeAway extends Component {
                 </LinearGradient>
                 <ScrollView>
                     <View style={{ padding: 20 }}>
-                      
+                          <View>
+                            <Text style={[styles.text, { fontSize: 22 }]}>Name :</Text>
+                              <TextInput 
+                                value={this.state.name}
+                                style={{height:height*0.05,width:width*0.9,paddingLeft:5,marginTop:10,backgroundColor:"#fafafa"}}
+                                selectionColor={primaryColor}
+                                onChangeText={(name) => { this.setState({ name})}}
+                              />
+                          </View>
+                        <View style={{marginTop:10}}>
+                            <Text style={[styles.text, { fontSize: 22 }]}>Phone Number :</Text>
+                            <TextInput
+                                keyboardType={"numeric"}
+                                value={this.state.phone}
+                                style={{ height: height * 0.05, width: width * 0.9, paddingLeft: 5, marginTop: 10, backgroundColor: "#fafafa" }}
+                                selectionColor={primaryColor}
+                                onChangeText={(phone) => { this.setState({ phone }) }}
+                            />
+                        </View>
                         <View style={{ marginTop: 30 }}>
                             <View>
                                 <Text style={[styles.text, { fontSize: 22 }]}>Add Items:</Text>

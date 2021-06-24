@@ -13,10 +13,10 @@ import Constants from 'expo-constants';
 import { FontAwesome, MaterialCommunityIcons, MaterialIcons, SimpleLineIcons, Entypo, Fontisto, Feather, Ionicons, FontAwesome5 } from '@expo/vector-icons';
 import OrdersStack from '../stacks/OrdersStack';
 import HistoryStack from '../stacks/HistoryStack';
-import StatisticsStack from '../stacks/StatisticsStack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import MyTabBar from '../components/MyTabBar';
 import InventoryStack from '../stacks/InventoryStack';
+import ProfileStack from '../stacks/ProfileStack';
 const Tab = createBottomTabNavigator();
 class AdminTab extends Component {
     constructor(props) {
@@ -34,7 +34,7 @@ class AdminTab extends Component {
                 <Tab.Screen name="Orders" component={OrdersStack} />
                 <Tab.Screen name="History" component={HistoryStack} />
                 <Tab.Screen name="Inventory" component={InventoryStack} />
-                <Tab.Screen name="Statistics" component={StatisticsStack} />
+                <Tab.Screen name="Profile" component={ProfileStack} />
                
             </Tab.Navigator>
         );

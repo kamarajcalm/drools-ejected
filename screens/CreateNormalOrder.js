@@ -118,6 +118,9 @@ class CreateNormalOrder extends Component {
     decreaseQuantity = (item, index)=>{
         let duplicate = this.state.dishes
         duplicate[index].quantity = duplicate[index].quantity - 1
+        if (duplicate[index].quantity==0){
+            duplicate.splice(index,1)
+        }
         this.setState({ dishes: duplicate })
     }
     deleteItem = (index)=>{
@@ -165,7 +168,7 @@ class CreateNormalOrder extends Component {
                 <ScrollView>
                 <View style={{padding:20}}>
                     <Text style={[styles.text, {fontSize:22}]}>Select Table :</Text>
-                    <View style={{marginTop:10}}>
+                    <View style={{marginTop:10,height:this.state.open?height*0.1:height*0.05}}>
                         <DropDownPicker
                             style={{ height: height * 0.05 }}
                             containerStyle={{ height: height * 0.05 }}

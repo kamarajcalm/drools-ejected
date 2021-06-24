@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Dimensions, TouchableOpacity, StyleSheet,FlatList,Image} from 'react-native';
+import { View, Text, Dimensions, TouchableOpacity, StyleSheet,FlatList,Image,ActivityIndicator} from 'react-native';
 const { height, width } = Dimensions.get('window')
 import settings from '../AppSettings'
 import { connect } from 'react-redux';
@@ -23,7 +23,10 @@ class History extends Component {
         this.state = {
             show:false,
             today:momemt(new Date()).format("YYYY-MM-DD"),
-            orders:[]
+            orders:[],
+            refreshing:false,
+            offset:0,
+            loadmore:true
         };
     }
     hideDatePicker = () => {
@@ -36,11 +39,17 @@ class History extends Component {
         this.hideDatePicker();
     };
     getOrders = async () => {
-        let api = `${url}/api/drools/cart/?date=${this.state.today}`
+        this.setState({ refreshing:true})
+        let api = `${url}/api/drools/cart/?date=${this.state.today}&limit=${6}&offset=${this.state.offset}`
         const data = await HttpsClient.get(api)
         console.log(api)
         if (data.type == "success") {
-            this.setState({ orders: data.data })
+            if(data.data.next==null){
+                this.setState({loadmore:false})
+            }
+            this.setState({ orders: this.state.orders.concat(data.data.results), refreshing:false})
+        }else{
+            this.setState({refreshing:false})
         }
     }
     componentDidMount() {
@@ -63,6 +72,23 @@ class History extends Component {
         if (item.cart_status == "Declined") {
             return "red"
         }
+    }
+    footer =()=>{
+        if(this.state.loadmore){
+            return(
+                <ActivityIndicator size={"large"}  color={primaryColor}/>
+            )
+        }else{
+            return null
+        }
+    }
+    loadmore =()=>{
+         if(this.state.loadmore){
+             this.setState({ offset: this.state.offset + 6 }, () => {
+                 this.getOrders()
+             })
+         }
+     
     }
     render() {
      
@@ -93,9 +119,17 @@ class History extends Component {
                     </View>
                 </LinearGradient>
                 <FlatList
+                    bounces={false}
+                    ListFooterComponent={this.footer()}
+                    refreshing={this.state.refreshing}
+                    onRefresh={()=>{this.setState({orders:[],offset:0,loadmore:true},()=>{
+                        this.getOrders()
+                    })}}
                     style={{ backgroundColor: "#333" }}
                     data={this.state.orders}
                     keyExtractor={(item, index) => index.toString()}
+                    onEndReached={()=>{this.loadmore()}}
+                    onEndReachedThreshold={0.1}
                     renderItem={({ item, index }) => {
                         return (
                             <TouchableOpacity style={{ height: height * 0.18, borderColor: "#fff", borderBottomWidth: 0.5, flexDirection: "row", paddingVertical: 10 }}
@@ -116,7 +150,7 @@ class History extends Component {
                                             </View>
                                         </View>
                                         <View style={{ flex: 0.2 }}>
-                                            <Text style={[styles.text, { color: "#fff" }]}>10:00 am</Text>
+                                            <Text style={[styles.text, { color: "#fff" }]}>{momemt(item.created).format('hh:mm a')}</Text>
                                         </View>
                                     </View>
                                     <View style={{ flexDirection: "row", flex: 0.25, alignItems: "center", justifyContent: "space-around" }}>

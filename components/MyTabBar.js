@@ -41,9 +41,9 @@ export default class MyTabBar extends Component {
                 <FontAwesome name="history" size={24} color={isFocused ? primaryColor :secondaryColor}/>
             )
         }
-        if (label == "Statistics") {
+        if (label == "Profile") {
             return (
-                <Ionicons name="stats-chart" size={24} color={isFocused ? primaryColor :secondaryColor} />
+                <Ionicons name="person-circle" size={24} color={isFocused ? primaryColor : secondaryColor}/>
             )
         }
         if (label == "Inventory") {

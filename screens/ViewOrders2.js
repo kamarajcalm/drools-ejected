@@ -63,6 +63,7 @@ class ViewOrders2 extends Component {
         return total
     }
     print = async () => {
+
         await BluetoothEscposPrinter.printerAlign(BluetoothEscposPrinter.ALIGN.CENTER);
         await BluetoothEscposPrinter.setBlob(0);
         await BluetoothEscposPrinter.printText("Drools\n\r", {
@@ -87,7 +88,7 @@ class ViewOrders2 extends Component {
         let columnWidths = [16, 16]
         await BluetoothEscposPrinter.printColumn(columnWidths,
             [BluetoothEscposPrinter.ALIGN.LEFT, BluetoothEscposPrinter.ALIGN.RIGHT],
-            [`BILLNO:${this.state.item.id}`, `DATE:${moment(this.state.item.created).format("DD/MM/YYYY")}`], { fonttype: 0 });
+            [`BILLNO:${this.state.item.id}`, `DATE:${moment(new Date()).format("DD/MM/YYYY")}`], { fonttype: 0 });
         await BluetoothEscposPrinter.printText("\n\r", {});
         await BluetoothEscposPrinter.printText("--------------------------------\n\r", {});
         let columnWidts = [10, 6, 8, 8]
@@ -101,6 +102,7 @@ class ViewOrders2 extends Component {
                 [BluetoothEscposPrinter.ALIGN.LEFT, BluetoothEscposPrinter.ALIGN.CENTER, BluetoothEscposPrinter.ALIGN.CENTER, BluetoothEscposPrinter.ALIGN.RIGHT],
                 [`${i.itemTitle}`, `${i.quantity}`, `${i.item_price}`, `${i.total_price}`], {});
         })
+        let columnWidth0 = [9, 12, 11]
         await BluetoothEscposPrinter.printText("--------------------------------\n\r", {});
         let columnWidth4 = [10, 6, 8, 8]
         await BluetoothEscposPrinter.printColumn(columnWidth4,
@@ -108,17 +110,24 @@ class ViewOrders2 extends Component {
             ["SUBTOTAL", `${this.getSubtotal()}`, '', `${this.state.item.total_price}`], {});
         await BluetoothEscposPrinter.printText("--------------------------------\n\r", {});
 
-        this.state.item.items.forEach(async (i) => {
-            let columnWidth = [9, 12, 11]
-            await BluetoothEscposPrinter.printColumn(columnWidth,
-                [BluetoothEscposPrinter.ALIGN.LEFT, BluetoothEscposPrinter.ALIGN.CENTER, BluetoothEscposPrinter.ALIGN.RIGHT],
-                [``, `CGST @9.00%`, `2.916.80`], {});
-        })
+
+    
+
+      
+        await BluetoothEscposPrinter.printColumn(columnWidth0,
+            [BluetoothEscposPrinter.ALIGN.LEFT, BluetoothEscposPrinter.ALIGN.CENTER, BluetoothEscposPrinter.ALIGN.RIGHT],
+            [``, `CGST @2.50%`, ` + ${Math.floor(this.state.item.gst/2)}`], {});
+        await BluetoothEscposPrinter.printColumn(columnWidth0,
+            [BluetoothEscposPrinter.ALIGN.LEFT, BluetoothEscposPrinter.ALIGN.CENTER, BluetoothEscposPrinter.ALIGN.RIGHT],
+            [``, `SGST @2.50%`, ` + ${Math.floor(this.state.item.gst / 2)}`], {});
+        await BluetoothEscposPrinter.printColumn(columnWidth0,
+            [BluetoothEscposPrinter.ALIGN.LEFT, BluetoothEscposPrinter.ALIGN.CENTER, BluetoothEscposPrinter.ALIGN.RIGHT],
+            [``, `discount`, ` - ${this.state.item.money_saved}`], {});
         await BluetoothEscposPrinter.printText("--------------------------------\n\r", {});
         let columnWidth5 = [16, 16]
         await BluetoothEscposPrinter.printColumn(columnWidth5,
             [BluetoothEscposPrinter.ALIGN.LEFT, BluetoothEscposPrinter.ALIGN.RIGHT],
-            ["TOTAL", "Rs.1,000.00"], { fonttype: 0 });
+            ["TOTAL", `${this.state.item.cart_bill}`], { fonttype: 0 });
         await BluetoothEscposPrinter.printText("--------------------------------\n\r", {});
         await BluetoothEscposPrinter.printText("\n\r", {});
         await BluetoothEscposPrinter.printerAlign(BluetoothEscposPrinter.ALIGN.CENTER);
@@ -189,10 +198,13 @@ class ViewOrders2 extends Component {
                     </View>
                     <View style={{ flex: 0.6, alignItems: "center", justifyContent: "center" }}>
                         <View style={{ alignSelf: "flex-end", marginRight: 20 }}>
-                            <Text style={[styles.text, { color: "#fff", fontSize: 22, }]}>Total :</Text>
+                            <Text style={[styles.text, { color: "#fff", fontSize: 22, }]}>bill :</Text>
                         </View>
                         <View style={{ alignSelf: "flex-end", marginRight: 20 }}>
-                            <Text style={[styles.text, { color: "#fff", fontSize: 22, }]}>Actual Price :</Text>
+                            <Text style={[styles.text, { color: "#fff", fontSize: 22, }]}>GST :</Text>
+                        </View>
+                        <View style={{ alignSelf: "flex-end", marginRight: 20 }}>
+                            <Text style={[styles.text, { color: "#fff", fontSize: 22, }]}>total price :</Text>
                         </View>
                         <View style={{ alignSelf: "flex-end", marginRight: 20 }}>
                             <Text style={[styles.text, { color: "#fff", fontSize: 22, }]}>Money Saved :</Text>
@@ -200,6 +212,7 @@ class ViewOrders2 extends Component {
                     </View>
                     <View style={{ flex: 0.2, alignItems: "center", justifyContent: "center" }}>
                         <Text style={[styles.text, { color: primaryColor, fontSize: 25 }]}>₹ {this.state.item.cart_bill}</Text>
+                        <Text style={[styles.text, { color: primaryColor, fontSize: 25 }]}>₹ {this.state.item.gst}</Text>
                         <Text style={[styles.text, { color: primaryColor, fontSize: 25 }]}>₹ {this.state.item.total_price}</Text>
                         <Text style={[styles.text, { color: primaryColor, fontSize: 25 }]}>₹ {this.state.item.money_saved}</Text>
                     </View>
@@ -216,6 +229,27 @@ class ViewOrders2 extends Component {
                         <Text style={[styles.text, { color: "#fff" }]}>Add Items</Text>
                     </TouchableOpacity>
                 </View> */}
+                     {
+                    this.state.item.order_type =="Takeaway"&&
+                    <View style={{  margin: 20 }}>
+                          <View style={{flexDirection:"row",marginTop:10}}>
+                               <View>
+                                   <Text style={[styles.text,{color:"#fff",fontSize:22}]}>Name : </Text>
+                               </View>
+                               <View>
+                                <Text style={[styles.text, { color: "#fff", fontSize: 22 }]}>{this.state.item.customer_name} </Text>
+                               </View>
+                          </View>
+                        <View style={{ flexDirection: "row",marginTop:10 }}>
+                            <View>
+                                <Text style={[styles.text, { color: "#fff", fontSize: 22 }]}>Phone : </Text>
+                            </View>
+                            <View>
+                                <Text style={[styles.text, { color: "#fff", fontSize: 22 }]}>{this.state.item.customer_mobile} </Text>
+                            </View>
+                        </View>
+                    </View>
+                }
                 <View style={{ alignItems: "center", justifyContent: "center", marginVertical: 30, flexDirection: "row" }}>
                     <TouchableOpacity style={{ height: height * 0.05, width: width * 0.4, alignItems: "center", justifyContent: "center", backgroundColor: "green" }}
                         onPress={() => { this.print() }}

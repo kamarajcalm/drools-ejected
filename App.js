@@ -9,7 +9,7 @@ import AppNavigator from './Navigation/AppNavigator';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import FlashMessage from "react-native-flash-message";
-const fontFamily = settings.fontFamily
+
 export default class App extends Component {
   constructor(props) {
     super(props);
@@ -43,6 +43,7 @@ export default class App extends Component {
         } else {
           return null;
         }
+      
       }
   }
 

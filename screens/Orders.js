@@ -33,6 +33,7 @@ import OnlineOrders from './OnlineOrders';
         this.state = {
             routes,
             index: 0,
+        
         };
     }
      renderScene = ({ route, }) => {

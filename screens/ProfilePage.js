@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Dimensions, TouchableOpacity, StyleSheet, FlatList,Image,Alert} from 'react-native';
+import { View, Text, Dimensions, TouchableOpacity, StyleSheet, FlatList,Image,Alert,AsyncStorage} from 'react-native';
 const { height, width } = Dimensions.get('window')
 import settings from '../AppSettings'
 import { connect } from 'react-redux';
@@ -66,11 +66,11 @@ class ProfilePage extends Component {
                      >
 
                     
-                    <TouchableOpacity style={{ flex: 0.2, alignItems: "center", justifyContent: "center" }}
-                        onPress={() => { this.props.navigation.goBack() }}
+                    <View style={{ flex: 0.2, alignItems: "center", justifyContent: "center" }}
+                    
                     >
-                        <Ionicons name="caret-back" size={24} color={secondaryColor} />
-                    </TouchableOpacity>
+                        
+                    </View>
                     <View style={{ flex: 0.6, alignItems: "center", justifyContent: "center" }}>
                         <Text style={[styles.text, { color: "#fff", fontSize: 18 }]}>Profile</Text>
 
@@ -107,6 +107,22 @@ class ProfilePage extends Component {
                             </View>
                             <View style={{ alignItems: "center", justifyContent: "center", marginLeft: 20 }}>
                                 <Text style={[styles.text, { color: "#fff" }]}>Expenses</Text>
+                            </View>
+                        </View>
+
+                        <View style={{ flex: 0.2, alignItems: "center", justifyContent: 'center' }}>
+                            <Entypo name="triangle-right" size={24} color="#fff" />
+                        </View>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={{ flexDirection: "row", height: height * 0.05, paddingHorizontal: 20, width, marginTop: 20 }}
+                        onPress={() => { this.props.navigation.navigate('Statistics') }}
+                    >
+                        <View style={{ flex: 0.8, flexDirection: "row" }}>
+                            <View style={{ alignItems: "center", justifyContent: "center" }}>
+                                <Ionicons name="stats-chart" size={24} color="#fff" />
+                            </View>
+                            <View style={{ alignItems: "center", justifyContent: "center", marginLeft: 20 }}>
+                                <Text style={[styles.text, { color: "#fff" }]}>Statistics</Text>
                             </View>
                         </View>
 

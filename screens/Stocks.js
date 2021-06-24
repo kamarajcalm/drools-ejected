@@ -30,6 +30,7 @@ export default class Stocks extends Component {
             types,
             selectedType:types[0].value,
             open: false,
+            refreshing:false
         };
     }
     showSimpleMessage(content, color, type = "info", props = {}) {
@@ -73,11 +74,14 @@ export default class Stocks extends Component {
       
     }
     getItems =async() =>{
+        this.setState({refreshing:true})
         const api = `${url}/api/drools/ingridents/`
         const data = await HttpsClient.get(api)
         console.log(api)
         if (data.type == "success") {
-            this.setState({ Items: data.data })
+            this.setState({ Items: data.data, refreshing:false})
+        }else{
+            this.setState({ refreshing:false})
         }
     }
     componentDidMount(){
@@ -264,6 +268,8 @@ export default class Stocks extends Component {
             <View style={{ flex: 1 }}>
              
                 <FlatList
+                    refreshing={this.state.refreshing}
+                    onRefresh={()=>{this.getItems()}}
                     data={this.state.Items}
                     keyExtractor={(item, index) => index.toString()}
                     ListHeaderComponent={this.header()}

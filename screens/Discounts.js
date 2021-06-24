@@ -22,38 +22,38 @@ class Discounts extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            employeeExpense: "",
-            edit: false,
-            electricityExpense: "",
-            otherExpense: "",
-            Total: ""
+            onlineDiscount:"",
+            takeAwayDiscount:"",
+            diningDiscount:"",
+            edit:false,
+           
         };
     }
-    getExpenses = async () => {
-        let api = `${url}/api/drools/droolsExpenses/`
+    getDiscount = async () => {
+        let api = `${url}/api/drools/droolsDiscount/1/`
         let data = await HttpsClient.get(api)
         if (data.type == "success") {
             this.setState({
-                employeeExpense: data.data[0].employee_expense.toString(),
-                electricityExpense: data.data[0].electricity_expense.toString(),
-                otherExpense: data.data[0].other_expense.toString(),
-                Total: data.data[0].total_expense
+                onlineDiscount: data.data.online_discount.toString(),
+                takeAwayDiscount: data.data.takeaway_discount.toString(),
+                diningDiscount: data.data.online_discount.toString(),
+              
             })
         }
     }
     componentDidMount() {
-        this.getExpenses()
+        this.getDiscount()
     }
     save = async () => {
-        let api = `${url}/api/drools/postExpenses/`
+        let api = `${url}/api/drools/droolsDiscount/${1}/`
         let sendData = {
-            employee_expense: Number(this.state.employeeExpense),
-            other_expense: Number(this.state.otherExpense),
-            electricity_expense: Number(this.state.electricityExpense)
+            online_discount : Number(this.state.onlineDiscount),
+            takeaway_discount: Number(this.state.takeAwayDiscount),
+            dining_discount: Number(this.state.diningDiscount)
         }
-        let post = await HttpsClient.post(api, sendData)
+        let post = await HttpsClient.patch(api, sendData)
         if (post.type == "success") {
-            this.getExpenses()
+            this.getDiscount()
             return this.showSimpleMessage("Saved SuccessFully", "#00A300", "success")
 
         } else {
@@ -105,27 +105,37 @@ class Discounts extends Component {
                         <Text style={[styles.text, { fontSize: 22, color: "#fff" }]}>Online Discount : </Text>
                         <TextInput
                             ref={ref => this.textRef = ref}
-                            value={this.state.employeeExpense}
+                            value={this.state.onlineDiscount}
                             editable={this.state.edit}
                             keyboardType={"numeric"}
                             style={{ height: height * 0.05, width: width * 0.8, backgroundColor: "#fff", marginTop: 10, paddingLeft: 10 }}
                             selectionColor={primaryColor}
-                            onChangeText={(employeeExpense) => { this.setState({ employeeExpense }) }}
+                            onChangeText={(onlineDiscount) => { this.setState({ onlineDiscount }) }}
                         />
                     </View>
                     <View style={{ marginTop: 10, marginLeft: 20 }}>
-                        <Text style={[styles.text, { fontSize: 22, color: "#fff" }]}>Normal Discount : </Text>
+                        <Text style={[styles.text, { fontSize: 22, color: "#fff" }]}>Dining Discount : </Text>
                         <TextInput
-                            value={this.state.electricityExpense}
+                            value={this.state.diningDiscount}
                             editable={this.state.edit}
                             keyboardType={"numeric"}
                             style={{ height: height * 0.05, width: width * 0.8, backgroundColor: "#fff", marginTop: 10, paddingLeft: 10 }}
                             selectionColor={primaryColor}
-                            onChangeText={(electricityExpense) => { this.setState({ electricityExpense }) }}
+                            onChangeText={(diningDiscount) => { this.setState({ diningDiscount }) }}
                         />
                     </View>
                
-                 
+                    <View style={{ marginTop: 10, marginLeft: 20 }}>
+                        <Text style={[styles.text, { fontSize: 22, color: "#fff" }]}>TakeAway Discount : </Text>
+                        <TextInput
+                            value={this.state.takeAwayDiscount}
+                            editable={this.state.edit}
+                            keyboardType={"numeric"}
+                            style={{ height: height * 0.05, width: width * 0.8, backgroundColor: "#fff", marginTop: 10, paddingLeft: 10 }}
+                            selectionColor={primaryColor}
+                            onChangeText={(takeAwayDiscount) => { this.setState({ takeAwayDiscount }) }}
+                        />
+                    </View>
                     <View style={{ position: "absolute", width, bottom: 30, flexDirection: "row", paddingVertical: 20, flexDirection: "row" }}>
                         <View style={{ flex: 0.5, alignItems: "center", justifyContent: "center" }}>
                             <TouchableOpacity

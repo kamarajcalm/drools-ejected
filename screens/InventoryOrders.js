@@ -24,15 +24,19 @@ export default class InventoryOrders extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      orders:[]
+      orders:[],
+      refreshing:false
     };
   }
   getOrders = async () => {
+    this.setState({refreshing:true})
     let api = `${url}/api/drools/orders/`
     const data = await HttpsClient.get(api)
     console.log(api)
     if (data.type == "success") {
-      this.setState({ orders: data.data })
+      this.setState({ orders: data.data, refreshing:false})
+    }else{
+      this.setState({ refreshing:false})
     }
   }
   componentDidMount() {
@@ -71,6 +75,8 @@ export default class InventoryOrders extends Component {
     return (
       <View style={{flex:1}}>
           <FlatList 
+            refreshing={this.state.refreshing}
+            onRefresh={()=>{this.getOrders()}}
             ListHeaderComponent ={this.header()}
             data={this.state.orders}
             keyExtractor ={(item,index)=>index.toString()}

@@ -61,7 +61,7 @@ class ViewItems extends Component {
         }
         let post = await HttpsClient.post(api,sendData)
          if(post.type =="success"){
-              this.getItem()
+            this.getItem()
              this.showSimpleMessage("Added SuccessFully", "#00A300", "success")
              this.setState({ searchName: "", availableQty: "", modal: false, })
          }
@@ -212,7 +212,7 @@ class ViewItems extends Component {
 
         return(
             <View style={{marginTop:20,flex:1,}}>
-                
+               
                 <View style={{alignSelf:"center"}}>
                     <Text style={[styles.text,{fontSize:22,textDecorationLine:"underline",color:"#fff"}]}>Description :</Text>
                 </View>
@@ -222,10 +222,18 @@ class ViewItems extends Component {
             </View>
         )
     }
-    deleteItem = (item, index)=>{
-        let duplicate = this.state.item
-        duplicate.subItems.splice(index,1)
-        this.setState({ item:duplicate})
+    deleteItem = async(item, index)=>{
+        let api = `${url}/api/drools/itemsubs/${item.id}/`
+        let del = await HttpsClient.delete(api)
+        if(del.type=="success"){
+            let duplicate = this.state.item
+            duplicate.subItems.splice(index, 1)
+            this.setState({ item: duplicate })
+            this.showSimpleMessage("deleted successfully","green","success")
+        }else{
+            this.showSimpleMessage("Try again", "red", "failure")
+        }
+   
     }
     createAlert = (item, index) => {
         Alert.alert(
@@ -295,6 +303,15 @@ class ViewItems extends Component {
             </Modal>
         )
     }
+    validateColor =()=>{
+        if (this.state.item.item_status =="Available"){
+            return "green"
+        }
+        if (this.state.item.item_status == "outofstock") {
+            return "red"
+        }
+        return "#ffff"
+    }
     render() {
 
         return (
@@ -321,11 +338,42 @@ class ViewItems extends Component {
                     </View>
                 </LinearGradient>
              
-                <View>
-                    <Image  
-                        source={{ uri: this.state.item.displayPicture}}
-                        style={{height:height*0.3,width}}
-                    />
+                <View style={{ flexDirection: "row", height: height * 0.3, width}}>
+                    <View style={{flex:0.4}}>
+                        <Image
+                            source={{ uri: this.state.item.displayPicture }}
+                            style={{ height:"100%",width:"100%"}}
+                        />
+                    </View>
+                   <View style={{flex:0.6}}>
+                        <View style={{alignSelf:"center"}}>
+                            <Text style={[styles.text, { fontSize: 22, textDecorationLine: "underline", color: "#fff" }]}>Item Info:</Text>
+                        </View>
+                        <View style={{marginTop:10,marginLeft:10,flexDirection:"row"}}>
+                            <View style={{}}>
+                                <Text style={[styles.text, { color: "#fff",fontSize:18 }]}>Price : </Text>
+                            </View>
+                            <View style={{}}>
+                                <Text style={[styles.text, { color: "#fff", fontSize: 18 }]}>₹ {this.state.item.item_price}</Text>
+                            </View>
+                        </View>
+                        <View style={{ marginTop: 10, marginLeft: 10, flexDirection: "row" }}>
+                            <View style={{}}>
+                                <Text style={[styles.text, { color: "#fff", fontSize: 18 }]}>Discount Price : </Text>
+                            </View>
+                            <View style={{}}>
+                                <Text style={[styles.text, { color: "#fff", fontSize: 18 }]}>₹ {this.state.item.discount_price}</Text>
+                            </View>
+                        </View>
+                        <View style={{ marginTop: 10, marginLeft: 10, flexDirection: "row" }}>
+                            <View style={{}}>
+                                <Text style={[styles.text, { color: "#fff", fontSize: 18 }]}>Stock : </Text>
+                            </View>
+                            <View style={{}}>
+                                <Text style={[styles.text, { color:this.validateColor(), fontSize: 18 ,}]}>{this.state.item.item_status}</Text>
+                            </View>
+                        </View>
+                   </View>
                 </View>
                 <View style={{alignItems:"center",marginTop:10}}>
                     <Text style={[styles.text,{color:"#fff",fontSize:20,textDecorationLine:"underline"}]}>Required Ingredients</Text>

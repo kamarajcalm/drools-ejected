@@ -137,6 +137,7 @@ export default class FastMovingItems extends Component {
              
             </LinearGradient>
             <ScrollView
+                bounces={false}
                 style={{ }}
                 horizontal={true}
                 // i needed the scrolling to start from the end not the start
@@ -146,7 +147,7 @@ export default class FastMovingItems extends Component {
                     showValuesOnTopOfBars
                     style={{marginLeft:-30}}
                     data={this.state.data}
-                    width={width * 1.5}
+                    width={width * 2}
                     height={height*0.9}
                     chartConfig={{
                         backgroundColor: "#000000",

@@ -13,7 +13,7 @@ import Constants from 'expo-constants';
 import { FontAwesome, MaterialCommunityIcons, MaterialIcons, SimpleLineIcons, Entypo, Fontisto, Feather, Ionicons, FontAwesome5 } from '@expo/vector-icons';
 
 import HistoryStack from '../stacks/HistoryStack';
-import StatisticsStack from '../stacks/StatisticsStack';
+
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import MyTabBar2 from '../components/MyTabBar2';
 import ProfileStack from '../CooksStack/ProfileStack';

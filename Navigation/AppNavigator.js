@@ -8,7 +8,6 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import OrdersStack from '../stacks/OrdersStack';
 import HistoryStack from '../stacks/HistoryStack';
-import StatisticsStack from '../stacks/StatisticsStack';
 import MyTabBar from '../components/MyTabBar'
 import AdminTab from './AdminTab';
 import DefaultScreen from '../screens/DefaultScreen';

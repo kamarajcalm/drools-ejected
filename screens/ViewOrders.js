@@ -54,7 +54,10 @@ class ViewOrders extends Component {
             ordervalue:orderStatus[0].value,
             open2: false,
             paymentvalue:paymentStatus[0].value,
-            discount:""
+            discount:"",
+            onlineDiscount:"",
+            takeAwayDiscount:"",
+            diningDiscount:""
         };
     }
     showSimpleMessage(content, color, type = "info", props = {}) {
@@ -81,7 +84,8 @@ class ViewOrders extends Component {
         let sendData ={
             status:this.state.ordervalue,
             payment_status:this.state.paymentvalue,
-            cart_id:this.state.item.id
+            cart_id:this.state.item.id,
+            discount:this.state.discount
         }
         let post = await HttpsClient.post(api,sendData)
         console.log(post)
@@ -145,20 +149,23 @@ class ViewOrders extends Component {
         let columnWidth4 = [10, 6, 8, 8]
         await BluetoothEscposPrinter.printColumn(columnWidth4,
             [BluetoothEscposPrinter.ALIGN.LEFT, BluetoothEscposPrinter.ALIGN.CENTER, BluetoothEscposPrinter.ALIGN.CENTER, BluetoothEscposPrinter.ALIGN.RIGHT],
-            ["SUBTOTAL", `${this.getSubtotal()}`, '', `${this.state.item.total_price}`], {});
+            ["SUBTOTAL", `${this.getSubtotal()}`, '', `${this.state.item.cart_bill}`], {});
         await BluetoothEscposPrinter.printText("--------------------------------\n\r", {});
 
-        this.state.item.items.forEach(async (i) => {
-            let columnWidth = [9, 12, 11]
-            await BluetoothEscposPrinter.printColumn(columnWidth,
-                [BluetoothEscposPrinter.ALIGN.LEFT, BluetoothEscposPrinter.ALIGN.CENTER, BluetoothEscposPrinter.ALIGN.RIGHT],
-                [``, `CGST @9.00%`, `2.916.80`], {});
-        })
+       
+            let columnWidth0 = [9, 12, 11]
+           
+        await BluetoothEscposPrinter.printColumn(columnWidth0,
+            [BluetoothEscposPrinter.ALIGN.LEFT, BluetoothEscposPrinter.ALIGN.CENTER, BluetoothEscposPrinter.ALIGN.RIGHT],
+            [``, `GST @5.00%`, `${this.state.item.gst}`],{});
+        await BluetoothEscposPrinter.printColumn(columnWidth0,
+            [BluetoothEscposPrinter.ALIGN.LEFT, BluetoothEscposPrinter.ALIGN.CENTER, BluetoothEscposPrinter.ALIGN.RIGHT],
+            [``, `discount`, `${this.state.item.money_saved}`],{});
         await BluetoothEscposPrinter.printText("--------------------------------\n\r", {});
         let columnWidth5 = [16, 16]
         await BluetoothEscposPrinter.printColumn(columnWidth5,
             [BluetoothEscposPrinter.ALIGN.LEFT, BluetoothEscposPrinter.ALIGN.RIGHT],
-            ["TOTAL", "Rs.1,000.00"], { fonttype: 0 });
+            ["TOTAL", `${this.state.item.total_price}`], { fonttype: 0 });
         await BluetoothEscposPrinter.printText("--------------------------------\n\r", {});
         await BluetoothEscposPrinter.printText("\n\r", {});
         await BluetoothEscposPrinter.printerAlign(BluetoothEscposPrinter.ALIGN.CENTER);
@@ -173,13 +180,29 @@ class ViewOrders extends Component {
         await BluetoothEscposPrinter.printText("\n\r", {});
         await BluetoothEscposPrinter.printText("\n\r", {});
     }
+    getDiscount = async()=>{
+        let api = `${url}/api/drools/droolsDiscount/1/`
+        let data = await HttpsClient.get(api)
+        if (data.type == "success") {
+            if (this.state.item.order_type =="Dining"){
+                this.setState({ discount:data.data.online_discount.toString()})
+            }
+            if (this.state.item.order_type == "Takeaway") {
+                this.setState({ discount: data.data.takeaway_discount.toString()})
+            }
+            if (this.state.item.order_type == "Online"){
+                this.setState({ discount: data.data.takeaway_discount.toString() })
+            }
+        }
+    }
     componentDidMount(){
+        this.getDiscount()
         this._unsubscribe = this.props.navigation.addListener('focus', () => {
             this.getOrders()
-
         });
     }
     componentWillUnmount(){
+          
         this._unsubscribe()
     }
     footer =()=>{
@@ -191,10 +214,13 @@ class ViewOrders extends Component {
                     </View>
                     <View style={{ flex: 0.6, alignItems: "center", justifyContent: "center"}}>
                         <View style={{ alignSelf: "flex-end", marginRight:20 }}>
-                            <Text style={[styles.text,{color:"#fff",fontSize:22,}]}>Total :</Text>
+                            <Text style={[styles.text, { color: "#fff", fontSize: 22, }]}>bill :</Text>
                         </View>
                         <View style={{ alignSelf: "flex-end", marginRight: 20 }}>
-                            <Text style={[styles.text, { color: "#fff", fontSize: 22, }]}>Actual Price :</Text>
+                            <Text style={[styles.text, { color: "#fff", fontSize: 22, }]}>GST :</Text>
+                        </View>
+                        <View style={{ alignSelf: "flex-end", marginRight: 20 }}>
+                            <Text style={[styles.text, { color: "#fff", fontSize: 22, }]}>total price :</Text>
                         </View>
                         <View style={{ alignSelf: "flex-end", marginRight: 20 }}>
                             <Text style={[styles.text, { color: "#fff", fontSize: 22, }]}>Money Saved :</Text>
@@ -202,6 +228,7 @@ class ViewOrders extends Component {
                     </View>
                     <View style={{flex:0.2,alignItems:"center",justifyContent:"center"}}>
                         <Text style={[styles.text, { color: primaryColor, fontSize: 25 }]}>₹ {this.state.item.cart_bill}</Text>
+                        <Text style={[styles.text, { color: primaryColor, fontSize: 25 }]}>₹ {this.state.item.gst}</Text>
                         <Text style={[styles.text, { color: primaryColor, fontSize: 25 }]}>₹ {this.state.item.total_price}</Text>
                         <Text style={[styles.text, { color: primaryColor, fontSize: 25 }]}>₹ {this.state.item.money_saved}</Text>
                     </View>
@@ -231,7 +258,7 @@ class ViewOrders extends Component {
                         <Text style={[styles.text, { color: "#fff" }]}>Add Items</Text>
                     </TouchableOpacity>
                 </View>
-                <View style={{alignItems:"center",justifyContent:"center",marginVertical:30,flexDirection:"row"}}>
+                {/* <View style={{alignItems:"center",justifyContent:"center",marginVertical:30,flexDirection:"row"}}>
                     <TouchableOpacity style={{ height: height * 0.05, width: width * 0.4, alignItems: "center", justifyContent: "center", backgroundColor: "green" }}
                         onPress={() => {this.print()}}
                     >
@@ -247,7 +274,29 @@ class ViewOrders extends Component {
 
                         </View>
                     </View>
-                </View>
+                </View> */}
+                {
+                    this.state.item.order_type =="Takeaway"&&
+                    <View style={{ flexDirection: "row", height: height * 0.06, margin: 20 }}>
+                        <View style={{ flex: 0.2 }}>
+
+                        </View>
+                        <View style={{ flex: 0.6, alignItems: "center", justifyContent: "center" }}>
+                            <View style={{ alignSelf: "flex-end", marginRight: 20 }}>
+                                <Text style={[styles.text, { color: "#fff", fontSize: 22, }]}>Name :</Text>
+                            </View>
+                            <View style={{ alignSelf: "flex-end", marginRight: 20 }}>
+                                <Text style={[styles.text, { color: "#fff", fontSize: 22, }]}>Mobile :</Text>
+                            </View>
+                    
+                        </View>
+                        <View style={{ flex: 0.2, alignItems: "center", justifyContent: "center" }}>
+                            <Text style={[styles.text, { color: primaryColor, fontSize: 25 }]}> {this.state.item.customer_name}</Text>
+                            <Text style={[styles.text, { color: primaryColor, fontSize: 25 }]}> {this.state.item.customer_mobile}</Text>
+                  
+                        </View>
+                    </View>
+                }
             </View>
         )
     }
@@ -303,7 +352,7 @@ class ViewOrders extends Component {
                         <View>
                             <Text style={[styles.text,{color:"#000",fontSize:22}]}>Order Status :</Text>
                         </View>
-                        <View style={{ marginTop: 10 }}>
+                        <View style={{ marginTop: 10 ,width:width*0.7,height:this.state.open?height*0.1:height*0.08}}>
                             <DropDownPicker
                                 style={{ height: height * 0.05 }}
                                 containerStyle={{ height: height * 0.05 }}
@@ -319,7 +368,7 @@ class ViewOrders extends Component {
                         <View>
                             <Text style={[styles.text, { color: "#000", fontSize: 22 }]}>Payment Status :</Text>
                         </View>
-                        <View style={{ marginTop: 10 }}>
+                        <View style={{ marginTop: 10, width: width * 0.7, height: this.state.open2 ? height * 0.1 : height * 0.08}}>
                             <DropDownPicker
                                 style={{ height: height * 0.05 }}
                                 containerStyle={{ height: height * 0.05 }}

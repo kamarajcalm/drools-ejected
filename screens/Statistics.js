@@ -39,12 +39,24 @@ class Statistics extends Component {
             <View style={{ flex: 1 }}>
         
                 {/* Headers */}
+          
                 <LinearGradient
                     style={{ height: height * 0.12, flexDirection: "row", alignItems: "center", justifyContent: "center" }}
                     colors={gradients}
                 >
-                    <View style={{ marginTop: Constants.statusBarHeight }}>
-                        <Text style={[styles.text, { color: "#fff", fontSize: 18 }]}>Statistics</Text>
+                    <View style={{ marginTop: Constants.statusBarHeight, flex: 1, flexDirection: "row" }}>
+                        <TouchableOpacity style={{ flex: 0.2, alignItems: "center", justifyContent: "center" }}
+                            onPress={() => { this.props.navigation.goBack() }}
+                        >
+                            <Ionicons name="caret-back" size={24} color={secondaryColor} />
+                        </TouchableOpacity>
+                        <View style={{ flex: 0.6, alignItems: "center", justifyContent: "center" }}>
+                            <Text style={[styles.text, { color: "#fff", fontSize: 18 }]}>Statistics</Text>
+
+                        </View>
+                        <View style={{ flex: 0.2, alignItems: "center", justifyContent: "center" }}>
+
+                        </View>
                     </View>
                 </LinearGradient>
                 <ScrollView 
@@ -88,7 +100,7 @@ class Statistics extends Component {
 
                             />
                             <View style={{ alignItems: "center", justifyContent: "center" }}>
-                                <Text style={[styles.text, { color: primaryColor, fontSize: 22 }]}>Fast Moving Items Time Wise</Text>
+                                <Text style={[styles.text, { color: primaryColor, fontSize: 22 }]}>Peak Hours</Text>
                             </View>
 
                         </LinearGradient>
@@ -116,29 +128,7 @@ class Statistics extends Component {
                   
 
                     </TouchableOpacity>
-                    <TouchableOpacity
-                        onPress={() => { this.props.navigation.navigate("ProfilePage") }}
-                    >
-                        <LinearGradient
-                            style={[styles.cardStyle]}
-                            colors={gradients}
-
-                        >
-
-                          
-                            <Image
-                                source={require("../assets/512x512_jpg.jpg")}
-                                style={{ height: 100, width: 100 }}
-
-                            /> 
-
-                            <View style={{ alignItems: "center", justifyContent: "center" }}>
-                                <Text style={[styles.text, { color: primaryColor, fontSize: 22 }]}>Profile</Text>
-                            </View>
-                        </LinearGradient>
-
-
-                    </TouchableOpacity>
+            
               
                 </ScrollView>
             </View>

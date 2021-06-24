@@ -140,8 +140,8 @@ export default class NetProfit extends Component {
         return(
             <>
                 <ScrollView
-                    style={{marginTop:50}}
-
+                    style={{marginTop:height*0.08}}
+                     bounces={false}
                     horizontal={true}
                     // i needed the scrolling to start from the end not the start
                     showsHorizontalScrollIndicator={false} // to hide scroll bar
@@ -151,7 +151,7 @@ export default class NetProfit extends Component {
                         
                         data={this.state.data}
                         width={width * 1.7}
-                        height={height * 0.92}
+                        height={height * 0.9}
                         chartConfig={{
                             backgroundColor: "#000000",
                             decimalPlaces: 0,
@@ -163,7 +163,7 @@ export default class NetProfit extends Component {
                             fillShadowGradient: primaryColor,
                             fillShadowGradientOpacity: 1,
                         }}
-                        verticalLabelRotation={30}
+                        verticalLabelRotation={80}
                     />
                 </ScrollView>
                 <View style={{ position: "absolute", top: 10, width: width * 0.4, right: 20 }}>

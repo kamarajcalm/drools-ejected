@@ -17,7 +17,8 @@ export default class Categories extends Component {
     super(props);
     this.state = {
         Items:[],
-        categoryName:""
+        categoryName:"",
+        refreshing:false
     };
   }
     showSimpleMessage(content, color, type = "info", props = {}) {
@@ -73,10 +74,13 @@ export default class Categories extends Component {
     }
     
     getCategories =async()=>{
+        this.setState({ refreshing: true})
         let api = `${url}/api/drools/category/`
         const data = await HttpsClient.get(api)
        if(data.type =="success"){
-           this.setState({ Items:data.data})
+           this.setState({ Items: data.data, refreshing:false})
+       }else{
+           this.setState({ refreshing: false })
        }
     }
     componentDidMount(){
@@ -130,6 +134,8 @@ export default class Categories extends Component {
                 </View>
             </View>
             <FlatList 
+              refreshing={this.state.refreshing}
+              onRefresh={()=>{this.getCategories()}}
               data={this.state.Items}
               keyExtractor={(item,index)=>index.toString()}
               ListHeaderComponent={this.header()}

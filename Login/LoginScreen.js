@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Dimensions, TouchableOpacity, StyleSheet, Image, TextInput, AsyncStorage, } from 'react-native';
+import { View, Text, Dimensions, TouchableOpacity, StyleSheet, Image, TextInput, AsyncStorage, ActivityIndicator} from 'react-native';
 const { height, width } = Dimensions.get('window')
 import settings from '../AppSettings'
 import { connect } from 'react-redux';
@@ -25,6 +25,7 @@ class LoginScreen extends Component {
             mobile:"",
             password:"",
             token: null,
+            loading:false,
         };
     }
     showSimpleMessage(content, color, type = "info", props = {}) {
@@ -39,13 +40,17 @@ class LoginScreen extends Component {
         showMessage(message);
     }
     login =async()=>{
+        this.setState({loading:true})
         if (this.state.mobile == "") {
+            this.setState({ loading: false })
             return this.showSimpleMessage(`please enter username`, "#dd7030")
+    
         }
         if (this.state.password == "") {
+            this.setState({ loading: false })
             return this.showSimpleMessage(`please enter password`, "#dd7030")
         }
-        this.setState({ loading: true })
+       
         var data = new FormData()
         data.append("username", this.state.mobile)
         data.append("password", this.state.password)
@@ -166,7 +171,10 @@ class LoginScreen extends Component {
                          onPress ={()=>{this.login()}}
                          style={{width:width*0.4,height:height*0.06,backgroundColor:primaryColor,alignItems:"center",justifyContent:"center",borderRadius:5}}
                         >
-                            <Text style={[styles.text,{color:"#fff"}]}>Login</Text>
+                            {!this.state.loading?<Text style={[styles.text,{color:"#fff"}]}>Login</Text>:
+                              
+                            <ActivityIndicator  size={"large"} color={"#fff"}/>
+                            }
                         </TouchableOpacity>
                     </View>
                 </View>

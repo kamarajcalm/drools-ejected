@@ -11,7 +11,7 @@ import ExpenseScreen from '../screens/ExpenseScreen';
 import BlueToothDevices from '../screens/BlueToothDevices';
 import Discounts from '../screens/Discounts';
 const Stack = createStackNavigator();
-export default class StatisticsStack extends Component {
+export default class ProfileStack extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -21,9 +21,9 @@ export default class StatisticsStack extends Component {
     render() {
         return (
             <Stack.Navigator>
+                <Stack.Screen name="ProfilePage" component={ProfilePage} options={{ headerShown: false }} />
                 <Stack.Screen name="Statistics" component={Statistics} options={{ headerShown: false }} />
                 <Stack.Screen name="StatisticsView" component={StatisticsView} options={{ headerShown: false }} />
-                <Stack.Screen name="ProfilePage" component={ProfilePage} options={{ headerShown: false }} />
                 <Stack.Screen name="Tables" component={Tables} options={{ headerShown: false }} />
                 <Stack.Screen name="ExpenseScreen" component={ExpenseScreen} options={{ headerShown: false }} />
                 <Stack.Screen name="BlueToothDevices" component={BlueToothDevices} options={{ headerShown: false }} />
