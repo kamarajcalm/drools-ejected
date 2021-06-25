@@ -70,8 +70,8 @@ class CreateTakeAway extends Component {
             add_cart:true,
             type:"Takeaway",
             user:true,
-            customer_name:this.state.name,
-            customer_mobile:this.state.phone
+            name:this.state.name,
+            mobile:this.state.phone
         }
         let post = await HttpsClient.post(api, sendData)
         console.log(post)

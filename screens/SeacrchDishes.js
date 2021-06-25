@@ -288,6 +288,7 @@ class SeacrchDishes extends Component {
                 </View>
            
                   <FlatList 
+                    contentContainerStyle={{paddingBottom:100}}
                     data ={this.state.items}
                     keyExtractor={(item,index)=>index.toString()}
                     renderItem ={({item,index})=>{
