@@ -68,9 +68,25 @@ class ViewCategories extends Component {
         }
       
     }
+    InvalidItem = async(item, index)=>{
+        let duplicate = this.state.Items
+        let api = `${url}/api/drools/items/${item.id}/`
+        let sendData ={
+            invalid:true
+        }
+        let patch =await HttpsClient.patch(api,sendData)
+        if(patch.type=="success"){
+            duplicate.splice(index, 1)
+            this.setState({ Items: duplicate })
+            return this.showSimpleMessage("Ivalid Successfully", "#00A300", "success")
+        }
+        else {
+            return this.showSimpleMessage("Try again", "red", "danger")
+        }
+    }
     createAlert = (item, index) => {
         Alert.alert(
-            "Do you want to delete?",
+            "Are you Sure",
             `${item.title}`,
             [
                 {
@@ -78,7 +94,7 @@ class ViewCategories extends Component {
                     onPress: () => console.log("Cancel Pressed"),
                     style: "cancel"
                 },
-                { text: "Yes", onPress: () => { this.deleteItem(item, index) } }
+                { text: "Yes", onPress: () => { this.InvalidItem(item, index) } }
             ]
         );
     }
@@ -173,7 +189,7 @@ class ViewCategories extends Component {
                                 <TouchableOpacity style={{ flex: 0.25, alignItems: "center", justifyContent: "center" }}
                                  onPress ={()=>{this.createAlert(item,index)}}
                                 >
-                                    <AntDesign name="delete" size={24} color={primaryColor} />
+                                  <Text style={[styles.text,{color:"red",textDecorationLine:"underline"}]}>Make Invalid</Text>
                                 </TouchableOpacity>
                             </View>
                         )
