@@ -148,10 +148,9 @@ export default class NetProfit extends Component {
                 >
                     <BarChart
                         showValuesOnTopOfBars
-                        
                         data={this.state.data}
                         width={width * 1.7}
-                        height={height * 0.9}
+                        height={height * 0.8}
                         chartConfig={{
                             backgroundColor: "#000000",
                             decimalPlaces: 0,

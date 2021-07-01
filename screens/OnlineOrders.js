@@ -72,11 +72,11 @@ class OnlineOrders extends Component {
                                 onPress={() => { this.props.navigation.navigate('ViewOrder', { item }) }}
                             >
 
-                                <LinearGradient 
-                                  style={{ flex: 1}}
+                                <LinearGradient
+                                    style={{ flex: 1, }}
                                     colors={gradients}
                                 >
-                                    <View style={{ flex: 0.7, padding: 10, }}>
+                                    <View style={{ flex: 0.7, padding: 10 }}>
                                         <View style={{ flex: 0.7, }}>
                                             <View style={{ flex: 0.5, }}>
                                                 <View>
@@ -88,14 +88,14 @@ class OnlineOrders extends Component {
                                                 <Text style={[styles.text, { fontSize: 18, color: "#fff" }]}># {item.id}</Text>
                                             </View>
                                         </View>
-                                        <View style={{ flex: 0.2 }}>
-                                            <Text style={[styles.text, { color: "#fff" }]}>{moment(item.created).format('hh:mm a')}</Text>
+                                        <View style={{ flex: 0.3 }}>
+                                            <Text style={[styles.text, { color: "#fff" }]}>{moment(item.created).format("hh:mm a")}</Text>
                                         </View>
                                     </View>
                                     <View style={{ flexDirection: "row", flex: 0.25, alignItems: "center", justifyContent: "space-around" }}>
                                         <Text style={[styles.text, { color: this.validateColor(item) }]}>{item.cart_status}</Text>
                                     </View>
-                                    <View style={{ flexDirection: "row", flex: 1, alignItems: "center", justifyContent: "space-around" }}>
+                                    <View style={{ flexDirection: "row", flex: 0.5, alignItems: "center", justifyContent: "space-around" }}>
                                         <View>
                                             <Text style={[styles.text, { color: "#eee" }]}>Items Count: {item.items.length}</Text>
                                         </View>

@@ -148,7 +148,7 @@ export default class FastMovingItems extends Component {
                     style={{marginLeft:-30}}
                     data={this.state.data}
                     width={width * 2}
-                    height={height*0.9}
+                    height={height*0.8}
                     chartConfig={{
                         backgroundColor: "#000000",
                         decimalPlaces: 0,
