@@ -276,7 +276,7 @@ class AddItems extends Component {
         }
         if (this.state.image) {
             sendData.displayPicture = this.state.image,
-                sendData.bodyType = "formData"
+             sendData.bodyType = "formData"
         }
         let post = await HttpsClient.post(api,sendData)
         console.log(post,"pppp")
