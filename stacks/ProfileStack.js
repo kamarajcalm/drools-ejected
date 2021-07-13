@@ -9,6 +9,7 @@ import ProfilePage from '../screens/ProfilePage';
 import Tables from '../screens/Tables';
 import ExpenseScreen from '../screens/ExpenseScreen';
 import BlueToothDevices from '../screens/BlueToothDevices';
+import { TransitionSpecs, CardStyleInterpolators } from '@react-navigation/stack';
 import Discounts from '../screens/Discounts';
 const Stack = createStackNavigator();
 export default class ProfileStack extends Component {
@@ -20,7 +21,16 @@ export default class ProfileStack extends Component {
 
     render() {
         return (
-            <Stack.Navigator>
+            <Stack.Navigator 
+                screenOptions={{
+                    transitionSpec: {
+                        open: TransitionSpecs.TransitionIOSSpec,
+                        close: TransitionSpecs.TransitionIOSSpec,
+                    },
+                    cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS
+
+                }}
+            >
                 <Stack.Screen name="ProfilePage" component={ProfilePage} options={{ headerShown: false }} />
                 <Stack.Screen name="Statistics" component={Statistics} options={{ headerShown: false }} />
                 <Stack.Screen name="StatisticsView" component={StatisticsView} options={{ headerShown: false }} />

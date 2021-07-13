@@ -8,6 +8,7 @@ import CreateTakeAway from '../screens/CreateTakeAway';
 import SeacrchDishes from '../screens/SeacrchDishes';
 import SearchDishes2 from '../screens/SearchDishes2';
 import CreateOnline from '../screens/CreateOnline';
+import { TransitionSpecs, CardStyleInterpolators } from '@react-navigation/stack';
 const Stack = createStackNavigator();
 export default class OrdersStack extends Component {
   constructor(props) {
@@ -18,7 +19,17 @@ export default class OrdersStack extends Component {
 
   render() {
     return (
-        <Stack.Navigator>
+        <Stack.Navigator 
+        
+        screenOptions={{
+          transitionSpec: {
+            open: TransitionSpecs.TransitionIOSSpec,
+            close: TransitionSpecs.TransitionIOSSpec,
+          },
+          cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS
+
+        }}
+        >
             <Stack.Screen name="Orders" component={Orders} options={{ headerShown: false }}/>
             <Stack.Screen name="ViewOrder" component={ViewOrders} options={{ headerShown: false }}/>
             <Stack.Screen name="CreateNormalOrder" component={CreateNormalOrder} options={{ headerShown: false }}/>

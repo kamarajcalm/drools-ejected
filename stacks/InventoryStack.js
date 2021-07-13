@@ -11,6 +11,7 @@ import ViewIngredients from '../screens/ViewIngredients';
 import AddItems from '../screens/AddItems';
 import CreateOrders from '../screens/CreateOrders';
 import ViewInventoryOrders from '../screens/ViewInventoryOrders';
+import { TransitionSpecs, CardStyleInterpolators } from '@react-navigation/stack';
 const Stack = createStackNavigator();
 export default class InventoryStack extends Component {
     constructor(props) {
@@ -21,7 +22,16 @@ export default class InventoryStack extends Component {
 
     render() {
         return (
-            <Stack.Navigator>
+            <Stack.Navigator 
+                screenOptions={{
+                    transitionSpec: {
+                        open: TransitionSpecs.TransitionIOSSpec,
+                        close: TransitionSpecs.TransitionIOSSpec,
+                    },
+                    cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS
+
+                }}
+            >
                 <Stack.Screen name="Inventory" component={Inventory} options={{ headerShown:false }} />
                 <Stack.Screen name="ViewItems" component={ViewItems} options={{ headerShown:false }} />
                 <Stack.Screen name="ViewStock" component={ViewStock} options={{ headerShown:false }} />
