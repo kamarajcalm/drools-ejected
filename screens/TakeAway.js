@@ -79,7 +79,7 @@ class TakeAway extends Component {
                                         <View style={{ flex: 0.7, }}>
                                             <View style={{ flex: 0.5, }}>
                                                 <View>
-                                                    <Text style={[styles.text, { fontSize: 18, color: primaryColor }]}>Table : {item.table}</Text>
+                                                    <Text style={[styles.text, { fontSize: 18, color: primaryColor }]}>Table : {item.tableTitle}</Text>
 
                                                 </View>
                                             </View>

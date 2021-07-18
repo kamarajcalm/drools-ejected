@@ -40,7 +40,7 @@ const screenHeight = Dimensions.get('screen').height
      getOrders = async ()=>{
          let api = `${url}/api/drools/cookOrders/`
          let data =await HttpsClient.get(api)
-         console.log(data)
+         console.log(api)
          if(data.type =="success"){
              this.setState({ cookOrders:data.data})
          }

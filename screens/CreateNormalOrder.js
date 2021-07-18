@@ -40,7 +40,7 @@ class CreateNormalOrder extends Component {
            let tables= []
            data.data.forEach((i)=>{
               let pushObj ={
-                     label:`Table ${i.id}`,
+                     label:`Table ${i.title}`,
                      value: i.id,
                     }
                tables.push(pushObj)

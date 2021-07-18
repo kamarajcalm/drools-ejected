@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Dimensions, TouchableOpacity, StyleSheet, FlatList, Image ,ScrollView,TextInput} from 'react-native';
+import { View, Text, Dimensions, TouchableOpacity, StyleSheet, FlatList, Image ,ScrollView,TextInput,Alert,Linking} from 'react-native';
 const { height, width } = Dimensions.get('window')
 import settings from '../AppSettings'
 import { connect } from 'react-redux';
@@ -27,7 +27,8 @@ class Tables extends Component {
         this.state = {
             tables:[],
             person:"",
-            selectedTable:null
+            selectedTable:null,
+            tableNo:""
         };
     }
     getTables = async()=>{
@@ -50,10 +51,10 @@ class Tables extends Component {
                 <View style={{ flex: 0.2, alignItems: "center", justifyContent: "center" }}>
                     <Text style={[styles.text, { color: primaryColor, textDecorationLine: "underline" }]}>person</Text>
                 </View>
-                <View style={{ flex: 0.4, alignItems: "center", justifyContent: "center" }}>
+                <View style={{ flex: 0.3, alignItems: "center", justifyContent: "center" }}>
                     <Text style={[styles.text, { color: primaryColor, textDecorationLine: "underline" }]}>Qr code</Text>
                 </View>
-                <View style={{flex:0.2,alignItems:"center",justifyContent:"center"}}>
+                <View style={{flex:0.3,alignItems:"center",justifyContent:"center"}}>
                     <Text style={[styles.text, { color: primaryColor, textDecorationLine: "underline" }]}>Action</Text>
                 </View>
             </View>
@@ -77,8 +78,7 @@ class Tables extends Component {
         let api = `${url}/api/drools/tableCreate/`
         let sendData ={
             total_persons:this.state.person,
-   
-       
+            title: this.state.tableNo
         }
         let post = await HttpsClient.post(api,sendData)
         if(post.type =="success"){
@@ -96,7 +96,7 @@ class Tables extends Component {
         let api = `${url}/api/drools/tables/${this.state.selectedTable.id}/`
         let sendData = {
             total_persons: this.state.person,
-
+      
 
         }
         let post = await HttpsClient.patch(api, sendData)
@@ -131,7 +131,16 @@ class Tables extends Component {
                     <View style={{ height: height * 0.4,backgroundColor: "#fff", width: width * 0.9, borderRadius: 10 }}>
                         <ScrollView>
 
-
+                            <View style={{ padding: 20 }}>
+                                <Text style={[styles.text]}>Enter Table No</Text>
+                                <TextInput
+                                    keyboardType={"numeric"}
+                                    value={this.state.tableNo}
+                                    style={{ height: height * 0.05, width: width * 0.8, backgroundColor: "#eee", borderRadius: 5, marginTop: 5 }}
+                                    selectionColor={primaryColor}
+                                    onChangeText={(tableNo) => { this.setState({ tableNo })}}
+                                />
+                            </View>
                             <View style={{ padding: 20 }}>
                                 <Text style={[styles.text]}>Enter Total Persons</Text>
                                 <TextInput
@@ -162,6 +171,33 @@ class Tables extends Component {
 
             </Modal>
         )
+    }
+    deleteItem = async(item,index)=>{
+        let api = `${url}/api/drools/tables/${item.id}/`
+        let del = await HttpsClient.delete(api)
+
+        if(del.type =="success"){
+            this.showSimpleMessage("deleted SuccessFully","green","success")
+            let duplicate =this.state.tables
+            duplicate.splice(index,1)
+            this.setState({ tables:duplicate})
+        }else{
+            this.showSimpleMessage("Try Again", "red", "danger")
+        }
+    }
+    createAlert = (item, index) => {
+        Alert.alert(
+            "Do you want to delete?",
+            ``,
+            [
+                {
+                    text: "No",
+                    onPress: () => console.log("Cancel Pressed"),
+                    style: "cancel"
+                },
+                { text: "Yes", onPress: () => { this.deleteItem(item, index) } }
+            ]
+        );
     }
     render() {
 
@@ -195,29 +231,41 @@ class Tables extends Component {
                 <View style={{ flex: 1 }}>
 
                     <FlatList 
+                      contentContainerStyle ={{paddingBottom:100}}
                       ListHeaderComponent ={this.header()}
                       keyExtractor ={(item,index)=>index.toString()}
                       data={this.state.tables}
                       renderItem ={({item,index})=>{
+                          console.log(item.qr_code)
                             return(
                                 <View style={{ flexDirection: "row", flex: 1, marginTop: 10 }}>
                                     <View style={{ flex: 0.2, alignItems: "center", justifyContent: "center" }}>
-                                        <Text style={[styles.text, { color:"#fff",}]}>{item.id}</Text>
+                                        <Text style={[styles.text, { color:"#fff",}]}>{item.title}</Text>
                                     </View>
                                     <View style={{ flex: 0.2, alignItems: "center", justifyContent: "center" }}>
                                         <Text style={[styles.text, { color: "#fff",  }]}>{item.total_persons}</Text>
                                     </View>
-                                    <View style={{ flex: 0.4, alignItems: "center", justifyContent: "center" }}>
+                                    <View style={{ flex: 0.3, alignItems: "center", justifyContent: "center" }}>
                                          <Image 
                                             source={{ uri: item.qr_code}}
                                             style={{height:50,width:50}}
                                             resizeMode={"cover"}
                                          />
                                     </View>
-                                    <TouchableOpacity style={{ flex: 0.2, alignItems: "center", justifyContent: "center" }}
+                                    <TouchableOpacity style={{ flex: 0.1, alignItems: "center", justifyContent: "center" }}
                                      onPress ={()=>{this.setState({modal:true,edit:true,selectedTable:item})}}
                                     >
                                         <Entypo name="edit" size={24} color={primaryColor} />
+                                    </TouchableOpacity>
+                                    <TouchableOpacity style={{ flex: 0.1, alignItems: "center", justifyContent: "center" }}
+                                        onPress={() => {this.createAlert(item,index) }}
+                                    >
+                                        <AntDesign name="delete" size={24} color={primaryColor} />
+                                    </TouchableOpacity>
+                                    <TouchableOpacity style={{ flex: 0.1, alignItems: "center", justifyContent: "center" }}
+                                        onPress={() => { Linking.openURL(item.qr_code) }}
+                                    >
+                                        <Feather name="download" size={24} color={primaryColor}/>
                                     </TouchableOpacity>
                                 </View>
                             )

@@ -375,7 +375,7 @@ class ViewOrder extends Component {
                                             </View>
                                             <View style={{ flexDirection: "row" }}>
                                                 <Text style={[styles.text]}>Table: </Text>
-                                                <Text style={[styles.text, { color: primaryColor }]}>{item.table}</Text>
+                                                <Text style={[styles.text, { color: primaryColor }]}>{item.tableTitle}</Text>
                                             </View>
                                             <View style={{ flexDirection: "row" }}>
                                                 <Text style={[styles.text]}>Order Status : </Text>
