@@ -261,7 +261,7 @@ class SearchDishes2 extends Component {
 
                 </LinearGradient>
                 <FlatList
-                    contentContainerStyle={{height:height*0.07,width}}
+                    contentContainerStyle={{height:height*0.07,width,}}
                     horizontal={true}
                     data={this.state.categories}
                     keyExtractor={(item, index) => index.toString()}
@@ -293,16 +293,17 @@ class SearchDishes2 extends Component {
                             keyExtractor={(item, index) => index.toString()}
                             renderItem={({ item, index }) => {
                                 return (
-                                    <View style={{ height: height * 0.15, backgroundColor: "#eee", marginTop: 10, width: width * 0.9, alignSelf: "center", justifyContent: "center" }}>
-                                        <View style={{ alignItems: "center", marginTop: 5 }}>
-                                            <Text style={[styles.text, { fontSize: 22 }]}>{item.title}</Text>
+                                    <View style={{ height: height * 0.07, backgroundColor: "#eee", width: width, flexDirection: "row", borderColor: "#333", borderBottomWidth: 0.5 }}>
+                                        <View style={{ flex: 0.1, alignItems: "center", justifyContent: "center" }}>
+                                            <Text style={[styles.text, { fontSize: 18 }]}>{index + 1} .</Text>
                                         </View>
-                                        <View style={{ marginTop: 10, alignItems: "center" }}>
-                                            <TouchableOpacity style={{ backgroundColor: this.validateColor(item), alignItems: "center", justifyContent: "center", height: height * 0.05, width: width * 0.3 }}
-                                                onPress={() => { this.selectDish(item, index) }}
-                                            >
-                                                <Text style={[styles.text, { color: "#fff" }]}>{item.selected ? "Remove" : "Add"}</Text>
-                                            </TouchableOpacity>
+                                        <View style={{ alignItems: "center", marginTop: 5, flex: 0.5, alignItems: "center", justifyContent: "center" }}>
+                                            <Text style={[styles.text, { fontSize: 18 }]}>{item.title}</Text>
+                                        </View>
+                                        <View style={{ marginTop: 10, alignItems: "center", flex: 0.4, alignItems: "center", justifyContent: "center" }}>
+                                            {
+                                                this.validateButton(item, index)
+                                            }
                                         </View>
                                     </View>
                                 )

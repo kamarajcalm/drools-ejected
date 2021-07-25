@@ -194,7 +194,7 @@ class SeacrchDishes extends Component {
       
         if(!item.selected){
             return (
-                <TouchableOpacity style={{ backgroundColor: this.validateColor(item), alignItems: "center", justifyContent: "center", height: height * 0.05, width: width * 0.3 }}
+                <TouchableOpacity style={{ backgroundColor:this.validateColor(item),alignItems: "center", justifyContent: "center", height: height * 0.05, width:"80%" }}
                     onPress={() => { this.selectDish(item, index) }}
                 >
                     <Text style={[styles.text, { color: "#fff" }]}>Add</Text>
@@ -262,6 +262,8 @@ class SeacrchDishes extends Component {
                  style={{height:height*0.08}}
                 >
                     <FlatList
+                        showsHorizontalScrollIndicator={false}
+                        contentContainerStyle={{paddingRight:20}}
                         style={{ height: height * 0.07 }}
                         horizontal={true}
                         data={this.state.categories}
@@ -293,11 +295,14 @@ class SeacrchDishes extends Component {
                     keyExtractor={(item,index)=>index.toString()}
                     renderItem ={({item,index})=>{
                        return(
-                           <View style={{height:height*0.15,backgroundColor:"#eee",marginTop:10,width:width*0.9,flexDirection:"row",}}>
+                           <View style={{height:height*0.07,backgroundColor:"#eee",width:width,flexDirection:"row",borderColor:"#333",borderBottomWidth:0.5}}>
+                                <View style={{flex:0.1,alignItems:"center",justifyContent:"center"}}>
+                                   <Text style={[styles.text, { fontSize: 18 }]}>{index+1} .</Text>
+                                </View>
                                <View style={{alignItems:"center",marginTop:5,flex:0.5,alignItems:"center",justifyContent:"center"}}>
-                                   <Text style={[styles.text,{fontSize:22}]}>{item.title}</Text>
+                                   <Text style={[styles.text,{fontSize:18}]}>{item.title}</Text>
                                </View>
-                               <View style={{marginTop:10,alignItems:"center",flex:0.5,alignItems:"center",justifyContent:"center"}}>
+                               <View style={{marginTop:10,alignItems:"center",flex:0.4,alignItems:"center",justifyContent:"center"}}>
                                    {
                                        this.validateButton(item,index)
                                    }
