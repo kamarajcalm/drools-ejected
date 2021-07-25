@@ -124,7 +124,7 @@ class SeacrchDishes extends Component {
         duplicate[idx].quantity -= 1
 
         if (duplicate[idx].quantity==0){
-            duplicate.splice(idx,1)
+            duplicate[idx].selected=false
             this.setState({ items:duplicate})
             var found = data.find(function (element) {
                 return element.id === item.id;
@@ -194,7 +194,7 @@ class SeacrchDishes extends Component {
       
         if(!item.selected){
             return (
-                <TouchableOpacity style={{ backgroundColor:this.validateColor(item),alignItems: "center", justifyContent: "center", height: height * 0.05, width:"80%" }}
+                <TouchableOpacity style={{ backgroundColor:"#3f3f3f",alignItems: "center", justifyContent: "center", height: height * 0.05, width:"80%" }}
                     onPress={() => { this.selectDish(item, index) }}
                 >
                     <Text style={[styles.text, { color: "#fff" }]}>Add</Text>
@@ -203,7 +203,7 @@ class SeacrchDishes extends Component {
         }
 
         return(
-            <View style={{height:height*0.05,width:width*0.3,flexDirection:"row",alignItems:"center",justifyContent:"space-around",backgroundColor:primaryColor}}>
+            <View style={{height:height*0.05,width:width*0.3,flexDirection:"row",alignItems:"center",justifyContent:"space-around",backgroundColor:"#3f3f3f"}}>
                 <TouchableOpacity style={{ alignItems: "center", justifyContent: "center" }}
                     onPress={() => {
                         this.decreaseQuantity(item, index)
