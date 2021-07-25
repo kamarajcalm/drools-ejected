@@ -159,7 +159,7 @@ class Instock extends Component {
                     <TextInput
                         keyboardType={"phone-pad"}
                         value={this.state.Quantity}
-                        style={{ height: height * 0.05, width: width * 0.8, backgroundColor: "#fafafa", borderRadius: 5, marginTop: 5 }}
+                        style={{ height:38, width: width * 0.8, backgroundColor: "#fafafa", borderRadius: 5, marginTop: 5 }}
                         selectionColor={primaryColor}
                         onChangeText={(Quantity) => { this.setState({ Quantity }) }}
                     />
@@ -172,7 +172,7 @@ class Instock extends Component {
                 <TextInput
                     keyboardType={"phone-pad"}
                     value={this.state.Quantity}
-                    style={{ height: height * 0.05, width: width * 0.8, backgroundColor: "#fafafa", borderRadius: 5, marginTop: 5 }}
+                    style={{ height: 38, width: width * 0.8, backgroundColor: "#fafafa", borderRadius: 5, marginTop: 5 }}
                     selectionColor={primaryColor}
                     onChangeText={(Quantity) => { this.setState({ Quantity }) }}
                 />
@@ -201,7 +201,7 @@ class Instock extends Component {
                                 <TextInput
                                     keyboardType={"phone-pad"}
                                     value={this.state.price}
-                                    style={{ height: height * 0.05, width: width * 0.8, backgroundColor: "#fafafa", borderRadius: 5, marginTop: 5 }}
+                                    style={{ height: 38, width: width * 0.8, backgroundColor: "#fafafa", borderRadius: 5, marginTop: 5 }}
                                     selectionColor={primaryColor}
                                     onChangeText={(price) => { this.setState({ price }) }}
                                 />
@@ -216,7 +216,7 @@ class Instock extends Component {
                                             }, 500)
                                         })
                                     }}
-                                    style={{ height: height * 0.05, width: width * 0.8, backgroundColor: "#fafafa", borderRadius: 5, marginTop: 5, flexDirection: "row", paddingHorizontal: 10, alignItems: "center", justifyContent: "space-between" }}
+                                    style={{ height: 38, width: width * 0.8, backgroundColor: "#fafafa", borderRadius: 5, marginTop: 5, flexDirection: "row", paddingHorizontal: 10, alignItems: "center", justifyContent: "space-between" }}
                                 >
                                     <View>
                                         <Text style={[styles.text, { color: "#000" }]}>{this.state.expiryDate}</Text>

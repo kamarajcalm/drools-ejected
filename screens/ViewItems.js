@@ -131,7 +131,7 @@ class ViewItems extends Component {
                                 <Text style={[styles.text]}>Enter Item</Text>
                                 <TextInput 
                                   value ={this.state.searchName}
-                                  style={{height:height*0.05,width:width*0.8,backgroundColor:"#eee",borderRadius:5,marginTop:5}}
+                                  style={{height:38,width:width*0.8,backgroundColor:"#eee",borderRadius:5,marginTop:5}}
                                   selectionColor={primaryColor}
                                   onChangeText={(searchName) => { this.searchItems(searchName)}}
                                 />
@@ -156,7 +156,7 @@ class ViewItems extends Component {
                               <TextInput
                                   keyboardType={"numeric"}
                                   value={this.state.availableQty}
-                                  style={{ height: height * 0.05, width: width * 0.8, backgroundColor: "#eee", borderRadius: 5, marginTop: 5 }}
+                                  style={{ height: 38, width: width * 0.8, backgroundColor: "#eee", borderRadius: 5, marginTop: 5 }}
                                   selectionColor={primaryColor}
                                   onChangeText={(availableQty) => { this.setState({ availableQty }) }}
                               />
@@ -283,7 +283,7 @@ class ViewItems extends Component {
                                 <TextInput
                                     keyboardType={"numeric"}
                                     value={this.state.availableQty}
-                                    style={{ height: height * 0.05, width: width * 0.8, backgroundColor: "#eee", borderRadius: 5, marginTop: 5 }}
+                                    style={{ height: 38, width: width * 0.8, backgroundColor: "#eee", borderRadius: 5, marginTop: 5 }}
                                     selectionColor={primaryColor}
                                     onChangeText={(availableQty) => { this.setState({ availableQty }) }}
                                 />

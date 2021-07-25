@@ -119,7 +119,7 @@ export default class Stocks extends Component {
                                 <Text style={[styles.text]}>Enter Item</Text>
                                 <TextInput
                                     value={this.state.searchName}
-                                    style={{ height: height * 0.05, width: width * 0.8, backgroundColor: "#fafafa", borderRadius: 5, marginTop: 5 }}
+                                    style={{ height: 38, width: width * 0.8, backgroundColor: "#fafafa", borderRadius: 5, marginTop: 5 }}
                                     selectionColor={primaryColor}
                                     onChangeText={(itemName) => { this.setState({ itemName }) }}
                                 />
@@ -129,7 +129,7 @@ export default class Stocks extends Component {
                                 <TextInput
 
                                     value={this.state.description}
-                                    style={{ height: height * 0.05, width: width * 0.8, backgroundColor: "#fafafa", borderRadius: 5, marginTop: 5 }}
+                                    style={{ height: 38, width: width * 0.8, backgroundColor: "#fafafa", borderRadius: 5, marginTop: 5 }}
                                     selectionColor={primaryColor}
                                     onChangeText={(description) => { this.setState({ description }) }}
                                 />
@@ -139,7 +139,7 @@ export default class Stocks extends Component {
                                 <TextInput
 
                                     value={this.state.minQty}
-                                    style={{ height: height * 0.05, width: width * 0.8, backgroundColor: "#fafafa", borderRadius: 5, marginTop: 5 }}
+                                    style={{ height: 38, width: width * 0.8, backgroundColor: "#fafafa", borderRadius: 5, marginTop: 5 }}
                                     selectionColor={primaryColor}
                                     onChangeText={(minQty) => { this.setState({ minQty }) }}
                                 />

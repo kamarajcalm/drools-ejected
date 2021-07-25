@@ -26,7 +26,8 @@ class History extends Component {
             orders:[],
             refreshing:false,
             offset:0,
-            loadmore:true
+            loadmore:true,
+            first:true
         };
     }
     hideDatePicker = () => {
@@ -39,7 +40,7 @@ class History extends Component {
         this.hideDatePicker();
     };
     getOrders = async () => {
-        this.setState({ refreshing:true})
+        this.setState({ refreshing:true,first:false})
         let api = `${url}/api/drools/cart/?date=${this.state.today}&limit=${6}&offset=${this.state.offset}`
         const data = await HttpsClient.get(api)
         console.log(api)
@@ -55,8 +56,11 @@ class History extends Component {
     componentDidMount() {
         this.getOrders()
         this._unsubscribe = this.props.navigation.addListener('focus', () => {
-            this.getOrders()
-
+            if(!this.state.first){
+                this.setState({ orders: [], offset: 0, loadmore: true }, () => {
+                    this.getOrders()
+                })
+            }
         });
     }
     componentWillUnmount() {
@@ -141,7 +145,7 @@ class History extends Component {
                                         <View style={{ flex: 0.7, }}>
                                             <View style={{ flex: 0.5, }}>
                                                 <View>
-                                                    <Text style={[styles.text, { fontSize: 18, color: primaryColor }]}>Table : {item.table}</Text>
+                                                    <Text style={[styles.text, { fontSize: 18, color: primaryColor }]}>Table : {item.tableTitle}</Text>
 
                                                 </View>
                                             </View>

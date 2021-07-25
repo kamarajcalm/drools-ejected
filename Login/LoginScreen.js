@@ -100,6 +100,7 @@ class LoginScreen extends Component {
             })
     }
     componentDidMount(){
+  
         this.registerForPushNotificationsAsync().then(token => this.setState({ token }));
     }
     registerForPushNotificationsAsync = async function () {
@@ -117,7 +118,7 @@ class LoginScreen extends Component {
             }
             token = (await Notifications.getExpoPushTokenAsync()).data;
             console.log(token,"ppp")
-            alert(token)
+         
         } else {
             alert('Must use physical device for Push Notifications');
         }
@@ -149,8 +150,8 @@ class LoginScreen extends Component {
                     <View style={{marginTop:20}}>
                         <TextInput
                             value={this.state.mobile}
-                          
-                            style={{ height: height * 0.06, width: width * 0.9, backgroundColor: "#eee",borderRadius:5 ,paddingLeft:10}}
+                             textContentType={"username"}
+                            style={{ height: 38, width: width * 0.9, backgroundColor: "#eee",borderRadius:5 ,paddingLeft:10}}
                             placeholder={"Mobile"}
                             selectionColor={themeColor}
                             onChangeText={(mobile) => { this.setState({ mobile})}}
@@ -158,12 +159,13 @@ class LoginScreen extends Component {
                     </View>
                     <View style={{ marginTop: 20 }}>
                         <TextInput
-                            style={{ height: height * 0.06, width: width * 0.9, backgroundColor: "#eee", borderRadius: 5, paddingLeft: 10 }}
+                            style={{ height:38, width: width * 0.9, backgroundColor: "#eee", borderRadius: 5, paddingLeft: 10 }}
                             placeholder={"Password"}
+                            textContentType={"password"}
                             secureTextEntry={true}
                             selectionColor={themeColor}
                             value={this.state.password}
-                            onChangeText={(password) => { this.setState({ password }) }}
+                            onChangeText={(password) => {this.setState({ password })}}
                         />
                     </View>
                     <View style={{ marginTop: 30 }}>

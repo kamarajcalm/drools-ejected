@@ -77,7 +77,7 @@ class ViewStock extends Component {
                         </View>
                         <TextInput
                              keyboardType={"numeric"}
-                            style={{ width: width * 0.8, height: height * 0.05, backgroundColor: "#eee", borderRadius: 5,marginTop:10 ,paddingLeft:5}}
+                            style={{ width: width * 0.8, height: 38, backgroundColor: "#eee", borderRadius: 5,marginTop:10 ,paddingLeft:5}}
                             selectionColor={primaryColor}
                             value={this.state.availableQty}
                             onChangeText={(availableQty) => { this.setState({ availableQty }) }}
@@ -89,7 +89,7 @@ class ViewStock extends Component {
                         </View>
                         <TextInput
                             keyboardType={"numeric"}
-                            style={{ width: width * 0.8, height: height * 0.05, backgroundColor: "#eee", borderRadius: 5, marginTop: 10,paddingLeft:5 }}
+                            style={{ width: width * 0.8, height:38, backgroundColor: "#eee", borderRadius: 5, marginTop: 10,paddingLeft:5 }}
                             selectionColor={primaryColor}
                             value={this.state.requiredQty}
                             onChangeText={(requiredQty) => { this.setState({ requiredQty }) }}

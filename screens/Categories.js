@@ -119,7 +119,7 @@ export default class Categories extends Component {
                 <View>
                     <TextInput
                         value={this.state.categoryName}
-                        style={{ height: height * 0.05, width: width * 0.6, backgroundColor: "#fafafa", borderRadius: 10 }}
+                        style={{ height: 38, width: width * 0.6, backgroundColor: "#fafafa", borderRadius: 10 }}
                         placeholder={"Enter category"}
                         selectionColor={themeColor}
                         onChangeText={(categoryName) => { this.setState({ categoryName }) }}

@@ -108,7 +108,7 @@ class ExpenseScreen extends Component {
                                    value={this.state.employeeExpense}
                                    editable={this.state.edit}
                                    keyboardType={"numeric"} 
-                                   style={{height:height*0.05,width:width*0.8,backgroundColor:"#fff",marginTop:10,paddingLeft:10}}
+                                   style={{height:38,width:width*0.8,backgroundColor:"#fff",marginTop:10,paddingLeft:10}}
                                    selectionColor={primaryColor}
                                    onChangeText={(employeeExpense) => { this.setState({ employeeExpense})}}
                                  />
@@ -119,7 +119,7 @@ class ExpenseScreen extends Component {
                                 value={this.state.electricityExpense}
                                 editable={this.state.edit}
                                 keyboardType={"numeric"}
-                                style={{ height: height * 0.05, width: width * 0.8, backgroundColor: "#fff", marginTop: 10, paddingLeft: 10 }}
+                                style={{ height: 38, width: width * 0.8, backgroundColor: "#fff", marginTop: 10, paddingLeft: 10 }}
                                 selectionColor={primaryColor}
                                 onChangeText={(electricityExpense) => { this.setState({ electricityExpense }) }}
                             />
@@ -130,7 +130,7 @@ class ExpenseScreen extends Component {
                                 value={this.state.otherExpense}
                                 editable={this.state.edit}
                                 keyboardType={"numeric"}
-                                style={{ height: height * 0.05, width: width * 0.8, backgroundColor: "#fff", marginTop: 10, paddingLeft: 10 }}
+                                style={{ height: 38, width: width * 0.8, backgroundColor: "#fff", marginTop: 10, paddingLeft: 10 }}
                                 selectionColor={primaryColor}
                                  onChangeText={(otherExpense) => { this.setState({ otherExpense }) }}
                             />

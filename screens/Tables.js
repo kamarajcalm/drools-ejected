@@ -136,7 +136,7 @@ class Tables extends Component {
                                 <TextInput
                                     keyboardType={"numeric"}
                                     value={this.state.tableNo}
-                                    style={{ height: height * 0.05, width: width * 0.8, backgroundColor: "#eee", borderRadius: 5, marginTop: 5 }}
+                                    style={{ height: 38, width: width * 0.8, backgroundColor: "#eee", borderRadius: 5, marginTop: 5 }}
                                     selectionColor={primaryColor}
                                     onChangeText={(tableNo) => { this.setState({ tableNo })}}
                                 />
@@ -146,7 +146,7 @@ class Tables extends Component {
                                 <TextInput
                                     keyboardType={"numeric"}
                                     value={this.state.person}
-                                    style={{ height: height * 0.05, width: width * 0.8, backgroundColor: "#eee", borderRadius: 5, marginTop: 5 }}
+                                    style={{ height: 38, width: width * 0.8, backgroundColor: "#eee", borderRadius: 5, marginTop: 5 }}
                                     selectionColor={primaryColor}
                                     onChangeText={(person) => { this.setState({ person }) }}
                                 />

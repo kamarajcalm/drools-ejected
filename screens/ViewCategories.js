@@ -162,6 +162,7 @@ class ViewCategories extends Component {
                 </LinearGradient>
              
                 <FlatList
+                    contentContainerStyle ={{paddingBottom:90}}
                     data={this.state.Items}
                     keyExtractor={(item, index) => index.toString()}
                     ListHeaderComponent={this.header()}

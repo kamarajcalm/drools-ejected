@@ -246,7 +246,7 @@ class SeacrchDishes extends Component {
                         </TouchableOpacity>
                         <View style={{ flex: 0.9, alignItems: "center", justifyContent: "center" }}>
                          <TextInput 
-                           style={{height:height*0.05,width:"90%",backgroundColor:"#fff",borderRadius:5,paddingLeft:5}}
+                           style={{height:38,width:"90%",backgroundColor:"#fff",borderRadius:5,paddingLeft:5}}
                            selectionColor ={primaryColor}
                            placeholder={"search Dishes"}
                                 onChangeText={(text) => { this.searchDishes(text)}}

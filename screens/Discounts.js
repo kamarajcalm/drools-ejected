@@ -108,7 +108,7 @@ class Discounts extends Component {
                             value={this.state.onlineDiscount}
                             editable={this.state.edit}
                             keyboardType={"numeric"}
-                            style={{ height: height * 0.05, width: width * 0.8, backgroundColor: "#fff", marginTop: 10, paddingLeft: 10 }}
+                            style={{ height:38, width: width * 0.8, backgroundColor: "#fff", marginTop: 10, paddingLeft: 10 }}
                             selectionColor={primaryColor}
                             onChangeText={(onlineDiscount) => { this.setState({ onlineDiscount }) }}
                         />
@@ -119,7 +119,7 @@ class Discounts extends Component {
                             value={this.state.diningDiscount}
                             editable={this.state.edit}
                             keyboardType={"numeric"}
-                            style={{ height: height * 0.05, width: width * 0.8, backgroundColor: "#fff", marginTop: 10, paddingLeft: 10 }}
+                            style={{ height: 38, width: width * 0.8, backgroundColor: "#fff", marginTop: 10, paddingLeft: 10 }}
                             selectionColor={primaryColor}
                             onChangeText={(diningDiscount) => { this.setState({ diningDiscount }) }}
                         />
@@ -131,7 +131,7 @@ class Discounts extends Component {
                             value={this.state.takeAwayDiscount}
                             editable={this.state.edit}
                             keyboardType={"numeric"}
-                            style={{ height: height * 0.05, width: width * 0.8, backgroundColor: "#fff", marginTop: 10, paddingLeft: 10 }}
+                            style={{ height:38, width: width * 0.8, backgroundColor: "#fff", marginTop: 10, paddingLeft: 10 }}
                             selectionColor={primaryColor}
                             onChangeText={(takeAwayDiscount) => { this.setState({ takeAwayDiscount }) }}
                         />

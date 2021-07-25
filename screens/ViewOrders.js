@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Dimensions, TouchableOpacity, StyleSheet, FlatList, Image ,TextInput} from 'react-native';
+import { View, Text, Dimensions, TouchableOpacity, StyleSheet, FlatList, Image ,TextInput, ScrollView} from 'react-native';
 const { height, width } = Dimensions.get('window')
 import settings from '../AppSettings'
 import { connect } from 'react-redux';
@@ -238,7 +238,7 @@ class ViewOrders extends Component {
                      <View style={{marginVertical:10}}>
                         <TextInput 
                           keyboardType={"numeric"}
-                          style={{height:height*0.05,width:width*0.8,backgroundColor:"#fff",paddingLeft:10}}
+                          style={{height:38,width:width*0.8,backgroundColor:"#fff",paddingLeft:10}}
                           selectionColor={primaryColor}
                           onChangeText={(discount) => { this.setState({ discount})}}
                           value={this.state.discount}
@@ -433,7 +433,9 @@ class ViewOrders extends Component {
                         </View>
                     </View>
                 </LinearGradient>
+                <ScrollView>
 
+          
                <FlatList 
                     style={{marginTop:20}}
                     data={this.state.item.items}
@@ -475,6 +477,7 @@ class ViewOrders extends Component {
               {
                   this.completeModal()
               }
+                </ScrollView>
             </View>
 
         );

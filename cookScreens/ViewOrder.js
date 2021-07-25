@@ -288,7 +288,7 @@ class ViewOrder extends Component {
                              <TextInput 
                                 keyboardType={"numeric"}
                                 value={this.state.finishQty}
-                                style={{height:height*0.05,width:width*0.5,backgroundColor:"#fafafa",marginTop:5,paddingLeft:5}}
+                                style={{height:38,width:width*0.5,backgroundColor:"#fafafa",marginTop:5,paddingLeft:5}}
                                 selectionColor={primaryColor}
                                 onChangeText={(finishQty) => { this.setState({finishQty})}}
                              />

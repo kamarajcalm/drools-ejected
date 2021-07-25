@@ -156,7 +156,7 @@ class CreateTakeAway extends Component {
                             <Text style={[styles.text, { fontSize: 22 }]}>Name :</Text>
                               <TextInput 
                                 value={this.state.name}
-                                style={{height:height*0.05,width:width*0.9,paddingLeft:5,marginTop:10,backgroundColor:"#fafafa"}}
+                                style={{height:38,width:width*0.9,paddingLeft:5,marginTop:10,backgroundColor:"#fafafa"}}
                                 selectionColor={primaryColor}
                                 onChangeText={(name) => { this.setState({ name})}}
                               />
@@ -166,7 +166,7 @@ class CreateTakeAway extends Component {
                             <TextInput
                                 keyboardType={"numeric"}
                                 value={this.state.phone}
-                                style={{ height: height * 0.05, width: width * 0.9, paddingLeft: 5, marginTop: 10, backgroundColor: "#fafafa" }}
+                                style={{ height: 38, width: width * 0.9, paddingLeft: 5, marginTop: 10, backgroundColor: "#fafafa" }}
                                 selectionColor={primaryColor}
                                 onChangeText={(phone) => { this.setState({ phone }) }}
                             />

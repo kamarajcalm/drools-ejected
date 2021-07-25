@@ -228,7 +228,7 @@ class ViewInventoryOrders extends Component {
                             <Text style={[styles.text, { color: "#000", fontSize: 22 }]}>Enter Quantity :</Text>
                             <TextInput
                                 value={this.state.quantity.toString()}
-                                style={{ height: height * 0.05, width: width * 0.6, backgroundColor: "#eee", borderRadius: 5, paddingLeft: 5, marginTop: 10 }}
+                                style={{ height: 38, width: width * 0.6, backgroundColor: "#eee", borderRadius: 5, paddingLeft: 5, marginTop: 10 }}
                                 selectionColor={primaryColor}
                                 keyboardType={"numeric"}
                                 onChangeText={(quantity) => {this.setState({ quantity })}}
@@ -239,7 +239,7 @@ class ViewInventoryOrders extends Component {
                             <Text style={[styles.text, { color: "#000", fontSize: 22 }]}>Enter Amount :</Text>
                             <TextInput
                                 value={this.state.Amount2}
-                                style={{ height: height * 0.05, width: width * 0.6, backgroundColor: "#eee", borderRadius: 5, paddingLeft: 5, marginTop: 10 }}
+                                style={{ height:38, width: width * 0.6, backgroundColor: "#eee", borderRadius: 5, paddingLeft: 5, marginTop: 10 }}
                                 selectionColor={primaryColor}
                                 keyboardType={"numeric"}
                                 onChangeText={(Amount2) => { this.setState({ Amount2 }) }}
@@ -307,7 +307,7 @@ class ViewInventoryOrders extends Component {
                                  <Text style={[styles.text, { color: "#000", fontSize: 22}]}>Enter Amount :</Text>
                                  <TextInput 
                                   value={this.state.Amount.toString()}
-                                  style={{height:height*0.05,width:width*0.6,backgroundColor:"#eee",borderRadius:5,paddingLeft:5,marginTop:10}}
+                                  style={{height:38,width:width*0.6,backgroundColor:"#eee",borderRadius:5,paddingLeft:5,marginTop:10}}
                                   selectionColor={primaryColor}
                                   keyboardType={"numeric"}
                                   onChangeText={(Amount) => { this.setState({Amount})}}

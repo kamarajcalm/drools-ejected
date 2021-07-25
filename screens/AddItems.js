@@ -104,7 +104,7 @@ class AddItems extends Component {
             this.setState({
                 edit:true,
                 title: this.props.route.params.itemm.title,
-                description: this.props.route.params.itemm.title.toString(),
+                description: this.props.route.params.itemm.description.toString(),
                 itemPrice: this.props.route.params.itemm.item_price.toString(),
                 discountPrice: this.props.route.params.itemm.discount_price.toString(),
                 imgUrl: this.props.route.params.itemm.displayPicture
@@ -192,10 +192,10 @@ class AddItems extends Component {
             this.setState({ creating: false })
             return this.showSimpleMessage("Please add discountPrice", "#dd7030",)
         }
-        if (this.state.description == "") {
-            this.setState({ creating: false })
-            return this.showSimpleMessage("Please add description", "#dd7030",)
-        }
+        // if (this.state.description == "") {
+        //     this.setState({ creating: false })
+        //     return this.showSimpleMessage("Please add description", "#dd7030",)
+        // }
         let api = `${url}/api/drools/items/${this.state.itemm.id}/`
         let sendData ={
             item_price: Number(this.state.itemPrice),
@@ -235,10 +235,10 @@ class AddItems extends Component {
             this.setState({ creating: false })
             return this.showSimpleMessage("Please add discountPrice", "#dd7030",)
         }
-        if (this.state.description == "") {
-            this.setState({ creating: false })
-            return this.showSimpleMessage("Please add description", "#dd7030",)
-        }
+        // if (this.state.description == "") {
+        //     this.setState({ creating: false })
+        //     return this.showSimpleMessage("Please add description", "#dd7030",)
+        // }
         // if(this.state.ingredients.length==0){
         //     this.setState({ creating: false })
         //     return this.showSimpleMessage("Please add ingredients", "#dd7030",)
@@ -357,7 +357,7 @@ class AddItems extends Component {
                         selectionColor={primaryColor}
                         value={this.state.title}
                         onChangeText={(title) => { this.setState({ title }) }}
-                        style={{ height: height * 0.05, width: width * 0.8, backgroundColor: "#fafafa", borderRadius: 5, marginTop: 10, paddingLeft: 5 }}
+                        style={{ height: 38, width: width * 0.8, backgroundColor: "#fafafa", borderRadius: 5, marginTop: 10, paddingLeft: 5 }}
                     />
                 </View>
                 <View style={{ marginTop: 5 }}>
@@ -367,7 +367,7 @@ class AddItems extends Component {
                         selectionColor={primaryColor}
                         value={this.state.description}
                         onChangeText={(description) => { this.setState({ description }) }}
-                        style={{ height: height * 0.1, width: width * 0.8, backgroundColor: "#fafafa", borderRadius: 5, marginTop: 10, paddingLeft: 5 ,textAlignVertical:"top"}}
+                        style={{ height: 38, width: width * 0.8, backgroundColor: "#fafafa", borderRadius: 5, marginTop: 10, paddingLeft: 5 ,textAlignVertical:"top"}}
                     />
                 </View>
                 <View style={{ marginTop: 5 }}>
@@ -377,7 +377,7 @@ class AddItems extends Component {
                          selectionColor ={primaryColor}
                          value ={this.state.itemPrice}
                          onChangeText={(itemPrice) => { this.setState({ itemPrice})}}
-                         style={{height:height*0.05,width:width*0.6,backgroundColor:"#fafafa",borderRadius:5,marginTop:10,paddingLeft:5}}
+                         style={{height:38,width:width*0.6,backgroundColor:"#fafafa",borderRadius:5,marginTop:10,paddingLeft:5}}
                       />
                   </View>
                 <View style={{marginTop:5}}>
@@ -387,7 +387,7 @@ class AddItems extends Component {
                         selectionColor={primaryColor}
                         value={this.state.discountPrice}
                         onChangeText={(discountPrice) => { this.setState({ discountPrice }) }}
-                        style={{ height: height * 0.05, width: width * 0.6, backgroundColor: "#fafafa", borderRadius: 5, marginTop: 10, paddingLeft: 5 }}
+                        style={{ height: 38, width: width * 0.6, backgroundColor: "#fafafa", borderRadius: 5, marginTop: 10, paddingLeft: 5 }}
                     />
                 </View>
                 {/* <View style={{ marginTop: 5 }}>

@@ -110,7 +110,7 @@ export default class CreateOrders extends Component {
                 <TextInput
                     keyboardType={"phone-pad"}
                     value={this.state.Quantity}
-                    style={{ height: height * 0.05, width: width * 0.7, backgroundColor: "#fafafa", borderRadius: 5, marginTop: 5 }}
+                    style={{ height:38, width: width * 0.7, backgroundColor: "#fafafa", borderRadius: 5, marginTop: 5 }}
                     selectionColor={primaryColor}
                     onChangeText={(Quantity) => { this.setState({ Quantity }) }}
                 />
@@ -156,7 +156,7 @@ export default class CreateOrders extends Component {
                                <Text style={[styles.text, { color: "#000" }]}>Select Item</Text>
                                <TextInput
                                    value={this.state.searchName}
-                                  style ={{height:height*0.05,width:width*0.7,backgroundColor:"#fafafa",borderRadius:5,marginTop:5}}
+                                  style ={{height:38,width:width*0.7,backgroundColor:"#fafafa",borderRadius:5,marginTop:5}}
                                   selectionColor={primaryColor}
                                    onChangeText={(searchName) => { this.searchItems(searchName) }}
                                />
@@ -313,7 +313,7 @@ export default class CreateOrders extends Component {
                                             <Text style={[styles.text]}>Quantity :</Text>
                                         </View>
                                         <TextInput 
-                                          style ={{height:height*0.05,width:width*0.6,backgroundColor:"#eee",marginTop:5}}
+                                          style ={{height:38,width:width*0.6,backgroundColor:"#eee",marginTop:5}}
                                           selectionColor={primaryColor}
                                           value ={item.quantity.toString()}
                                             onChangeText={(text) => { this.changeQuantity(text,index)}}

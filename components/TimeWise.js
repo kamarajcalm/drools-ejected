@@ -133,7 +133,7 @@ export default class TimeWise extends Component {
         return(
            <>
                 <ScrollView
-
+                    contentContainerStyle={{paddingRight:20}}
                     bounces={false}
                     style={{marginTop:height*0.08}}
                     horizontal={true}
@@ -141,11 +141,12 @@ export default class TimeWise extends Component {
                     showsHorizontalScrollIndicator={false} // to hide scroll bar
                 >
                     <BarChart
+                        
                         showValuesOnTopOfBars
-                        style={{marginTop:height*0.07}}
+                        style={{marginTop:height*0.07,}}
                         data={this.state.data}
                         width={width *2.5}
-                        height={height*0.68}
+                        height={height*0.64}
                         chartConfig={{
                             backgroundColor: "#000000",
                             decimalPlaces: 0,
