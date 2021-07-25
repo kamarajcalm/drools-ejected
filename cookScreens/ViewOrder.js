@@ -100,7 +100,7 @@ class ViewOrder extends Component {
     }
     footer =()=>{
         return(
-            <View style={{marginVertical:20,flexDirection:"row",alignItems:"center",justifyContent:"center",flex:1}}>
+            <View style={{marginVertical:20,flexDirection:"row",alignItems:"center",justifyContent:"center",}}>
                  <View style={{flex:0.5,alignItems:"center",justifyContent:"center"}}>
                     <TouchableOpacity
                         onPress={()=>{this.startAll()}}
@@ -350,10 +350,13 @@ class ViewOrder extends Component {
                           </View>
                           
                       </View>
-                      <View>
+                     
                           <View style={{marginLeft:10}}>
                               <Text style={[styles.text,{fontSize:22,textDecorationLine:"underline"}]}>Order Info :</Text>
                           </View>
+                       
+
+                         
                           <FlatList 
                             ListFooterComponent={this.footer()}
                             data={this.state.item.objs}
@@ -396,7 +399,9 @@ class ViewOrder extends Component {
                                 )
                             }}
                           />
-                      </View>
+                      
+                      
+                
                  </View>
                  {
                      this.completeModal()
