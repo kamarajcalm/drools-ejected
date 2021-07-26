@@ -86,6 +86,7 @@ class SearchDishes2 extends Component {
         });
         if (found) {
             duplicate[idx].quantity = found.quantity
+            duplicate[idx].comments = found.comments
             this.showSimpleMessage("Item already added", "orange", "success")
         } else {
             let pushObj = {
@@ -440,14 +441,14 @@ class SearchDishes2 extends Component {
                     >
                         <Text style={[styles.text, { color: "#fff", }]}>Selected ({this.state.selectedItems.length})</Text>
                     </View>
-                    <TouchableOpacity
+                 {this.state.selectedItems.length>0&&   <TouchableOpacity
                         style={{ height: height * 0.05, width: width * 0.3, backgroundColor: primaryColor, alignItems: "center", justifyContent: "center" }}
                         onPress={() => {
                           this.addItems()
                         }}
                     >
                         <Text style={[styles.text, { color: "#fff", }]}>Proceed</Text>
-                    </TouchableOpacity>
+                    </TouchableOpacity>}
                 </View>
                 
             </View>

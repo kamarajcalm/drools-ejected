@@ -34,7 +34,7 @@ class History extends Component {
         this.setState({show:false})
     };
     handleConfirm = (date) => {
-        this.setState({ today:momemt(date).format("YYYY-MM-DD")},()=>{
+        this.setState({ today: momemt(date).format("YYYY-MM-DD"), orders:[]},()=>{
             this.getOrders()
         })
         this.hideDatePicker();
@@ -99,18 +99,14 @@ class History extends Component {
         return (
            <View style={{flex:1,backgroundColor:themeColor}}>
                 <LinearGradient
-                    style={{ height: height * 0.12, flexDirection: "row", alignItems: "center", justifyContent: "center" }}
+                    style={{ height: height * 0.1, flexDirection: "row", alignItems: "center", justifyContent: "center" }}
                     colors={gradients}
                 >
-                    <View style={{ marginTop: Constants.statusBarHeight, flex: 1, flexDirection: "row" }}>
-                        <View style={{ flex: 0.3, alignItems: "center", justifyContent: "center" }}
-                        
-                        >
-                         
-                        </View>
-                        <View style={{ flex: 0.4, alignItems: "center", justifyContent: "center" }}>
-                            <Text style={[styles.text, { color: "#fff", fontSize: 18 }]}>History</Text>
-
+                    <View style={{ flex: 1, flexDirection: "row" }}>
+                       
+                        <View style={{ flex: 0.7, alignItems: "center", justifyContent: "center" }}>
+                          
+                            <Text style={[styles.text, { color: "#fff", fontSize: 20 }]}>Today Income: ₹ 10000</Text>
                         </View>
                         <TouchableOpacity style={{ flex: 0.3, alignItems: "center", justifyContent: "space-around" ,flexDirection:"row"}}
                          onPress ={()=>{this.setState({show:true})}}
@@ -136,12 +132,12 @@ class History extends Component {
                     onEndReachedThreshold={0.1}
                     renderItem={({ item, index }) => {
                         return (
-                            <TouchableOpacity style={{ height: height * 0.18, borderColor: "#fff", borderBottomWidth: 0.5, flexDirection: "row", paddingVertical: 10 }}
+                            <TouchableOpacity style={{ height: height * 0.2, borderColor: "#fff", borderBottomWidth: 0.5, flexDirection: "row", paddingVertical: 10 }}
                                 onPress={() => { this.props.navigation.navigate('ViewOrders2', { item }) }}
                             >
 
                                 <View style={{ flex: 1, }}>
-                                    <View style={{ flex: 0.7, padding: 10, }}>
+                                    <View style={{ flex: 0.5, paddingHorizontal:10 }}>
                                         <View style={{ flex: 0.7, }}>
                                             <View style={{ flex: 0.5, }}>
                                                 <View>
@@ -151,15 +147,17 @@ class History extends Component {
                                             </View>
                                             <View style={{ flex: 0.5, alignItems: "flex-end", paddingRight: 20 }}>
                                                 <Text style={[styles.text, { fontSize: 18, color: "#fff" }]}># {item.id}</Text>
+                                                <Text style={[styles.text, {  color: "#fff" }]}> {momemt(item.updated).format('hh:mm a')}</Text>
                                             </View>
                                         </View>
                                         <View style={{ flex: 0.2 }}>
                                             <Text style={[styles.text, { color: "#fff" }]}>{momemt(item.created).format('hh:mm a')}</Text>
                                         </View>
                                     </View>
-                                    <View style={{ flexDirection: "row", flex: 0.25, alignItems: "center", justifyContent: "space-around" }}>
-                                        <Text style={[styles.text, { color: this.validateColor(item) }]}>{item.cart_status}</Text>
+                                    <View style={{ flexDirection: "row", flex: 0.35, alignItems: "center", justifyContent: "space-between" ,paddingHorizontal:10}}>
+                                     
                                         <Text style={[styles.text, { color: primaryColor }]}>{item.order_type}</Text>
+                                        <Text style={[styles.text, { color: this.validateColor(item) }]}>{item.cart_status}</Text>
                                     </View>
                                     <View style={{ flexDirection: "row", flex: 0.15, alignItems: "center", justifyContent: "space-around" }}>
                                         <View>

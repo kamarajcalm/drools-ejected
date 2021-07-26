@@ -55,9 +55,25 @@ import moment from 'moment';
          }
        
      }
+     validateColor2=(item)=>{
+         if (item.finished_cooking == "Finished") {
+             return "green"
+         }
+         return "orange"
+     }
   render() {
     return (
       <View style={{flex:1}}>
+            <LinearGradient
+                style={{ height: height * 0.1, flexDirection: "row", alignItems: "center", justifyContent: "center" }}
+                colors={gradients}
+            >
+                <View style={{ flex: 1, flexDirection: "row",alignItems:"center",justifyContent:"center" }}>
+                    <View>
+                        <Text style={[styles.text,{color:"#fff",fontSize:20}]}>Today Income: ₹ 10000</Text>
+                    </View>
+                </View>
+            </LinearGradient>
             <FlatList
 
                         refreshing={this.state.refreshing}
@@ -67,15 +83,15 @@ import moment from 'moment';
                         keyExtractor={(item, index) => index.toString()}
                         renderItem={({ item, index }) => {
                             return (
-                                <TouchableOpacity style={{ height: height * 0.18, borderColor: "#fff", borderBottomWidth: 0.5, flexDirection: "row", paddingVertical: 10 }}
+                                <TouchableOpacity style={{ height: height * 0.2, borderColor: "#fff", borderBottomWidth: 0.5, flexDirection: "row", paddingVertical: 10 }}
                                     onPress={() => { this.props.navigation.navigate('ViewOrder', { item }) }}
                                 >
 
-                                    <LinearGradient
-                                        style={{ flex: 1, }}
-                                        colors={gradients}
+                                    <View
+                                        style={{ flex: 1, height:"100%"}}
+                                     
                                     >
-                                        <View style={{ flex: 0.7, padding: 10 }}>
+                                        <View style={{ flex: 0.5, paddingHorizontal:10 }}>
                                             <View style={{ flex: 0.7, }}>
                                                 <View style={{ flex: 0.5, }}>
                                                     <View>
@@ -87,14 +103,22 @@ import moment from 'moment';
                                                     <Text style={[styles.text, { fontSize: 18, color: "#fff" }]}># {item.id}</Text>
                                                 </View>
                                             </View>
-                                            <View style={{ flex: 0.3 }}>
+                                            <View style={{ flex: 0.3}}>
                                                 <Text style={[styles.text, { color: "#fff" }]}>{moment(item.created).format("hh:mm a")}</Text>
                                             </View>
                                         </View>
-                                        <View style={{ flexDirection: "row", flex: 0.25, alignItems: "center", justifyContent: "space-around" }}>
-                                            <Text style={[styles.text, { color: this.validateColor(item) }]}>{item.cart_status}</Text>
+                                        <View style={{ flexDirection: "row", flex: 0.35, alignItems: "center", justifyContent:"space-between",paddingHorizontal:10 }}>
+                                            <View style={{ flexDirection: "row" }}>
+                                                <Text style={[styles.text, { color: "#fff" }]}>Cooking : </Text>
+                                                <Text style={[styles.text, { color: this.validateColor2(item) }]}>{item.finished_cooking}</Text>
+                                            </View>
+                                            <View style={{flexDirection:"row"}}>
+                                                 <Text style={[styles.text,{color:"#fff"}]}>Bill : </Text>
+                                                <Text style={[styles.text, { color: this.validateColor(item) }]}>{item.cart_status}</Text>
+                                            </View>
+                                           
                                         </View>
-                                        <View style={{ flexDirection: "row", flex: 0.5, alignItems: "center", justifyContent: "space-around" }}>
+                                        <View style={{ flexDirection: "row", flex: 0.15, alignItems: "center", justifyContent: "space-around" }}>
                                             <View>
                                                 <Text style={[styles.text, { color: "#eee" }]}>Items Count: {item.items.length}</Text>
                                             </View>
@@ -102,7 +126,7 @@ import moment from 'moment';
                                                 <Text style={[styles.text, { color: "#fafafa" }]}>Price : ₹{item.cart_bill}</Text>
                                             </View>
                                         </View>
-                                    </LinearGradient>
+                                    </View>
                                 </TouchableOpacity>
                             )
                         }}

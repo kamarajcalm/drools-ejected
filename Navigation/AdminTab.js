@@ -33,7 +33,6 @@ class AdminTab extends Component {
                 tabBar={props => <MyTabBar {...props} />}
             >
                 <Tab.Screen name="Orders" component={OrdersStack} />
-                <Tab.Screen name="History" component={HistoryStack} />
                 <Tab.Screen name="OrdersCook" component={OrdersStack2} />
                 <Tab.Screen name="Inventory" component={InventoryStack} />
                 <Tab.Screen name="Profile" component={ProfileStack} />

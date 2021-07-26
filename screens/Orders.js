@@ -21,14 +21,14 @@ import TakeAway from './TakeAway';
 import CreateOnline from './CreateOnline';
 import { BluetoothManager, BluetoothEscposPrinter, BluetoothTscPrinter, } from 'react-native-bluetooth-escpos-printer';
 import OnlineOrders from './OnlineOrders';
-
+import History from './History';
  class Orders extends Component {
     constructor(props) {
         super(props);
         const routes = [
             { key: 'Dining', title: 'Dining' },
             { key: 'Take Away', title: 'Take Away' },
-            { key: 'Online', title:'Online'},
+            { key: 'History', title:'History'},
         ];
         this.state = {
             routes,
@@ -43,8 +43,8 @@ import OnlineOrders from './OnlineOrders';
                  return <NormalOrders navigation={this.props.navigation} />
              case 'Take Away':
                  return <TakeAway navigation={this.props.navigation} />
-             case 'Online':
-                 return <OnlineOrders navigation={this.props.navigation} />
+             case 'History':
+                 return <History navigation={this.props.navigation} />
              default:
                  return null;
          }

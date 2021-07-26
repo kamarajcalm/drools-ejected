@@ -72,13 +72,13 @@ class ViewCategories extends Component {
         let duplicate = this.state.Items
         let api = `${url}/api/drools/items/${item.id}/`
         let sendData ={
-            invalid:true
+            invalid: !item.invalid
         }
         let patch =await HttpsClient.patch(api,sendData)
         if(patch.type=="success"){
-            duplicate.splice(index, 1)
+            duplicate.invalid = !duplicate.invalid
             this.setState({ Items: duplicate })
-            return this.showSimpleMessage("Ivalid Successfully", "#00A300", "success")
+            return this.showSimpleMessage("Edited Successfully", "#00A300", "success")
         }
         else {
             return this.showSimpleMessage("Try again", "red", "danger")
@@ -135,6 +135,12 @@ class ViewCategories extends Component {
     componentWillUnmount(){
         this._unsubscribe()
     }
+    validateColor =(item)=>{
+        if (item.invalid){
+            return "green"
+        }
+        return "red"
+    }
     render() {
 
         return (
@@ -190,7 +196,7 @@ class ViewCategories extends Component {
                                 <TouchableOpacity style={{ flex: 0.25, alignItems: "center", justifyContent: "center" }}
                                  onPress ={()=>{this.createAlert(item,index)}}
                                 >
-                                  <Text style={[styles.text,{color:"red",textDecorationLine:"underlinecd "}]}>Make Invalid</Text>
+                                  <Text style={[styles.text,{color:this.validateColor(item),textDecorationLine:"underlinecd "}]}>{item.invalid?"Make Valid":"Make Invalid"}</Text>
                                 </TouchableOpacity>
                             </View>
                         )

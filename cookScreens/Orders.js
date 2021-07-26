@@ -213,6 +213,49 @@ const screenHeight = Dimensions.get('screen').height
              </Modal>
          )
      }
+     startAll = async (item) => {
+         let items = []
+
+         item.objs.forEach((i) => {
+
+             items.push(i.pk)
+         })
+
+         let api = `${url}/api/drools/cookComplete/`
+         let sendData = {
+             items,
+             status: "Cooking"
+         }
+         let post = await HttpsClient.post(api, sendData)
+         if (post.type == "success") {
+             this.showSimpleMessage("Started SuccessFully", "green", "success")
+             this.getOrders()
+             
+         } else {
+             this.showSimpleMessage("Try Again", "red", "danger")
+         }
+     }
+     completeAll = async (item) => {
+         let items = []
+
+         item.objs.forEach((i) => {
+
+             items.push(i.pk)
+         })
+
+         let api = `${url}/api/drools/cookComplete/`
+         let sendData = {
+             items,
+             status: "Finished"
+         }
+         let post = await HttpsClient.post(api, sendData)
+         if (post.type == "success") {
+             this.showSimpleMessage("Completed SuccessFully", "green", "success")
+       
+         } else {
+             this.showSimpleMessage("Try Again", "red", "danger")
+         }
+     }
     render() {
       
         return (
@@ -246,10 +289,12 @@ const screenHeight = Dimensions.get('screen').height
                     ListHeaderComponent={this.renderheader()}
                     renderItem={({ item, index }) => {
                             return (
-                               <View style={{borderColor:"#333",borderBottomWidth:0.5,padding: 20,}}>
+                               <TouchableOpacity style={{borderColor:"#333",borderBottomWidth:0.5,padding: 20,}}
+                                    onPress={() => { this.props.navigation.navigate('ViewOrder', { item })}}
+                               >
                                     <View style={{ marginTop: 10, flexDirection: "row", flex: 1 }} key={index}>
-                                        <View style={{ flexDirection: "row", flex: 0.5 }}>
-                                            <View style={{flexDirection:'row',flex:0.7}}>
+                                        <View style={{ flexDirection: "row", flex: 0.6 }}>
+                                            <View style={{flexDirection:'row',flex:0.7,alignItems:"center",justifyContent:"center"}}>
                                                 <View>
                                                     <Text style={[styles.text, { color: "#fff", fontSize: 20 }]}>{index + 1} . </Text>
                                                 </View>
@@ -262,22 +307,24 @@ const screenHeight = Dimensions.get('screen').height
                                                 <Text style={[styles.text, { color: "#fff", fontSize: 18 }]}> X {item.itemcount}</Text>
                                             </View>
                                         </View>
-                                        <View style={{ flex: 0.5, alignItems: "center", justifyContent: "center" }}>
+                                        <View style={{ flex: 0.4, alignItems: "center", justifyContent: "center" }}>
                                             <TouchableOpacity
-                                                style={{ height: height * 0.04, backgroundColor: "#e58300", alignItems: "center", justifyContent: "center", width: "60%" }}
-                                                onPress={() => {
-                                                   this.props.navigation.navigate('ViewOrder',{item})
-
-                                                }}
-
+                                                onPress={() => { this.startAll(item) }}
+                                                style={{ height: height * 0.05, width: width * 0.3, alignItems: "center", justifyContent: "center", backgroundColor: "green" }}
                                             >
-                                                <Text style={[styles.text, { color: "#fff" }]}>View</Text>
+                                                <Text style={[styles.text, { color: "#fff" }]}>Start All</Text>
+                                            </TouchableOpacity>
+                                            <TouchableOpacity
+                                                onPress={() => { this.completeAll(item) }}
+                                                style={{ height: height * 0.05, width: width * 0.3, alignItems: "center", justifyContent: "center", backgroundColor: primaryColor,marginTop:10 }}
+                                            >
+                                                <Text style={[styles.text, { color: "#fff" }]}>Complete All</Text>
                                             </TouchableOpacity>
                                         </View>
                                     </View>
                                
                            
-                               </View>
+                               </TouchableOpacity>
                             )
                         }}
                     />

@@ -26,7 +26,7 @@ export default class HistoryStack extends Component {
                 }}
             >
                 <Stack.Screen name="History" component={History} options={{ headerShown: false }} />
-                <Stack.Screen name="ViewOrders2" component={ViewOrders2} options={{ headerShown: false }} />
+              
             </Stack.Navigator>
         );
     }

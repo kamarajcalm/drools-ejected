@@ -403,7 +403,7 @@ class ViewOrders2 extends Component {
                     renderItem={({ item, index }) => {
                         return (
                             <View style={{ height: height * 0.1, margin: 15, borderColor: "#E6E9F0", borderBottomWidth: 0.5, flexDirection: "row" }}>
-                                <View style={{ flex: 0.2, alignItems: "center", justifyContent: "center", flexDirection: "row" }}>
+                                <View style={{ flex: 0.3, alignItems: "center", justifyContent: "center", flexDirection: "row" ,}}>
                                     <View style={[styles.boxWithShadow, { height: 25, width: 25, backgroundColor: "#333", alignItems: "center", justifyContent: "center" }]}>
                                         <Text style={[styles.text, { color: "#fff", fontSize: 18 }]}>{item.quantity}</Text>
                                     </View>

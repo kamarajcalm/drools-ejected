@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, TextInput, Dimensions, TouchableOpacity, StyleSheet, ActivityIndicator, FlatList, Alert} from 'react-native';
+import { View, Text, TextInput, Dimensions, TouchableOpacity, StyleSheet, ActivityIndicator, FlatList, Alert,} from 'react-native';
 const { height, width } = Dimensions.get('window')
 import settings from '../AppSettings'
 const gradients = settings.gradients
@@ -11,14 +11,18 @@ import FlashMessage, { showMessage, hideMessage } from "react-native-flash-messa
 import HttpsClient from '../HttpsClient';
 const url =settings.url
 import { FontAwesome, MaterialCommunityIcons, MaterialIcons, SimpleLineIcons, Entypo, Fontisto, Feather, Ionicons, FontAwesome5 } from '@expo/vector-icons';
-
+import Modal from 'react-native-modal';
+const screenHeight =Dimensions.get("screen").height
 export default class Categories extends Component {
   constructor(props) {
     super(props);
     this.state = {
         Items:[],
         categoryName:"",
-        refreshing:false
+        refreshing:false,
+        modal:false,
+        title:"",
+        selectedItem:null
     };
   }
     showSimpleMessage(content, color, type = "info", props = {}) {
@@ -112,6 +116,56 @@ export default class Categories extends Component {
             ]
         );
     }
+    edit = async ()=>{
+         this.setState({editing:true})
+        let api = `${url}/api/drools/category/${this.state.selectedItem.id}/`
+        let sendData ={
+            title:this.state.title
+        }
+        let patch =  await HttpsClient.patch(api,sendData)
+        if(patch.type=="success"){
+            this.setState({ editing:false,modal:false})
+            this.showSimpleMessage("edited SuccessFully","green","success")
+            this.getCategories()
+        }else{
+            this.setState({ editing: false,})
+            this.showSimpleMessage("Try Again", "red", "danger")
+        }
+    }
+    modal =()=>{
+        return(
+            <Modal
+              deviceHeight={screenHeight}
+              isVisible={this.state.modal}
+              onBackdropPress={()=>{this.setState({modal:false})}}
+            >
+              <View style={{flex:1,alignItems:"center",justifyContent:"center"}}>
+                    <View style={{height:height*0.3,width:width*0.9,borderRadius:10,backgroundColor:"#fff",alignItems:"center",justifyContent:"center"}}>
+                             <View style={{alignItems:"center",justifyContent:"center",marginVertical:10}}>
+                                 <Text style={[styles.text,{color:"#000",fontSize:20}]}>Edit Category :</Text>
+                             </View>
+                             <View style={{paddingLeft:10}}>
+                                 <Text style={[styles.text,{color:"#000",fontSize:18}]}>Enter Title :</Text>
+                                 <TextInput
+                                   value={this.state.title}
+                                   onChangeText={(title)=>{this.setState({title})}}
+                                   selectionColor={themeColor}
+                                   style={{height:35,width:width*0.8,backgroundColor:"#fafafa",paddingLeft:5,marginTop:10}}
+                                 
+                                 />
+                             </View>
+                             <View style={{marginTop:20}}>
+                                 <TouchableOpacity style={{height:height*0.05,width:width*0.4,alignItems:"center",justifyContent:"center",backgroundColor:primaryColor}}
+                                  onPress={()=>{this.edit()}}
+                                 >
+                                    {this.state.editing?<ActivityIndicator color={"#fff"} size={"large"}/> :<Text style={[styles.text,{color:"#fff"}]}>Save</Text>}
+                                 </TouchableOpacity>
+                             </View>
+                    </View>
+              </View>
+            </Modal>
+        )
+    }
   render() {
     return (
       <View style={{flex:1}}>
@@ -155,17 +209,25 @@ export default class Categories extends Component {
                                 <Text style={[styles.text, { textDecorationLine: "underline", color: "#000" }]}>View</Text>
                             </TouchableOpacity>
                         </View>
-                        <View style={{ flex: 0.25, alignItems: "center", justifyContent: "center" }}>
+                        <View style={{ flex: 0.25, alignItems: "center", justifyContent:"space-around",flexDirection:"row"}}>
                             <TouchableOpacity 
                              onPress ={()=>{this.createAlert(item,index)}}
                             >
                                 <Entypo name="circle-with-cross" size={24} color="red" />
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={() => { this.setState({ modal: true, title: item.title,selectedItem:item})}}
+                            >
+                                <Entypo name="edit" size={24} color="orange" />
                             </TouchableOpacity>
                         </View>
                     </View>
                 )
               }}
             />
+            {
+                this.modal()
+            }
       </View>
     );
   }

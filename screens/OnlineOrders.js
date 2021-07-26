@@ -68,15 +68,15 @@ class OnlineOrders extends Component {
                     renderItem={({ item, index }) => {
 
                         return (
-                            <TouchableOpacity style={{ height: height * 0.18, borderColor: "#fff", borderBottomWidth: 0.5, flexDirection: "row", paddingVertical: 10 }}
+                            <TouchableOpacity style={{ height: height * 0.2, borderColor: "#fff", borderBottomWidth: 0.5, flexDirection: "row", paddingVertical: 10 }}
                                 onPress={() => { this.props.navigation.navigate('ViewOrder', { item }) }}
                             >
 
-                                <LinearGradient
-                                    style={{ flex: 1, }}
-                                    colors={gradients}
+                                <View
+                                    style={{ flex: 1, height: "100%" }}
+
                                 >
-                                    <View style={{ flex: 0.7, padding: 10 }}>
+                                    <View style={{ flex: 0.5, paddingHorizontal: 10 }}>
                                         <View style={{ flex: 0.7, }}>
                                             <View style={{ flex: 0.5, }}>
                                                 <View>
@@ -92,10 +92,18 @@ class OnlineOrders extends Component {
                                             <Text style={[styles.text, { color: "#fff" }]}>{moment(item.created).format("hh:mm a")}</Text>
                                         </View>
                                     </View>
-                                    <View style={{ flexDirection: "row", flex: 0.25, alignItems: "center", justifyContent: "space-around" }}>
-                                        <Text style={[styles.text, { color: this.validateColor(item) }]}>{item.cart_status}</Text>
+                                    <View style={{ flexDirection: "row", flex: 0.35, alignItems: "center", justifyContent: "space-between", paddingHorizontal: 10 }}>
+                                        <View style={{ flexDirection: "row" }}>
+                                            <Text style={[styles.text, { color: "#fff" }]}>Cooking : </Text>
+                                            <Text style={[styles.text, { color: this.validateColor(item) }]}>{item.cart_status}</Text>
+                                        </View>
+                                        <View style={{ flexDirection: "row" }}>
+                                            <Text style={[styles.text, { color: "#fff" }]}>Bill : </Text>
+                                            <Text style={[styles.text, { color: this.validateColor(item) }]}>{item.cart_status}</Text>
+                                        </View>
+
                                     </View>
-                                    <View style={{ flexDirection: "row", flex: 0.5, alignItems: "center", justifyContent: "space-around" }}>
+                                    <View style={{ flexDirection: "row", flex: 0.15, alignItems: "center", justifyContent: "space-around" }}>
                                         <View>
                                             <Text style={[styles.text, { color: "#eee" }]}>Items Count: {item.items.length}</Text>
                                         </View>
@@ -103,7 +111,7 @@ class OnlineOrders extends Component {
                                             <Text style={[styles.text, { color: "#fafafa" }]}>Price : ₹{item.cart_bill}</Text>
                                         </View>
                                     </View>
-                                </LinearGradient>
+                                </View>
                             </TouchableOpacity>
                         )
                     }}

@@ -11,6 +11,7 @@ import ExpenseScreen from '../screens/ExpenseScreen';
 import BlueToothDevices from '../screens/BlueToothDevices';
 import { TransitionSpecs, CardStyleInterpolators } from '@react-navigation/stack';
 import Discounts from '../screens/Discounts';
+import OtherExpenses from '../screens/OtherExpenses';
 const Stack = createStackNavigator();
 export default class ProfileStack extends Component {
     constructor(props) {
@@ -36,6 +37,7 @@ export default class ProfileStack extends Component {
                 <Stack.Screen name="StatisticsView" component={StatisticsView} options={{ headerShown: false }} />
                 <Stack.Screen name="Tables" component={Tables} options={{ headerShown: false }} />
                 <Stack.Screen name="ExpenseScreen" component={ExpenseScreen} options={{ headerShown: false }} />
+                <Stack.Screen name="OtherExpenses" component={OtherExpenses} options={{ headerShown: false }} />
                 <Stack.Screen name="BlueToothDevices" component={BlueToothDevices} options={{ headerShown: false }} />
                 <Stack.Screen name="Discounts" component={Discounts} options={{ headerShown: false }} />
             </Stack.Navigator>

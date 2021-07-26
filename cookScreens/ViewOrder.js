@@ -77,46 +77,17 @@ class ViewOrder extends Component {
            this.showSimpleMessage("Try Again", "red", "danger")
        }
     }
-    startAll = async()=>{
-        let items = []
 
-        this.state.item.objs.forEach((i) => {
-
-            items.push(i.pk)
-        })
-
-        let api = `${url}/api/drools/cookComplete/`
-        let sendData = {
-            items,
-            status:"Cooking"
-        }
-        let post = await HttpsClient.post(api, sendData)
-        if (post.type == "success") {
-            this.showSimpleMessage("Started SuccessFully", "green", "success")
-            return this.props.navigation.goBack()
-        } else {
-            this.showSimpleMessage("Try Again", "red", "danger")
-        }
-    }
     footer =()=>{
         return(
             <View style={{marginVertical:20,flexDirection:"row",alignItems:"center",justifyContent:"center",}}>
-                 <View style={{flex:0.5,alignItems:"center",justifyContent:"center"}}>
-                    <TouchableOpacity
-                        onPress={()=>{this.startAll()}}
-                        style={{ height: height * 0.05, width: width*0.4, alignItems: "center", justifyContent: "center", backgroundColor: "green" }}
-                    >
-                        <Text style={[styles.text, { color: "#fff" }]}>Start All</Text>
-                    </TouchableOpacity>
-                 </View>
-                <View style={{flex:0.5,alignItems:"center",justifyContent:"center"}}>
-                    <TouchableOpacity
-                        onPress={() => { this.completeAll() }}
-                        style={{ height: height * 0.05, width: width * 0.4, alignItems: "center", justifyContent: "center", backgroundColor: primaryColor }}
-                    >
-                        <Text style={[styles.text, { color: "#fff" }]}>Complete All</Text>
-                    </TouchableOpacity>
-                </View>
+               
+                <TouchableOpacity
+                    onPress={() => { this.completeAll() }}
+                    style={{ height: height * 0.05, width: width * 0.4, alignItems: "center", justifyContent: "center", backgroundColor: primaryColor }}
+                >
+                    <Text style={[styles.text, { color: "#fff" }]}>Complete All</Text>
+                </TouchableOpacity>
             </View>
         )
     }
@@ -314,7 +285,7 @@ class ViewOrder extends Component {
         )
     }
     render() {
-             console.log(new Date())
+    
         return (
             <View style={{ flex: 1 }}>
 
@@ -362,16 +333,15 @@ class ViewOrder extends Component {
                             data={this.state.item.objs}
                             keyExtractor ={(item,index)=>index.toString()}
                             renderItem ={({item,index})=>{
+                                console.log(item)
                                 return(
+                                    <View style={{ backgroundColor: "#eee"}}>
                                     <View style={{paddingLeft:20,marginTop:10,height:height*0.2,backgroundColor:"#eee",alignItems:"center",justifyContent:"space-around",flexDirection:"row"}}>
                                        <View style={{flex:0.1,alignItems:"center",justifyContent:"center"}}>
                                            <Text style={[styles.text]}> # {index+1}</Text>
                                        </View>
                                        <View style={{flex:0.6,alignItems:"center",justifyContent:"space-around"}}>
-                                            <View style={{ flexDirection: "row" }}>
-                                                <Text style={[styles.text]}>OrderType : </Text>
-                                                <Text style={[styles.text, { color: primaryColor }]}>{item.order_for}</Text>
-                                            </View>
+                                            
                                             <View style={{ flexDirection: "row" }}>
                                                 <Text style={[styles.text]}>OrderTime : </Text>
                                                 <Text style={[styles.text, { color: primaryColor }]}>{moment(`${item.time}`).format("hh:mm a")}</Text>
@@ -395,6 +365,15 @@ class ViewOrder extends Component {
                                            }
                                        </View>
                                       
+                                    </View>
+                                    <View>
+                                        <View style={{paddingHorizontal:20}}>  
+                                                <Text style={[styles.text, {}]}>Comments :</Text>
+                                        </View>
+                                        <View style={{padding:20}}>
+                                                <Text style={[styles.text, {}]}>{item.comments}</Text>
+                                        </View>
+                                    </View>
                                     </View>
                                 )
                             }}

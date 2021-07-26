@@ -109,9 +109,9 @@ export default class MyTabBar extends Component {
                         {
                             this.icon(label, isFocused)
                         }
-                        {/* <Text style={[styles.text,{ color: isFocused ? primaryColor : secondaryColor }]}>
+                        <Text style={[styles.text,{ color: isFocused ? primaryColor : secondaryColor }]}>
                             {label}
-                        </Text> */}
+                        </Text>
                     </TouchableOpacity>
                 );
             })}

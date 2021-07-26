@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Dimensions, TouchableOpacity, StyleSheet, FlatList, Image, TextInput} from 'react-native';
+import { View, Text, Dimensions, TouchableOpacity, StyleSheet, FlatList, Image, TextInput, ScrollView} from 'react-native';
 const { height, width } = Dimensions.get('window')
 import settings from '../AppSettings'
 import { connect } from 'react-redux';
@@ -26,7 +26,8 @@ class ExpenseScreen extends Component {
            edit:false,
            electricityExpense:"",
            otherExpense:"",
-           Total:""
+           Total:"",
+           otherExpenses:[]
         };
     }
     getExpenses = async()=>{
@@ -41,8 +42,16 @@ class ExpenseScreen extends Component {
             })
         }
     }
+    getExtraExpenses = async( )=>{
+        let api = `${url}/api/drools/otherexpenses/`
+        let data =await HttpsClient.get(api)
+        if(data.type=="success"){
+            this.setState({otherExpenses:data.data})
+        }
+    }
     componentDidMount(){
         this.getExpenses()
+        this.getExtraExpenses()
     }
     save = async()=>{
        let api =`${url}/api/drools/postExpenses/`
@@ -100,7 +109,10 @@ class ExpenseScreen extends Component {
                     </View>
                 </LinearGradient>
 
-                        <View style={{ flex: 1 }}>
+                        <ScrollView>
+                           
+                           
+                          
                              <View style={{marginTop:10,marginLeft:20}}>
                                  <Text style={[styles.text,{fontSize:22,color:"#fff"}]}>Employee expense : </Text>
                                  <TextInput
@@ -124,7 +136,7 @@ class ExpenseScreen extends Component {
                                 onChangeText={(electricityExpense) => { this.setState({ electricityExpense }) }}
                             />
                         </View>
-                        <View style={{ marginTop: 10, marginLeft: 20 }}>
+                        {/* <View style={{ marginTop: 10, marginLeft: 20 }}>
                             <Text style={[styles.text, { fontSize: 22, color: "#fff" }]}>other expense : </Text>
                             <TextInput
                                 value={this.state.otherExpense}
@@ -134,35 +146,58 @@ class ExpenseScreen extends Component {
                                 selectionColor={primaryColor}
                                  onChangeText={(otherExpense) => { this.setState({ otherExpense }) }}
                             />
-                        </View>
+                        </View> */}
+                        {
+                            this.state.otherExpenses.map((item,index)=>{
+                                    return(
+                                        <View>
+
+                                        </View>
+                                    )
+                            })
+                        }
                         <View style={{marginTop:20}}>
                              <View style={{flexDirection:"row",alignSelf:"flex-end",paddingRight:20}}>
                                  <Text style={{color:"#fff",fontSize:22}}>Total : </Text>
                             <Text style={[styles.text, { color: primaryColor, fontSize: 22 }]}> ₹ {this.state.Total}</Text>
                              </View>
                         </View>
-                             <View style={{position:"absolute",width,bottom:30,flexDirection:"row",paddingVertical:20,flexDirection:"row"}}>
-                                  <View style={{flex:0.5,alignItems:"center",justifyContent:"center"}}>
-                                      <TouchableOpacity 
-                                        onPress={()=>{this.setState({edit:true},()=>{
-                                            this.textRef.focus()
-                                        })}}
-                                        style={{backgroundColor:primaryColor,height:height*0.05,width:width*0.4,alignItems:"center",justifyContent:"center"}}
-                                      >
-                                           <Text style={[styles.text,{color:'#fff',}]}>Edit</Text>
-                                      </TouchableOpacity>
-                                  </View>
-                                  <View style={{flex:0.5,alignItems:"center",justifyContent:"center"}}>
-                            <TouchableOpacity
-                                onPress={() => { this.save() }}
-                                style={{ backgroundColor: "green", height: height * 0.05, width: width * 0.4, alignItems: "center", justifyContent: "center" }}
-                            >
-                                <Text style={[styles.text, { color: '#fff', }]}>save</Text>
-                            </TouchableOpacity>
-                                  </View>
-                             </View>
-                        </View>
+                   
+                             
+                        </ScrollView>
+                <View style={{ position: "absolute", width, bottom: 30, paddingVertical: 20, flexDirection: "row", flexWrap: "wrap", alignItems: "center", justifyContent: "space-around" }}>
+                    <View style={{}}>
+                        <TouchableOpacity
+                            onPress={() => {
+                                this.setState({ edit: true }, () => {
+                                    this.textRef.focus()
+                                })
+                            }}
+                            style={{ backgroundColor: primaryColor, height: height * 0.05, width: width * 0.4, alignItems: "center", justifyContent: "center" }}
+                        >
+                            <Text style={[styles.text, { color: '#fff', }]}>Edit</Text>
+                        </TouchableOpacity>
+                    </View>
+                    <View style={{}}>
+                        <TouchableOpacity
+                            onPress={() => { this.save() }}
+                            style={{ backgroundColor: "green", height: height * 0.05, width: width * 0.4, alignItems: "center", justifyContent: "center" }}
+                        >
+                            <Text style={[styles.text, { color: '#fff', }]}>save</Text>
+                        </TouchableOpacity>
+
+                    </View>
+                    <View style={{ marginTop: 30 }}>
+                        <TouchableOpacity
+                            onPress={() => { this.props.navigation.navigate('OtherExpenses')}}
+                            style={{ backgroundColor: "orange", height: height * 0.05, width: width * 0.4, alignItems: "center", justifyContent: "center" }}
+                        >
+                            <Text style={[styles.text, { color: '#fff', }]}>Other Expenses</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
             </View>
+            
         );
     }
 }

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Dimensions, TouchableOpacity, StyleSheet, FlatList, Image ,TextInput, ScrollView} from 'react-native';
+import { View, Text, Dimensions, TouchableOpacity, StyleSheet, FlatList, Image ,TextInput, ScrollView,Switch} from 'react-native';
 const { height, width } = Dimensions.get('window')
 import settings from '../AppSettings'
 import { connect } from 'react-redux';
@@ -57,7 +57,8 @@ class ViewOrders extends Component {
             discount:"",
             onlineDiscount:"",
             takeAwayDiscount:"",
-            diningDiscount:""
+            diningDiscount:"",
+            oneplus:false
         };
     }
     showSimpleMessage(content, color, type = "info", props = {}) {
@@ -85,7 +86,8 @@ class ViewOrders extends Component {
             status:this.state.ordervalue,
             payment_status:this.state.paymentvalue,
             cart_id:this.state.item.id,
-            discount:this.state.discount
+            discount:this.state.discount,
+            oneplusone:this.state.oneplus
         }
         let post = await HttpsClient.post(api,sendData)
         console.log(post)
@@ -95,7 +97,7 @@ class ViewOrders extends Component {
             return this.props.navigation.goBack()
         }else{
 
-            this.showSimpleMessage(`${post.data.failed}`, "red", "failure")
+            this.showSimpleMessage(`${post?.data?.failed||"try again"}`, "red", "failure")
         }
     }
     getSubtotal =()=>{
@@ -205,6 +207,24 @@ class ViewOrders extends Component {
           
         this._unsubscribe()
     }
+    enableOffer =async()=>{
+        let api = `${url}/api/drools/createOrder/`
+        let sendData = {
+            oneplusone:true,
+            cart_id: this.state.item.id,
+           
+        }
+        let post = await HttpsClient.post(api, sendData)
+        console.log(post)
+        if (post.type == "success") {
+           
+            this.showSimpleMessage("Enabled SuccessFully", "green", "success")
+      
+        } else {
+
+            this.showSimpleMessage(`${post?.data?.failed}`, "red", "failure")
+        }
+    }
     footer =()=>{
         return(
             <View style={{marginVertical:10}}>
@@ -246,7 +266,7 @@ class ViewOrders extends Component {
                         />
                      </View>
                 </View> 
-                <View style={{alignItems:"center",marginTop:20,flexDirection:"row",justifyContent:"space-around"}}>
+                <View style={{alignItems:"center",marginTop:20,flexDirection:"row",justifyContent:"space-around",flexWrap:"wrap"}}>
                     <TouchableOpacity style={{height:height*0.05,width:width*0.4,alignItems:"center",justifyContent:"center",backgroundColor:primaryColor}}
                      onPress={()=>{this.setState({modal:true})}}
                     >
@@ -257,6 +277,7 @@ class ViewOrders extends Component {
                     >
                         <Text style={[styles.text, { color: "#fff" }]}>Add Items</Text>
                     </TouchableOpacity>
+              
                 </View>
                 {/* <View style={{alignItems:"center",justifyContent:"center",marginVertical:30,flexDirection:"row"}}>
                     <TouchableOpacity style={{ height: height * 0.05, width: width * 0.4, alignItems: "center", justifyContent: "center", backgroundColor: "green" }}
@@ -338,6 +359,9 @@ class ViewOrders extends Component {
             items: callback(state.items)
         }));
     }
+    toggleSwitch =()=>{
+         this.setState({oneplus:!this.state.oneplus})
+    }
     completeModal = ()=>{
         return(
             <Modal
@@ -381,6 +405,16 @@ class ViewOrders extends Component {
                                 placeholder="select a Table"
                             />
                         </View>
+                        <Text style={[styles.text, { color: "#000", fontSize: 22 }]}>Enable 1 + 1 </Text>
+
+                        <Switch
+                            style={{ marginLeft: 10 }}
+                            trackColor={{ false: '#767577', true: '#81b0ff' }}
+                            thumbColor={this.state.oneplus? '#f5dd4b' : '#f4f3f4'}
+                            ios_backgroundColor="#3e3e3e"
+                            onValueChange={() => { this.toggleSwitch() }}
+                            value={this.state.oneplus}
+                        />
                         <View style ={{alignItems:"center"}}>
                             <TouchableOpacity style ={{height:height*0.05,width:width*0.4,alignItems:"center",justifyContent:"center",backgroundColor:primaryColor}}
                              onPress ={()=>{
