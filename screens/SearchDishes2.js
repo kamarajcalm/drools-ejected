@@ -19,6 +19,7 @@ import orders from '../data/orders'
 import { FontAwesome, AntDesign, MaterialCommunityIcons, MaterialIcons, SimpleLineIcons, Entypo, Fontisto, Feather, Ionicons, FontAwesome5 } from '@expo/vector-icons';
 import HttpsClient from '../HttpsClient';
 import Modal from "react-native-modal";
+import FlashMessage, { showMessage, hideMessage } from "react-native-flash-message";
 class SearchDishes2 extends Component {
     constructor(props) {
         let item = props.route.params.item
@@ -32,6 +33,17 @@ class SearchDishes2 extends Component {
             selectedCategory: null,
             modal:false
         };
+    }
+    showSimpleMessage(content, color, type = "info", props = {}) {
+        const message = {
+            message: content,
+            backgroundColor: color,
+            icon: { icon: "auto", position: "left" },
+            type,
+            ...props,
+        };
+
+        showMessage(message);
     }
     searchDishes = async (text) => {
         this.setState({ selectedCategory: null })
@@ -57,11 +69,14 @@ class SearchDishes2 extends Component {
         let data = await HttpsClient.get(api)
         console.log(data)
         if (data.type == "success") {
+            data.data.forEach((i) => {
+                i.selected = false
+                i.quantity = 1
+            })
             this.setState({ items: data.data })
         }
     }
     selectDish = (item, idx) => {
-
         let data = this.state.selectedItems
         let duplicate = this.state.items
         duplicate[idx].selected = !duplicate[idx].selected
@@ -70,21 +85,68 @@ class SearchDishes2 extends Component {
             return element.id === item.id;
         });
         if (found) {
-            let index = data.indexOf(found)
-            data.splice(index, 1)
-            this.setState({ selectedItems: data })
+            duplicate[idx].quantity = found.quantity
+            this.showSimpleMessage("Item already added", "orange", "success")
         } else {
             let pushObj = {
                 quantity: 1,
                 id: item.id,
                 comments: "",
                 title: item.title
-
             }
             data.push(pushObj)
             this.setState({ selectedItems: data })
+
         }
 
+
+    }
+    addQuantity = (item, idx) => {
+
+        let data = this.state.selectedItems
+        let duplicate = this.state.items
+
+        duplicate[idx].quantity += 1
+        this.setState({ items: duplicate })
+        var found = data.find(function (element) {
+            return element.id === item.id;
+        });
+        if (found) {
+            let index = data.indexOf(found)
+            data[index].quantity += 1
+            this.setState({ selectedItems: data }, () => {
+                console.log(this.state.selectedItems)
+            })
+        }
+    }
+    decreaseQuantity = (item, idx) => {
+        let data = this.state.selectedItems
+        let duplicate = this.state.items
+        duplicate[idx].quantity -= 1
+
+        if (duplicate[idx].quantity == 0) {
+            duplicate[idx].quantity=1
+            duplicate[idx].selected = false
+            this.setState({ items: duplicate })
+            var found = data.find(function (element) {
+                return element.id === item.id;
+            });
+            if (found) {
+                let index = data.indexOf(found)
+                data.splice(index, 1)
+                this.setState({ selectedItems: data })
+            }
+        } else {
+            this.setState({ items: duplicate })
+            var found = data.find(function (element) {
+                return element.id === item.id;
+            });
+            if (found) {
+                let index = data.indexOf(found)
+                data[index].quantity -= 1
+                this.setState({ selectedItems: data })
+            }
+        }
 
     }
     componentDidMount() {
@@ -122,7 +184,7 @@ class SearchDishes2 extends Component {
       
             let post = await HttpsClient.post(api, sendData)
             if (post.type == "success") {
-                this.setState({modal:false})
+                this.showSimpleMessage("Item Added successFully","green","success")
                 this.props.navigation.goBack()
             }
 
@@ -134,21 +196,21 @@ class SearchDishes2 extends Component {
         duplicate[index].comments = text
         this.setState({ selectedItems: duplicate })
     }
-    addQuantity = (item, index) => {
-        let duplicate = this.state.selectedItems
-        duplicate[index].quantity = duplicate[index].quantity + 1
-        this.setState({ selectedItems: duplicate })
-    }
-    decreaseQuantity = (item, index) => {
-        let duplicate = this.state.selectedItems
-        duplicate[index].quantity = duplicate[index].quantity - 1
-        this.setState({ selectedItems: duplicate })
-    }
-    deleteItem = (index) => {
-        let duplicate = this.state.selectedItems
-        duplicate.splice(index, 1)
-        this.setState({ selectedItems: duplicate })
-    }
+    // addQuantity = (item, index) => {
+    //     let duplicate = this.state.selectedItems
+    //     duplicate[index].quantity = duplicate[index].quantity + 1
+    //     this.setState({ selectedItems: duplicate })
+    // }
+    // decreaseQuantity = (item, index) => {
+    //     let duplicate = this.state.selectedItems
+    //     duplicate[index].quantity = duplicate[index].quantity - 1
+    //     this.setState({ selectedItems: duplicate })
+    // }
+    // deleteItem = (index) => {
+    //     let duplicate = this.state.selectedItems
+    //     duplicate.splice(index, 1)
+    //     this.setState({ selectedItems: duplicate })
+    // }
     modal =()=>{
         return(
             <Modal
@@ -230,6 +292,43 @@ class SearchDishes2 extends Component {
             </Modal>
         )
     }
+    validateButton = (item, index) => {
+
+        if (!item.selected) {
+            return (
+                <TouchableOpacity style={{ backgroundColor: "#3f3f3f", alignItems: "center", justifyContent: "center", height: height * 0.05, width: "80%" }}
+                    onPress={() => { this.selectDish(item, index) }}
+                >
+                    <Text style={[styles.text, { color: "#fff" }]}>Add</Text>
+                </TouchableOpacity>
+            )
+        }
+
+        return (
+            <View style={{ height: height * 0.05, width: width * 0.3, flexDirection: "row", alignItems: "center", justifyContent: "space-around", backgroundColor: "#3f3f3f" }}>
+                <TouchableOpacity style={{ alignItems: "center", justifyContent: "center" }}
+                    onPress={() => {
+                        this.decreaseQuantity(item, index)
+                    }}
+                >
+                    <Entypo name="circle-with-minus" size={24} color="#fff" />
+                </TouchableOpacity>
+                <View style={{ alignItems: "center", justifyContent: "center" }}>
+                    <Text style={[styles.text, { color: "#ffff" }]}>{item.quantity}</Text>
+                </View>
+                <TouchableOpacity style={{ alignItems: "center", justifyContent: "center" }}
+                    onPress={() => {
+                        this.addQuantity(item, index)
+                    }}
+                >
+                    <Entypo name="circle-with-plus" size={24} color="#fff" />
+                </TouchableOpacity>
+
+
+            </View>
+        )
+
+    }
     render() {
         return (
             <View style={{ flex: 1 }}>
@@ -260,70 +359,97 @@ class SearchDishes2 extends Component {
 
 
                 </LinearGradient>
+                <View
+                    style={{ height: height * 0.08 }}
+                >
+                    <FlatList
+                        showsHorizontalScrollIndicator={false}
+                        contentContainerStyle={{ paddingRight: 20 }}
+                        style={{ height: height * 0.07 }}
+                        horizontal={true}
+                        data={this.state.categories}
+                        keyExtractor={(item, index) => index.toString()}
+                        renderItem={({ item, index }) => {
+                            return (
+                                <TouchableOpacity style={{
+                                    height: height * 0.05,
+                                    width: width * 0.4,
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    borderRadius: 10,
+                                    backgroundColor: this.validateBackground(item),
+                                    marginLeft: 10,
+                                    marginTop: 10
+                                }}
+                                    onPress={() => { this.selectCategory(item) }}
+                                >
+                                    <Text style={[styles.text]}>{item.title}</Text>
+                                </TouchableOpacity>
+                            )
+                        }}
+                    />
+                </View>
+              
+
                 <FlatList
-                    contentContainerStyle={{height:height*0.07,width,}}
-                    horizontal={true}
-                    data={this.state.categories}
+                    contentContainerStyle={{ paddingBottom: 100 }}
+                    data={this.state.items}
                     keyExtractor={(item, index) => index.toString()}
                     renderItem={({ item, index }) => {
                         return (
-                            <TouchableOpacity style={{
-                                height: height * 0.05,
-                                width: width * 0.4,
-                                alignItems: "center",
-                                justifyContent: "center",
-                                borderRadius: 10,
-                                backgroundColor: this.validateBackground(item),
-                                marginLeft: 10,
-                                marginTop: 10
-                            }}
-                                onPress={() => { this.selectCategory(item) }}
-                            >
-                                <Text style={[styles.text]}>{item.title}</Text>
-                            </TouchableOpacity>
+                            <View style={{ borderColor: "#333", borderBottomWidth: 0.5 }}>
+                            <View style={{ minHeight: height * 0.08, backgroundColor: "#eee", width: width, flexDirection: "row",}}>
+                                <View style={{ flex: 0.1, alignItems: "center", justifyContent: "center" }}>
+                                    <Text style={[styles.text, { fontSize: 18 }]}>{index + 1} .</Text>
+                                </View>
+                                <View style={{ alignItems: "center", marginTop: 5, flex: 0.5, alignItems: "center", justifyContent: "center" }}>
+                                    <Text style={[styles.text, { fontSize: 18 }]}>{item.title}</Text>
+                                </View>
+                                <View style={{ marginTop: 10, alignItems: "center", flex: 0.4, alignItems: "center", justifyContent: "center" }}>
+                                    {
+                                        this.validateButton(item, index)
+                                    }
+                                </View>
+                           
+                            </View>
+                        { item.selected&&<View style={{}}>
+                                    <View style={{ alignItems: "center", justifyContent: "center" }}>
+                                        <Text style={[styles.text]}>Comments :</Text>
+                                    </View>
+                                    <View style={{ alignItems: "center" ,marginVertical:10}}>
+                                        <TextInput
+                                            value={item.comments}
+                                            style={{ height: height * 0.1, width: "90%", backgroundColor: "#fff", paddingLeft: 5, textAlignVertical: "top" }}
+                                            selectionColor={primaryColor}
+                                            onChangeText={(text) => { this.changeComment(text, item, index) }}
+                                        />
+                                    </View>
+
+                                </View>}
+                            </View>
                         )
                     }}
                 />
-              
-                      
-                        <FlatList
-                            style={{ marginTop: 0 }}
-                            contentContainerStyle={{}}
-                            data={this.state.items}
-                            keyExtractor={(item, index) => index.toString()}
-                            renderItem={({ item, index }) => {
-                                return (
-                                    <View style={{ height: height * 0.07, backgroundColor: "#eee", width: width, flexDirection: "row", borderColor: "#333", borderBottomWidth: 0.5 }}>
-                                        <View style={{ flex: 0.1, alignItems: "center", justifyContent: "center" }}>
-                                            <Text style={[styles.text, { fontSize: 18 }]}>{index + 1} .</Text>
-                                        </View>
-                                        <View style={{ alignItems: "center", marginTop: 5, flex: 0.5, alignItems: "center", justifyContent: "center" }}>
-                                            <Text style={[styles.text, { fontSize: 18 }]}>{item.title}</Text>
-                                        </View>
-                                        <View style={{ marginTop: 10, alignItems: "center", flex: 0.4, alignItems: "center", justifyContent: "center" }}>
-                                            {
-                                                this.validateButton(item, index)
-                                            }
-                                        </View>
-                                    </View>
-                                )
-                            }}
-                        />
                     
                   
     
         
                 <View style={{ position: "absolute", width, bottom: 30, alignItems: "center", justifyContent: "space-around", flexDirection: "row" }}>
-                    <TouchableOpacity style={{ height: height * 0.05, width: width * 0.3, backgroundColor: primaryColor, alignItems: "center", justifyContent: "center" }}
-                     onPress ={()=>{this.setState({modal:true})}}
+                    <View style={{ height: height * 0.05, width: width * 0.3, backgroundColor: primaryColor, alignItems: "center", justifyContent: "center" }}
+                    
                     >
                         <Text style={[styles.text, { color: "#fff", }]}>Selected ({this.state.selectedItems.length})</Text>
+                    </View>
+                    <TouchableOpacity
+                        style={{ height: height * 0.05, width: width * 0.3, backgroundColor: primaryColor, alignItems: "center", justifyContent: "center" }}
+                        onPress={() => {
+                          this.addItems()
+                        }}
+                    >
+                        <Text style={[styles.text, { color: "#fff", }]}>Proceed</Text>
                     </TouchableOpacity>
-                   
                 </View>
-                {
-                    this.modal()
-                }
+                
             </View>
         );
     }

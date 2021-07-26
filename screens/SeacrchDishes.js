@@ -74,6 +74,7 @@ class SeacrchDishes extends Component {
             return element.id === item.id;
         });
         if (found) {
+            duplicate[idx].quantity = found.quantity
             this.showSimpleMessage("Item already added", "orange", "success")
         } else {
             let pushObj = {
@@ -111,6 +112,7 @@ class SeacrchDishes extends Component {
             return element.id === item.id;
         });
         if (found) {
+            
             let index = data.indexOf(found)
             data[index].quantity +=1
             this.setState({ selectedItems: data },()=>{
@@ -124,6 +126,7 @@ class SeacrchDishes extends Component {
         duplicate[idx].quantity -= 1
 
         if (duplicate[idx].quantity==0){
+            duplicate[idx].quantity = 1
             duplicate[idx].selected=false
             this.setState({ items:duplicate})
             var found = data.find(function (element) {
