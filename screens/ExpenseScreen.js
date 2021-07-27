@@ -187,14 +187,7 @@ class ExpenseScreen extends Component {
                         </TouchableOpacity>
 
                     </View>
-                    <View style={{ marginTop: 30 }}>
-                        <TouchableOpacity
-                            onPress={() => { this.props.navigation.navigate('OtherExpenses')}}
-                            style={{ backgroundColor: "orange", height: height * 0.05, width: width * 0.4, alignItems: "center", justifyContent: "center" }}
-                        >
-                            <Text style={[styles.text, { color: '#fff', }]}>Other Expenses</Text>
-                        </TouchableOpacity>
-                    </View>
+                  
                 </View>
             </View>
             

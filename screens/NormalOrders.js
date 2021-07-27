@@ -65,7 +65,7 @@ import moment from 'moment';
     return (
       <View style={{flex:1}}>
             <LinearGradient
-                style={{ height: height * 0.1, flexDirection: "row", alignItems: "center", justifyContent: "center" }}
+                style={{ height: height * 0.05, flexDirection: "row", alignItems: "center", justifyContent: "center" }}
                 colors={gradients}
             >
                 <View style={{ flex: 1, flexDirection: "row",alignItems:"center",justifyContent:"center" }}>

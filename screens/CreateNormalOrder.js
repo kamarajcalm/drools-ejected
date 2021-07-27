@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Dimensions, TouchableOpacity, StyleSheet, FlatList, Image ,TextInput,ScrollView } from 'react-native';
+import { View, Text, Dimensions, TouchableOpacity, StyleSheet, FlatList, Image, TextInput, ScrollView, ActivityIndicator} from 'react-native';
 const { height, width } = Dimensions.get('window')
 import settings from '../AppSettings'
 import { connect } from 'react-redux';
@@ -80,10 +80,13 @@ class CreateNormalOrder extends Component {
         }));
     }
     placeOrder = async()=>{
+        this.setState({creating:true})
         if (this.state.value == null) {
+            this.setState({ creating: false })
             return this.showSimpleMessage("Please add Table", "#dd7030",)
         }
         if(this.state.dishes.length==0){
+            this.setState({ creating: false })
             return this.showSimpleMessage("Please add Items", "#dd7030",)
         }
         let api = `${url}/api/drools/addCart/`
@@ -96,10 +99,12 @@ class CreateNormalOrder extends Component {
          console.log(post)
          if(post.type =="success"){
               this.props.navigation.goBack()
+             this.setState({ creating: false })
              return this.showSimpleMessage("Order placed SuccessFully", "green","success")
 
          }else{
-             return this.showSimpleMessage(`${post.data[0]}`, "red", "danger")
+             this.setState({ creating: false })
+             return this.showSimpleMessage(`${post?.data[0]||"Try Again"}`, "red", "danger")
          }
     }
    componentDidMount(){
@@ -140,7 +145,7 @@ class CreateNormalOrder extends Component {
                      this.placeOrder()
                  }}
                 >
-                    <Text style={[styles.text,{color:"#fff"}]}>Place Order</Text>
+                    {this.state.creating?<ActivityIndicator />:<Text style={[styles.text,{color:"#fff"}]}>Place Order</Text>}
                 </TouchableOpacity>
             </View>
         )

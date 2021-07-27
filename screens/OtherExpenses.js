@@ -29,8 +29,10 @@ class OtherExpenses extends Component {
             expenseTitle:"",
             expenseAmount:"",
             date: momemt(new Date()).format("YYYY-MM-DD"),
+            date2: momemt(new Date()).format("YYYY-MM-DD"),
             show:false,
             creating:false,
+            show2:false
         };
     }
     hideDatePicker = () => {
@@ -46,8 +48,19 @@ class OtherExpenses extends Component {
         })
         this.hideDatePicker();
     };
+    hideDatePicker2 = () => {
+        this.setState({ show2: false }, () => {
+       
+        })
+    };
+    handleConfirm2 = (date) => {
+        this.setState({ date2: momemt(date).format("YYYY-MM-DD"), }, () => {
+            this.getExtraExpenses();
+        })
+        this.hideDatePicker2();
+    };
     getExtraExpenses = async () => {
-        let api = `${url}/api/drools/otherexpenses/`
+        let api = `${url}/api/drools/otherexpenses/?date=${this.state.date2}`
         let data = await HttpsClient.get(api)
         if (data.type == "success") {
             this.setState({ otherExpenses: data.data })
@@ -246,18 +259,21 @@ class OtherExpenses extends Component {
                     >
 
 
-                        <TouchableOpacity style={{ flex: 0.2, alignItems: "center", justifyContent: "center" }}
+                        <TouchableOpacity style={{ flex: 0.3, alignItems: "center", justifyContent: "center" }}
                             onPress={() => { this.props.navigation.goBack() }}
                         >
                             <Ionicons name="caret-back" size={24} color={secondaryColor} />
                         </TouchableOpacity>
-                        <View style={{ flex: 0.6, alignItems: "center", justifyContent: "center" }}>
+                        <View style={{ flex: 0.5, alignItems: "center", justifyContent: "center" }}>
                             <Text style={[styles.text, { color: "#fff", fontSize: 18 }]}>Other Expenses</Text>
 
                         </View>
-                        <View style={{ flex: 0.2, alignItems: "center", justifyContent: "center" }}>
-
-                        </View>
+                        <TouchableOpacity style={{ flex: 0.3, alignItems: "center", justifyContent: "center" ,flexDirection:"row"}}
+                         onPress={()=>{this.setState({show2:true})}}
+                        >
+                            <Text style={[styles.text,{color:"#fff"}]}>{this.state.date2}</Text>
+                            <MaterialIcons name="date-range" size={24} color="#fff" />
+                        </TouchableOpacity>
                     </View>
                 </LinearGradient>
                  <FlatList  
@@ -312,7 +328,7 @@ class OtherExpenses extends Component {
                     <TouchableOpacity
                         onPress={() => { this.setState({modal:true}) }}
                     >
-                        <AntDesign name="pluscircle" size={40} color={primaryColor} />
+                        <AntDesign name="pluscircle" size={40} color={primaryColor}/>
                     </TouchableOpacity>
                 </View>
                 <DateTimePickerModal
@@ -320,6 +336,13 @@ class OtherExpenses extends Component {
                     mode="date"
                     onConfirm={this.handleConfirm}
                     onCancel={this.hideDatePicker}
+                />
+                <DateTimePickerModal
+                    testID={"2"}
+                    isVisible={this.state.show2}
+                    mode="date"
+                    onConfirm={this.handleConfirm2}
+                    onCancel={this.hideDatePicker2}
                 />
             </View>
 

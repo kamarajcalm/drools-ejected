@@ -34,7 +34,8 @@ const screenHeight = Dimensions.get('screen').height
         this.state = {
              cookOrders:[],
              Modal:false,
-             selectedItem:null
+             selectedItem:null,
+             refreshing:false
         };
     }
      getOrders = async ()=>{
@@ -42,7 +43,7 @@ const screenHeight = Dimensions.get('screen').height
          let data =await HttpsClient.get(api)
          console.log(api)
          if(data.type =="success"){
-             this.setState({ cookOrders:data.data})
+             this.setState({ cookOrders: data.data, refreshing:false})
          }
      }
      componentDidMount() {
@@ -251,10 +252,15 @@ const screenHeight = Dimensions.get('screen').height
          let post = await HttpsClient.post(api, sendData)
          if (post.type == "success") {
              this.showSimpleMessage("Completed SuccessFully", "green", "success")
-       
+             this.getOrders()
          } else {
              this.showSimpleMessage("Try Again", "red", "danger")
          }
+     }
+     refresh =()=>{
+         this.setState({ cookOrders:[],refreshing:true},()=>{
+             this.getOrders()
+         })
      }
     render() {
       
@@ -283,7 +289,8 @@ const screenHeight = Dimensions.get('screen').height
                     </LinearGradient>
 
                     <FlatList
-                     
+                     refreshing={this.state.refreshing}
+                     onRefresh ={()=>{this.refresh()}}
                     data={this.state.cookOrders}
                     keyExtractor={(item, index) => index.toString()}
                     ListHeaderComponent={this.renderheader()}
@@ -308,12 +315,12 @@ const screenHeight = Dimensions.get('screen').height
                                             </View>
                                         </View>
                                         <View style={{ flex: 0.4, alignItems: "center", justifyContent: "center" }}>
-                                            <TouchableOpacity
+                                            {!item.finished&&<TouchableOpacity
                                                 onPress={() => { this.startAll(item) }}
                                                 style={{ height: height * 0.05, width: width * 0.3, alignItems: "center", justifyContent: "center", backgroundColor: "green" }}
                                             >
                                                 <Text style={[styles.text, { color: "#fff" }]}>Start All</Text>
-                                            </TouchableOpacity>
+                                            </TouchableOpacity>}
                                             <TouchableOpacity
                                                 onPress={() => { this.completeAll(item) }}
                                                 style={{ height: height * 0.05, width: width * 0.3, alignItems: "center", justifyContent: "center", backgroundColor: primaryColor,marginTop:10 }}
