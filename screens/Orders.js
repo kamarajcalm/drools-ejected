@@ -96,7 +96,7 @@ import History from './History';
                                 
                             </View>
                              <View style={{flex:0.33,alignItems:"center",justifyContent:"center"}}>
-                                    <Text style={[styles.text, { color: "#fff", fontSize: 18 }]}>Orders</Text>
+                                    <Text style={[styles.text, { color: "#fff", fontSize: 18 }]}>Orders .</Text>
                              </View>
                              <View style={{flex:0.33,flexDirection:"row",alignItems:"center",justifyContent:"space-around"}}>
                                    <View>
