@@ -3,7 +3,7 @@ import { View, Text, Dimensions, TouchableOpacity, StyleSheet, FlatList, Image }
 const { height, width } = Dimensions.get('window')
 import settings from '../AppSettings'
 import { connect } from 'react-redux';
-import { selectTheme } from '../actions';
+import { selectTheme ,setTodayIncome} from '../actions';
 const gradients = settings.gradients
 const primaryColor = settings.primaryColor
 const secondaryColor = settings.secondaryColor
@@ -42,14 +42,17 @@ import moment from 'moment';
      getIncome = async()=>{
          let api = `${url}/api/drools/netIncome/`
          let data = await HttpsClient.get(api)
-         console.log(api)
+         if(data.type =="success"){
+             this.props.setTodayIncome(data.data.today_income)
+         }
+
      }
    componentDidMount (){
        this.getIncome()
        this.getOrders()
        this._unsubscribe = this.props.navigation.addListener('focus', () => {
            this.getOrders()
-
+           this.getIncome()
        });
    }
    componentWillUnmount(){
@@ -76,7 +79,7 @@ import moment from 'moment';
             >
                 <View style={{ flex: 1, flexDirection: "row",alignItems:"center",justifyContent:"center" }}>
                     <View>
-                        <Text style={[styles.text,{color:"#fff",fontSize:20}]}>Today Income: ₹ 10000</Text>
+                        <Text style={[styles.text, { color: "#fff", fontSize: 20 }]}>Today Income: ₹ {this.props.todayIncome}</Text>
                     </View>
                 </View>
             </LinearGradient>
@@ -166,6 +169,7 @@ const mapStateToProps = (state) => {
 
     return {
         theme: state.selectedTheme,
+        todayIncome:state.todayIncome
     }
 }
-export default connect(mapStateToProps, { selectTheme })(NormalOrders);
+export default connect(mapStateToProps, { selectTheme, setTodayIncome })(NormalOrders);

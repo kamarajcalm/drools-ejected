@@ -315,18 +315,20 @@ const screenHeight = Dimensions.get('screen').height
                                             </View>
                                         </View>
                                         <View style={{ flex: 0.4, alignItems: "center", justifyContent: "center" }}>
-                                            {!item.finished&&<TouchableOpacity
+                                            {!item.finished?<TouchableOpacity
                                                 onPress={() => { this.startAll(item) }}
                                                 style={{ height: height * 0.05, width: width * 0.3, alignItems: "center", justifyContent: "center", backgroundColor: "green" }}
                                             >
                                                 <Text style={[styles.text, { color: "#fff" }]}>Start All</Text>
-                                            </TouchableOpacity>}
-                                            <TouchableOpacity
-                                                onPress={() => { this.completeAll(item) }}
-                                                style={{ height: height * 0.05, width: width * 0.3, alignItems: "center", justifyContent: "center", backgroundColor: primaryColor,marginTop:10 }}
-                                            >
-                                                <Text style={[styles.text, { color: "#fff" }]}>Complete All</Text>
-                                            </TouchableOpacity>
+                                            </TouchableOpacity>:
+                                                <TouchableOpacity
+                                                    onPress={() => { this.completeAll(item) }}
+                                                    style={{ height: height * 0.05, width: width * 0.3, alignItems: "center", justifyContent: "center", backgroundColor: primaryColor, marginTop: 10 }}
+                                                >
+                                                    <Text style={[styles.text, { color: "#fff" }]}>Complete All</Text>
+                                                </TouchableOpacity>
+                                            }
+                                          
                                         </View>
                                     </View>
                                

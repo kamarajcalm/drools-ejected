@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { View, Text, Dimensions, TouchableOpacity, StyleSheet, FlatList, Image, AsyncStorage} from 'react-native';
+import { View, Text, Dimensions, TouchableOpacity, StyleSheet, FlatList, Image, AsyncStorage,Switch} from 'react-native';
 const { height, width } = Dimensions.get('window')
 import settings from '../AppSettings'
 import { connect } from 'react-redux';
-import { selectTheme ,bluetoothStatus} from '../actions';
+import { selectTheme ,bluetoothStatus,setOnePlusOne} from '../actions';
 const gradients = settings.gradients
 const primaryColor = settings.primaryColor
 const secondaryColor = settings.secondaryColor
@@ -33,6 +33,7 @@ import History from './History';
         this.state = {
             routes,
             index: 0,
+            oneplusOne:false
         
         };
     }
@@ -72,7 +73,12 @@ import History from './History';
              alert(err)
          });
      }
+     toggleSwitch =()=>{
+         this.props.setOnePlusOne(!this.props.oneplusOne)
+    
+     }
      componentDidMount(){
+         console.log(this.props)
          this.enableBluetooth()
      }
     render() {
@@ -82,11 +88,30 @@ import History from './History';
                 <StatusBar style={"light"}/>
                    {/* Headers */}
                     <LinearGradient
-                        style={{ height: height * 0.12, flexDirection: "row", alignItems: "center", justifyContent: "center" }}
+                        style={{ height: height * 0.12, flexDirection: "row",}}
                         colors={gradients}
                     >
-                    <View style={{marginTop:Constants.statusBarHeight}}>
-                            <Text style={[styles.text, { color: "#fff",fontSize: 18 }]}>Orders</Text>
+                    <View style={{marginTop:Constants.statusBarHeight,flexDirection:"row",flex:1}}>
+                            <View style={{flex:0.33}}>
+                                
+                            </View>
+                             <View style={{flex:0.33,alignItems:"center",justifyContent:"center"}}>
+                                    <Text style={[styles.text, { color: "#fff", fontSize: 18 }]}>Orders</Text>
+                             </View>
+                             <View style={{flex:0.33,flexDirection:"row",alignItems:"center",justifyContent:"space-around"}}>
+                                   <View>
+                                         <Text style={[styles.text, { color: "#fff", fontSize: 18 }]}>Enable 1+1</Text>
+                                   </View>
+                            <Switch
+                                style={{ marginLeft: 10 }}
+                                trackColor={{ false: '#767577', true: primaryColor }}
+                                thumbColor={this.props.oneplusOne ? '#ffff' : '#f4f3f4'}
+                                ios_backgroundColor="#3e3e3e"
+                                onValueChange={() => { this.toggleSwitch() }}
+                                value={this.props.oneplusOne}
+                            />
+                             </View>
+                       
                     </View>
                     </LinearGradient>
                 <TabView
@@ -124,10 +149,11 @@ const styles =StyleSheet.create({
    }
 })
 const mapStateToProps = (state) => {
-
+   
     return {
         theme: state.selectedTheme,
-        bluetooth:state.bluetoothStatus
+        bluetooth:state.bluetoothStatus,
+        oneplusOne: state.onePlusOne
     }
 }
-export default connect(mapStateToProps, { selectTheme, bluetoothStatus })(Orders);
+export default connect(mapStateToProps, { selectTheme, bluetoothStatus, setOnePlusOne})(Orders);

@@ -303,7 +303,12 @@ class SeacrchDishes extends Component {
                                    <Text style={[styles.text, { fontSize: 18 }]}>{index+1} .</Text>
                                 </View>
                                <View style={{alignItems:"center",marginTop:5,flex:0.5,alignItems:"center",justifyContent:"center"}}>
-                                   <Text style={[styles.text,{fontSize:18}]}>{item.title}</Text>
+                                   <View>
+                                       <Text style={[styles.text, { fontSize: 18 }]}>{item.title}</Text>
+                                   </View>
+                                    <View>
+                                       <Text style={[styles.text, { fontSize: 18 ,color:"#000"}]}> ₹ {item.item_price}</Text>
+                                    </View>
                                </View>
                                <View style={{marginTop:10,alignItems:"center",flex:0.4,alignItems:"center",justifyContent:"center"}}>
                                    {

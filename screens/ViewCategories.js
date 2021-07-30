@@ -75,6 +75,7 @@ class ViewCategories extends Component {
             invalid: !item.invalid
         }
         let patch =await HttpsClient.patch(api,sendData)
+        console.log(patch)
         if(patch.type=="success"){
             duplicate.invalid = !duplicate.invalid
             this.setState({ Items: duplicate })

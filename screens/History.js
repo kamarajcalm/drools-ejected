@@ -106,7 +106,7 @@ class History extends Component {
                        
                         <View style={{ flex: 0.7, alignItems: "center", justifyContent: "center" }}>
                           
-                            <Text style={[styles.text, { color: "#fff", fontSize: 20 }]}>Today Income: ₹ 10000</Text>
+                            <Text style={[styles.text, { color: "#fff", fontSize: 20 }]}>Today Income: ₹ {this.props.todayIncome}</Text>
                         </View>
                         <TouchableOpacity style={{ flex: 0.3, alignItems: "center", justifyContent: "space-around" ,flexDirection:"row"}}
                          onPress ={()=>{this.setState({show:true})}}
@@ -191,6 +191,7 @@ const mapStateToProps = (state) => {
 
     return {
         theme: state.selectedTheme,
+        todayIncome: state.todayIncome
     }
 }
 export default connect(mapStateToProps, { selectTheme })(History);

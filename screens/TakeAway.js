@@ -65,7 +65,7 @@ class TakeAway extends Component {
                 >
                     <View style={{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "center" }}>
                         <View>
-                            <Text style={[styles.text, { color: "#fff", fontSize: 20 }]}>Today Income: ₹ 10000</Text>
+                            <Text style={[styles.text, { color: "#fff", fontSize: 20 }]}>Today Income: ₹ {this.props.todayIncome}</Text>
                         </View>
                     </View>
                 </LinearGradient>
@@ -155,6 +155,7 @@ const mapStateToProps = (state) => {
 
     return {
         theme: state.selectedTheme,
+        todayIncome: state.todayIncome
     }
 }
 export default connect(mapStateToProps, { selectTheme })(TakeAway);

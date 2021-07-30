@@ -10,3 +10,15 @@ export const bluetoothStatus = (status) => {
         payload:status
     }
 }
+export const setTodayIncome = (income) => {
+    return {
+        type: 'TODAY_INCOME',
+        payload: income
+    }
+}
+export const setOnePlusOne = (status) => {
+    return {
+        type:'ONE_PLUSONE',
+        payload: status
+    }
+}
