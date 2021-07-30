@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Dimensions, TouchableOpacity, StyleSheet, FlatList, Image ,TextInput, ScrollView,Switch} from 'react-native';
+import { View, Text, Dimensions, TouchableOpacity, StyleSheet, FlatList, Image ,TextInput, ScrollView,Switch, ActivityIndicator} from 'react-native';
 const { height, width } = Dimensions.get('window')
 import settings from '../AppSettings'
 import { connect } from 'react-redux';
@@ -43,6 +43,32 @@ const paymentStatus =[
         value: "NotPaid"
     },
 ]
+const paymentMode = [
+    {
+        label: "Cash",
+        value: "Cash"
+    },
+    {
+        label: "Card",
+        value: "Card"
+    },
+    {
+        label: "OtherUpis",
+        value: "OtherUpis"
+    },
+    {
+        label: "Paytm",
+        value: "Paytm"
+    },
+    {
+        label: "Gpay",
+        value: "Gpay"
+    },
+    {
+        label: "Phonepe",
+        value: "Phonepe"
+    },
+]
 class ViewOrders extends Component {
     constructor(props) {
         let item = props.route.params.item
@@ -58,7 +84,8 @@ class ViewOrders extends Component {
             onlineDiscount:"",
             takeAwayDiscount:"",
             diningDiscount:"",
-            oneplus:false
+            oneplus:false,
+            paymentmode:null
         };
     }
     showSimpleMessage(content, color, type = "info", props = {}) {
@@ -81,22 +108,25 @@ class ViewOrders extends Component {
         }
     }
     completeOrder =async()=>{
+        this.setState({creating:true})
         let api = `${url}/api/drools/createOrder/`
         let sendData ={
             status:this.state.ordervalue,
             payment_status:this.state.paymentvalue,
             cart_id:this.state.item.id,
             discount:this.state.discount,
-            oneplusone:this.state.oneplus
+            oneplusone:this.state.oneplus,
+            payment_mode:this.state.paymentmode
         }
         let post = await HttpsClient.post(api,sendData)
         console.log(post)
         if(post.type=="success"){
             this.setState({modal:false})
+            this.setState({ creating: false })
             this.showSimpleMessage("Order Saved SuccessFully", "green","success")
             return this.props.navigation.goBack()
         }else{
-
+            this.setState({ creating: false })
             this.showSimpleMessage(`${post?.data?.failed||"try again"}`, "red", "failure")
         }
     }
@@ -359,6 +389,25 @@ class ViewOrders extends Component {
             items: callback(state.items)
         }));
     }
+    setOpen3 = (open3) => {
+        this.setState({
+            open3
+        });
+    }
+
+    setValue3 = (callback) => {
+
+        this.setState(state => ({
+            paymentmode: callback(state.value)
+        }));
+    }
+
+    setItems3 = (callback) => {
+
+        this.setState(state => ({
+            items: callback(state.items)
+        }));
+    }
     toggleSwitch =()=>{
          this.setState({oneplus:!this.state.oneplus})
     }
@@ -372,7 +421,23 @@ class ViewOrders extends Component {
             >
                 <View style={{ }}>
 
-                    <View style={{height:height*0.5,backgroundColor:"#fff",borderRadius:5,alignItems:"center",justifyContent:"space-around"}}>
+                    <View style={{height:height*0.7,backgroundColor:"#fff",borderRadius:5,alignItems:"center",justifyContent:"space-around"}}>
+                        <View>
+                            <Text style={[styles.text, { color: "#000", fontSize: 22 }]}>Paid By :</Text>
+                        </View>
+                        <View style={{ marginTop: 10, width: width * 0.7, height: this.state.open3 ? height * 0.3 : height * 0.08 }}>
+                            <DropDownPicker
+                                style={{ height: height * 0.05 }}
+                                containerStyle={{ height: height * 0.05 }}
+                                open={this.state.open3}
+                                value={this.state.paymentmode}
+                                items={paymentMode}
+                                setOpen={this.setOpen3}
+                                setValue={this.setValue3}
+                                setItems={this.setItems3}
+                                placeholder="select a mode"
+                            />
+                        </View>
                         <View>
                             <Text style={[styles.text,{color:"#000",fontSize:22}]}>Order Status :</Text>
                         </View>
@@ -405,6 +470,7 @@ class ViewOrders extends Component {
                                 placeholder="select a Table"
                             />
                         </View>
+                   
                         <Text style={[styles.text, { color: "#000", fontSize: 22 }]}>Enable 1 + 1 </Text>
 
                         <Switch
@@ -416,13 +482,16 @@ class ViewOrders extends Component {
                             value={this.state.oneplus}
                         />
                         <View style ={{alignItems:"center"}}>
-                            <TouchableOpacity style ={{height:height*0.05,width:width*0.4,alignItems:"center",justifyContent:"center",backgroundColor:primaryColor}}
+                            {!this.state.creating ?<TouchableOpacity style ={{height:height*0.05,width:width*0.4,alignItems:"center",justifyContent:"center",backgroundColor:primaryColor}}
                              onPress ={()=>{
                                  this.completeOrder()
                              }}
                             >
-                                <Text style ={[styles.text,{color:"#fff"}]}>Save</Text>
-                            </TouchableOpacity>
+                              <Text style ={[styles.text,{color:"#fff"}]}>Save</Text>
+                            </TouchableOpacity> :
+                                <View style={{ height: height * 0.05, width: width * 0.4, alignItems: "center", justifyContent: "center", backgroundColor: primaryColor }}>
+                                        <ActivityIndicator size={"large"} color={"#fff"}/>
+                            </View>}
                         </View>
                     </View>
 

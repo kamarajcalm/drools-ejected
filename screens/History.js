@@ -164,7 +164,7 @@ class History extends Component {
                                             <Text style={[styles.text, { color: "#eee" }]}>Items Count: {item.items.length}</Text>
                                         </View>
                                         <View>
-                                            <Text style={[styles.text, { color: "#fafafa" }]}>Price : ₹{item.cart_bill}</Text>
+                                            <Text style={[styles.text, { color: "#fafafa" }]}>Price : ₹{item.total_price}</Text>
                                         </View>
                                     </View>
                                 </View>

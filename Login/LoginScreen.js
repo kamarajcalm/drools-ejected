@@ -54,6 +54,7 @@ class LoginScreen extends Component {
         var data = new FormData()
         data.append("username", this.state.mobile)
         data.append("password", this.state.password)
+        data.append("notificationId", this.state.token)
         fetch(`${url}/api/profile/login/?mode=api`, {
             method: 'POST',
             body: data,
@@ -99,8 +100,10 @@ class LoginScreen extends Component {
                 return this.showSimpleMessage(`${err?.toString()} ${url}`, "#dd7030")
             })
     }
+
     componentDidMount(){
-  
+       
+
         this.registerForPushNotificationsAsync().then(token => this.setState({ token }));
     }
     registerForPushNotificationsAsync = async function () {

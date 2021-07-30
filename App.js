@@ -9,7 +9,18 @@ import AppNavigator from './Navigation/AppNavigator';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import FlashMessage from "react-native-flash-message";
-
+import * as Notifications from 'expo-notifications';
+Notifications.setNotificationChannelAsync('cook-notifications', {
+  name: 'cook notifications',
+  sound: 'alarm.wav', // Provide ONLY the base filename
+});
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: true,
+  }),
+});
 export default class App extends Component {
   constructor(props) {
     super(props);
@@ -17,6 +28,7 @@ export default class App extends Component {
       fontsLoaded: false,
     };
   }
+
   async loadFonts() {
     await Font.loadAsync({
       // Load a font `Montserrat` from a static resource

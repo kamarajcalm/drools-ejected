@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Dimensions, TouchableOpacity, StyleSheet, FlatList, Image, TextInput, ScrollView } from 'react-native';
+import { View, Text, Dimensions, TouchableOpacity, StyleSheet, FlatList, Image, TextInput, ScrollView, ActivityIndicator} from 'react-native';
 const { height, width } = Dimensions.get('window')
 import settings from '../AppSettings'
 import { connect } from 'react-redux';
@@ -59,8 +59,9 @@ class CreateTakeAway extends Component {
     }
 
     placeOrder = async () => {
-      
+        this.setState({creating:true})
         if (this.state.dishes.length == 0) {
+            this.setState({ creating: false })
             return this.showSimpleMessage("Please add Items", "#dd7030",)
         }
         let api = `${url}/api/drools/addCart/`
@@ -77,9 +78,11 @@ class CreateTakeAway extends Component {
         console.log(post)
         if (post.type == "success") {
             this.props.navigation.goBack()
+            this.setState({ creating: false })
             return this.showSimpleMessage("Order placed SuccessFully", "green", "success")
 
         } else {
+            this.setState({ creating: false })
             return this.showSimpleMessage("SomeThing Went Wrong", "red", "danger")
         }
     }
@@ -116,13 +119,18 @@ class CreateTakeAway extends Component {
     footer = () => {
         return (
             <View style={{ marginVertical: 20, alignItems: "center" }}>
-                <TouchableOpacity style={{ height: height * 0.05, width: width * 0.4, alignItems: "center", justifyContent: "center", backgroundColor: primaryColor }}
+               {!this.state.creating? <TouchableOpacity style={{ height: height * 0.05, width: width * 0.4, alignItems: "center", justifyContent: "center", backgroundColor: primaryColor }}
                     onPress={() => {
                         this.placeOrder()
                     }}
                 >
                     <Text style={[styles.text, { color: "#fff" }]}>Place Order</Text>
-                </TouchableOpacity>
+                </TouchableOpacity>:
+                    <View style={{ height: height * 0.05, width: width * 0.4, alignItems: "center", justifyContent: "center", backgroundColor: primaryColor }}>
+                    <ActivityIndicator size={"large"} color={"#fff"}/>
+                </View>
+                
+            }
             </View>
         )
     }

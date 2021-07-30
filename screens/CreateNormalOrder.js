@@ -140,13 +140,17 @@ class CreateNormalOrder extends Component {
     footer =()=>{
         return(
             <View style={{marginVertical:20,alignItems:"center"}}>
-                <TouchableOpacity style={{height:height*0.05,width:width*0.4,alignItems:"center",justifyContent:"center",backgroundColor:primaryColor}}
+                {!this.state.creating ?  <TouchableOpacity style={{height:height*0.05,width:width*0.4,alignItems:"center",justifyContent:"center",backgroundColor:primaryColor}}
                  onPress ={()=>{
                      this.placeOrder()
                  }}
                 >
-                    {this.state.creating?<ActivityIndicator />:<Text style={[styles.text,{color:"#fff"}]}>Place Order</Text>}
-                </TouchableOpacity>
+                    <Text style={[styles.text,{color:"#fff"}]}>Place Order</Text>
+                </TouchableOpacity>:
+                    <View style={{ height: height * 0.05, width: width * 0.4, alignItems: "center", justifyContent: "center", backgroundColor: primaryColor }}>
+                     <ActivityIndicator size={"large"} color={"#fff"}/>
+                 </View> 
+                }
             </View>
         )
     }

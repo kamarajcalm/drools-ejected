@@ -39,7 +39,13 @@ import moment from 'moment';
              this.setState({refreshing:false})
          }
      }
+     getIncome = async()=>{
+         let api = `${url}/api/drools/netIncome/`
+         let data = await HttpsClient.get(api)
+         console.log(api)
+     }
    componentDidMount (){
+       this.getIncome()
        this.getOrders()
        this._unsubscribe = this.props.navigation.addListener('focus', () => {
            this.getOrders()
@@ -123,7 +129,7 @@ import moment from 'moment';
                                                 <Text style={[styles.text, { color: "#eee" }]}>Items Count: {item.items.length}</Text>
                                             </View>
                                             <View>
-                                                <Text style={[styles.text, { color: "#fafafa" }]}>Price : ₹{item.cart_bill}</Text>
+                                                <Text style={[styles.text, { color: "#fafafa" }]}>Price : ₹{item.total_price}</Text>
                                             </View>
                                         </View>
                                     </View>
