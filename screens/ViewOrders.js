@@ -307,7 +307,7 @@ class ViewOrders extends Component {
                         />
                      </View>
                 </View> 
-                <View style={{alignItems:"center",marginTop:20,flexDirection:"row",justifyContent:"space-around",flexWrap:"wrap"}}>
+              {this.state.item.cart_status!="Completed"&& <View style={{alignItems:"center",marginTop:20,flexDirection:"row",justifyContent:"space-around",flexWrap:"wrap"}}>
                     <TouchableOpacity style={{height:height*0.05,width:width*0.4,alignItems:"center",justifyContent:"center",backgroundColor:primaryColor}}
                      onPress={()=>{this.setState({modal:true})}}
                     >
@@ -319,7 +319,7 @@ class ViewOrders extends Component {
                         <Text style={[styles.text, { color: "#fff" }]}>Add Items</Text>
                     </TouchableOpacity>
               
-                </View>
+                </View>}
                 {this.state.item.cart_status == "Completed"&& <View style={{alignItems:"center",justifyContent:"center",marginVertical:30,flexDirection:"row"}}>
                     <TouchableOpacity style={{ height: height * 0.05, width: width * 0.4, alignItems: "center", justifyContent: "center", backgroundColor: "green" }}
                         onPress={() => {this.print()}}
@@ -482,7 +482,7 @@ class ViewOrders extends Component {
                             />
                         </View>
                    
-                        {/* <Text style={[styles.text, { color: "#000", fontSize: 22 }]}>Enable 1 + 1 </Text>
+                        <Text style={[styles.text, { color: "#000", fontSize: 22 }]}>Enable 1 + 1 </Text>
 
                         <Switch
                             style={{ marginLeft: 10 }}
@@ -490,8 +490,8 @@ class ViewOrders extends Component {
                             thumbColor={this.props.oneplusOne? '#f5dd4b' : '#f4f3f4'}
                             ios_backgroundColor="#3e3e3e"
                             onValueChange={() => { this.toggleSwitch() }}
-                            value={this.state.oneplusOne}
-                        /> */}
+                            value={this.props.oneplusOne}
+                        />
                         <View style ={{alignItems:"center"}}>
                             {!this.state.creating ?<TouchableOpacity style ={{height:height*0.05,width:width*0.4,alignItems:"center",justifyContent:"center",backgroundColor:primaryColor}}
                              onPress ={()=>{

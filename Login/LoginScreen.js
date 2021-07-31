@@ -142,14 +142,14 @@ class LoginScreen extends Component {
         return (
             <View style={{ flex: 1 ,marginTop:Constants.statusBarHeight,backgroundColor:themeColor}}>
                 <StatusBar style={"dark"} />
-                <View style={{flex:0.3,alignItems:"center",justifyContent:"center",backgroundColor:"#fff"}}>
+                <View style={{alignItems:"center",justifyContent:"center",backgroundColor:"#fff",height:height*0.3}}>
                    <Image 
                         source={require('../assets/512x512_jpg.jpg')}
                      style={{height:"100%",width:"100%",}}
                      resizeMode={"contain"}
                    />
                 </View>
-                <View style={{flex:0.7,alignItems:"center",}}>
+                <View style={{alignItems:"center",}}>
                     <View style={{marginTop:20}}>
                         <TextInput
                             value={this.state.mobile}
@@ -182,8 +182,18 @@ class LoginScreen extends Component {
                             }
                         </TouchableOpacity>
                     </View>
+                 
                 </View>
-        
+                <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between",marginTop:20,paddingHorizontal:20}}>
+                    <TouchableOpacity>
+                        <Text style={[styles.text, { color: "#fff" }]}>Forgot Password?</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity 
+                      onPress={()=>{this.props.navigation.navigate("CreateAccount")}}
+                    >
+                        <Text style={[styles.text, { color: "#fff" }]}>Create Account?</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
         );
     }

@@ -319,13 +319,13 @@ const screenHeight = Dimensions.get('screen').height
                                                 onPress={() => { this.startAll(item) }}
                                                 style={{ height: height * 0.05, width: width * 0.3, alignItems: "center", justifyContent: "center", backgroundColor: "green" }}
                                             >
-                                                <Text style={[styles.text, { color: "#fff" }]}>Start All</Text>
+                                                <Text style={[styles.text, { color: "#fff" }]}>Start </Text>
                                             </TouchableOpacity>:
                                                 <TouchableOpacity
                                                     onPress={() => { this.completeAll(item) }}
                                                     style={{ height: height * 0.05, width: width * 0.3, alignItems: "center", justifyContent: "center", backgroundColor: primaryColor, marginTop: 10 }}
                                                 >
-                                                    <Text style={[styles.text, { color: "#fff" }]}>Complete All</Text>
+                                                    <Text style={[styles.text, { color: "#fff" }]}>Complete </Text>
                                                 </TouchableOpacity>
                                             }
                                           

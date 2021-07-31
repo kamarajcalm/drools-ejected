@@ -228,7 +228,7 @@ class SearchDishes2 extends Component {
                         {
                             this.state.selectedItems.map((item, index) => {
                                 return (
-                                    <View style={{ height: height * 0.2, alignSelf: "center", width: width * 0.9, backgroundColor: "#eeee", marginTop: 10 }}
+                                    <View style={{ minHeight: height * 0.2, alignSelf: "center", width: width * 0.9, backgroundColor: "#eeee", marginTop: 10 }}
                                         key={index}
                                     >
                                         <View style={{ marginTop: 10, alignItems: "center" }}>

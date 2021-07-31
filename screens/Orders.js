@@ -92,24 +92,14 @@ import History from './History';
                         colors={gradients}
                     >
                     <View style={{marginTop:Constants.statusBarHeight,flexDirection:"row",flex:1}}>
-                            <View style={{flex:0.33}}>
+                            <View style={{flex:0.2}}>
                                 
                             </View>
-                             <View style={{flex:0.33,alignItems:"center",justifyContent:"center"}}>
-                                    <Text style={[styles.text, { color: "#fff", fontSize: 18 }]}>Orders .</Text>
+                             <View style={{flex:0.6,alignItems:"center",justifyContent:"center"}}>
+                                    <Text style={[styles.text, { color: "#fff", fontSize: 18 }]}>Orders </Text>
                              </View>
-                             <View style={{flex:0.33,flexDirection:"row",alignItems:"center",justifyContent:"space-around"}}>
-                                   <View>
-                                         <Text style={[styles.text, { color: "#fff", fontSize: 18 }]}>Enable 1+1</Text>
-                                   </View>
-                            <Switch
-                                style={{ marginLeft: 10 }}
-                                trackColor={{ false: '#767577', true: primaryColor }}
-                                thumbColor={this.props.oneplusOne ? '#ffff' : '#f4f3f4'}
-                                ios_backgroundColor="#3e3e3e"
-                                onValueChange={() => { this.toggleSwitch() }}
-                                value={this.props.oneplusOne}
-                            />
+                             <View style={{flex:0.2,flexDirection:"row",alignItems:"center",justifyContent:"space-around"}}>
+                                 
                              </View>
                        
                     </View>

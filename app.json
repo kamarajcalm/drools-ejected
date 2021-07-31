@@ -29,7 +29,10 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "in.poa.drools"
+      "bundleIdentifier": "in.poa.drools",
+      "config": {
+        "googleMapsApiKey": "AIzaSyCOSH383cU0Ywb6J1JZA_vlRq6Y6I6DgtE"
+      }
     },
     "android": {
       "googleServicesFile": "./google-services.json",
@@ -37,6 +40,11 @@
         "foregroundImage": "./assets/AppLogo.png",
         "backgroundColor": "#FFFFFF"
       },
+        "config": {
+          "googleMaps": {
+            "apiKey": "AIzaSyCOSH383cU0Ywb6J1JZA_vlRq6Y6I6DgtE"
+          }
+        },
       "package": "in.poa.drools"
     },
     "notification": {

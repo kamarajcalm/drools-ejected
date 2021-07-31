@@ -298,7 +298,7 @@ class SeacrchDishes extends Component {
                     keyExtractor={(item,index)=>index.toString()}
                     renderItem ={({item,index})=>{
                        return(
-                           <View style={{height:height*0.07,backgroundColor:"#eee",width:width,flexDirection:"row",borderColor:"#333",borderBottomWidth:0.5}}>
+                           <View style={{minHeight:height*0.07,backgroundColor:"#eee",width:width,flexDirection:"row",borderColor:"#333",borderBottomWidth:0.5}}>
                                 <View style={{flex:0.1,alignItems:"center",justifyContent:"center"}}>
                                    <Text style={[styles.text, { fontSize: 18 }]}>{index+1} .</Text>
                                 </View>
