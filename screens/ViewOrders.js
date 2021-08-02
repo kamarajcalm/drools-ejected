@@ -102,6 +102,7 @@ class ViewOrders extends Component {
     getOrders = async () => {
         let api = `${url}/api/drools/cart/${this.state.item.id}/`
         const data = await HttpsClient.get(api)
+        console.log(api)
         if (data.type == "success") {
             this.setState({ item: data.data })
         }
@@ -301,7 +302,7 @@ class ViewOrders extends Component {
                           keyboardType={"numeric"}
                           style={{height:38,width:width*0.8,backgroundColor:"#fff",paddingLeft:10}}
                           selectionColor={primaryColor}
-                          onChangeText={(discount) => { this.setState({ discount})}}
+                          onChangeText={(discount) => {this.setState({ discount})}}
                           value={this.state.discount}
                        
                         />
@@ -522,6 +523,79 @@ class ViewOrders extends Component {
         }
         return "red"
     }
+    editCart = async()=>{
+        let api = `${url}/api/drools/addCart/`
+        let sendData = {
+            items: [],
+            cart: this.state.item.id,
+            edit_cart: true
+        }
+
+        let post = await HttpsClient.post(api, sendData)
+        console
+        if (post.type == "success") {
+            this.getOrders();
+            this.setState({ changing: false, })
+        }
+    }
+    decreaseQuantity = async(item,index)=>{
+        
+        this.setState({ changing: true, index })
+        let api = `${url}/api/drools/cartitems/${item.id}/`
+        if(item.quantity==1){
+            let api2 = `${url}/api/drools/cartitems/${item.id}/`
+            let del = await HttpsClient.delete(api)
+            if (del.type == "success") {
+              this.editCart()
+              
+            } else {
+                this.showSimpleMessage("Try Again", "red", "danger")
+                this.setState({ changing: false })
+            }
+        }else{
+            let sendData = {
+                quantity: item.quantity - 1,
+                total_price: item.item_price * (item.quantity - 1)
+            }
+            let patch = await HttpsClient.patch(api, sendData)
+
+            if (patch.type == "success") {
+                this.editCart()
+            } else {
+                this.showSimpleMessage("Try Again", "red", "danger")
+                this.setState({ changing: false })
+            }
+        }
+     
+
+    }
+    addQuantity =async(item,index)=>{
+        this.setState({changing:true,index})
+        let api = `${url}/api/drools/cartitems/${item.id}/`
+        let sendData ={
+            quantity:item.quantity+1,
+            total_price: item.item_price * (item.quantity + 1)
+        }
+  
+        let patch = await HttpsClient.patch(api, sendData)
+       
+        if(patch.type=="success"){
+            this.editCart()
+        }else{
+            this.showSimpleMessage("Try Again","red","danger")
+            this.setState({ changing: false })
+        }
+    }
+    validateButton =(item,index)=>{
+        if(this.state.changing&&index==this.state.index){
+            return(
+                <ActivityIndicator size={"large"} color={"#fff"} />
+            )
+        }
+        return(
+            <Text style={[styles.text, { color: "#ffff", fontSize: 20 }]}>{item.quantity}</Text>
+        )
+    }
     render() {
          console.log(this.props.bluetoothStatus,"bluuruu")
         return (
@@ -557,7 +631,7 @@ class ViewOrders extends Component {
                     ListFooterComponent={this.footer()}
                     renderItem ={({item,index})=>{
                         return(
-                            <View style={{ height: height * 0.1, margin: 15, borderColor:"#E6E9F0",borderBottomWidth:0.5,flexDirection:"row"}}>
+                            <View style={{ height: height * 0.15, margin: 15, borderColor:"#E6E9F0",borderBottomWidth:0.5,flexDirection:"row"}}>
                                 <View style={{flex:0.2,alignItems:"center",justifyContent:"center",flexDirection:"row"}}>
                                     <View style={[styles.boxWithShadow,{height:25,width:25,backgroundColor:"#333",alignItems:"center",justifyContent:"center"}]}>
                                         <Text style={[styles.text, { color: "#fff", fontSize: 18 }]}>{item.quantity}</Text>
@@ -576,6 +650,29 @@ class ViewOrders extends Component {
                                     <View>
                                         <Text style={[styles.text, { color: this.validateColor(item) }]}> {item.item_status}</Text>
                                     </View>
+                                    {this.state.item.cart_status != "Completed" &&   <View style={{flexDirection:"row",flex:1,alignItems:"center",justifyContent:"space-around"}}>
+                                        <TouchableOpacity style={{ alignItems: "center", justifyContent: "center" }}
+                                            onPress={() => {
+                                                this.decreaseQuantity(item, index)
+                                            }}
+                                        >
+                                            <Entypo name="circle-with-minus" size={24} color={primaryColor} />
+                                        </TouchableOpacity>
+                                        <View style={{ alignItems: "center", justifyContent: "center",marginLeft:10}}>
+                                            {
+                                                this.validateButton(item,index)
+                                            }
+                                          
+                                        </View>
+                                        <TouchableOpacity style={{ alignItems: "center", justifyContent: "center",marginLeft:10}}
+                                            onPress={() => {
+                                                this.addQuantity(item, index)
+                                            }}
+                                        >
+                                            <Entypo name="circle-with-plus" size={24} color={primaryColor} />
+                                        </TouchableOpacity>
+
+                                    </View>}
                                 </View>
                                 <View style={{flex:0.2,alignItems:"center",justifyContent:"center",flexDirection:"row"}}>
                                      <View>

@@ -247,7 +247,8 @@ const screenHeight = Dimensions.get('screen').height
          let api = `${url}/api/drools/cookComplete/`
          let sendData = {
              items,
-             status: "Finished"
+             status: "Finished",
+             json:this.state.cookOrders
          }
          let post = await HttpsClient.post(api, sendData)
          if (post.type == "success") {
@@ -261,6 +262,9 @@ const screenHeight = Dimensions.get('screen').height
          this.setState({ cookOrders:[],refreshing:true},()=>{
              this.getOrders()
          })
+     }
+     getTables =(item) =>{
+     
      }
     render() {
       
@@ -291,10 +295,10 @@ const screenHeight = Dimensions.get('screen').height
                     <FlatList
                      refreshing={this.state.refreshing}
                      onRefresh ={()=>{this.refresh()}}
-                    data={this.state.cookOrders}
-                    keyExtractor={(item, index) => index.toString()}
-                    ListHeaderComponent={this.renderheader()}
-                    renderItem={({ item, index }) => {
+                     data={this.state.cookOrders}
+                     keyExtractor={(item, index) => index.toString()}
+                     ListHeaderComponent={this.renderheader()}
+                     renderItem={({ item, index }) => {
                             return (
                                <TouchableOpacity style={{borderColor:"#333",borderBottomWidth:0.5,padding: 20,}}
                                     onPress={() => { this.props.navigation.navigate('ViewOrder', { item })}}
@@ -331,7 +335,18 @@ const screenHeight = Dimensions.get('screen').height
                                           
                                         </View>
                                     </View>
-                               
+                                    <View style={{flexDirection:"row",alignItems:"center",justifyContent:"center"}}>
+                                        <Text style={[styles.text,{color:"#fff"}]}>Table : </Text>
+                                        {
+                                            item.objs.map((item, index) => {
+                                                return (
+                                                    <Text key={index} style={[styles.text,{color:"#fff"}]}>
+                                                        {item.tableTitle},
+                                                    </Text>
+                                                )
+                                            })
+                                        }
+                                    </View>
                            
                                </TouchableOpacity>
                             )

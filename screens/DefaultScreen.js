@@ -92,8 +92,8 @@ class DefaultScreen extends Component {
         }
     }
     componentDidMount(){
-        // this.OTAUpdate()
-        this.getUser()
+        this.OTAUpdate()
+        // this.getUser()
     }
     render() {
 

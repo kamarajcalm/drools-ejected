@@ -106,23 +106,42 @@ class ViewOrder extends Component {
             this.showSimpleMessage("Try again", "red", "danger")
         }
     }
+    cookOrderComplete =async()=>{
+        let api = `${url}/api/drools/cookComplete/`
+        let sendData = {
+            
+            status: "Finished",
+            json: this.state.item,
+            onlyOrder:true
+        }
+        let post = await HttpsClient.post(api, sendData)
+        if (post.type == "success") {
+            
+        } else {
+           
+        }
+    }
     completeSingle = async()=>{
         let api = `${url}/api/drools/cartitems/${this.state.selectedItem.pk}/`
         let sendData = {
             item_status:"Finished",
             finished_quantity:this.state.finishAll,
-            quantity: this.state.selectedItem.quantity - this.state.finishAll
+            quantity: this.state.selectedItem.quantity - this.state.finishAll,
+       
         }
        
       
         let patch = await HttpsClient.patch(api, sendData)
         console.log(patch)
         if (patch.type == "success") {
+         
             let duplicate = this.state.item
             duplicate.itemcount = duplicate.itemcount-this.state.finishAll
             duplicate.objs[this.state.selectedIndex].status = "Finished"
             duplicate.objs[this.state.selectedIndex].quantity = duplicate.objs[this.state.selectedIndex].quantity-this.state.finishAll
-            this.setState({ item: duplicate ,modal:false})
+            this.setState({ item: duplicate ,modal:false},()=>{
+                this.cookOrderComplete()
+            })
             return this.showSimpleMessage("Finished SuccessFully", "#00A300", "success")
         } else {
             this.showSimpleMessage("Try again", "red", "danger")
@@ -145,7 +164,9 @@ class ViewOrder extends Component {
             if (sendData.item_status){
                 duplicate.objs[this.state.selectedIndex].status = "Finished"
             }
-            this.setState({ item: duplicate,modal:false})
+            this.setState({ item: duplicate,modal:false},()=>{
+                this.cookOrderComplete()
+            })
             return this.showSimpleMessage("Finished SuccessFully", "#00A300", "success")
         } else {
             this.showSimpleMessage("Try again", "red", "danger")

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Dimensions, TouchableOpacity, StyleSheet, FlatList, Image, Alert, AsyncStorage, TextInput, ScrollView } from 'react-native';
+import { View, Text, Dimensions, TouchableOpacity, StyleSheet, FlatList, Image, Alert, AsyncStorage, TextInput, ScrollView, ActivityIndicator } from 'react-native';
 const { height, width } = Dimensions.get('window')
 import settings from '../AppSettings'
 import { connect } from 'react-redux';
@@ -26,7 +26,9 @@ export default class SelectAddress extends Component {
     super(props);
     this.state = {
         location:null,
-        address:""
+        address:"",
+        latitude:null,
+        longitude:null
     };
   }
     getLocation = async () => {
@@ -36,38 +38,39 @@ export default class SelectAddress extends Component {
             return;
         }
         let location = await Location.getCurrentPositionAsync({});
-
-  
+      
+       let  address = await   Location.reverseGeocodeAsync({
+           latitude: location.coords.latitude,
+           longitude: location.coords.longitude,
+       })
+        this.setState({ address: address[0].name})
+     
         this.setState({
             location: {
                 latitude: location.coords.latitude,
                 longitude: location.coords.longitude,
-                latitudeDelta: 0.0922,
-                longitudeDelta: 0.0421
-            }
-        })
-        Geocoder.from({
+                latitudeDelta: 0.0001,
+                longitudeDelta: 0.0001
+            },
             latitude: location.coords.latitude,
-            longitude: location.coords.longitude
-        }).then(json => {
-            
-            var addressComponent = json.results[0].address_components[0];
-            this.setState({ address: addressComponent.long_name})
+            longitude: location.coords.longitude,
         })
-            .catch(error => console.warn(error));
+ 
     }
     handleCheck =(region)=>{
         clearTimeout(this.timer);
-        this.timer = setTimeout(() => {
-            Geocoder.from({
+        this.timer = setTimeout( async() => {
+            this.setState({fetching:true})
+          
+            let address = await Location.reverseGeocodeAsync({
                 latitude: region.latitude,
-                longitude: region.longitude
-            }).then(json => {
-               
-                var addressComponent = json.results[0].address_components[0];
-                console.log(addressComponent)
-                this.setState({ address: addressComponent.long_name })
+                longitude:region.longitude,
             })
+            console.log(address)
+            this.setState({ address: address[0]?.name, fetching: false, location:{
+                latitude: region.latitude,
+                longitude: region.longitude,
+            } })
         }, 500);
     }
  componentDidMount(){
@@ -75,27 +78,39 @@ export default class SelectAddress extends Component {
  }
 
   render() {
+      let marker = <View style={{ position: "absolute", bottom: height * 0.7, alignItems: "center", justifyContent: "center", right: width * 0.48 }}>
+          <Marker 
+          style={{height:48,width:48,position:"absolute"}}
+           coordinate={this.state?.location}
+        
+          >
+              <FontAwesome5 name="map-marker" size={40} color={primaryColor} />
+          </Marker>
+       
+      </View>
     return (
       <View style={{flex:1}}>
           <MapView 
                 customMapStyle={mapstyle}
                 provider={PROVIDER_GOOGLE}
-                onRegionChange={(region) => {
-              
-                    this.handleCheck(region)
-                
-                   }}
-            style={{flex:0.75}}
+                style={{flex:0.75}}
                 initialRegion={this.state?.location}
-        
+                showsMyLocationButton={true}
+                showsPointsOfInterest={true}
+                showsUserLocation={true}
+                followsUserLocation={true}
           >
-            {this.state.location&&    <MapView.Marker coordinate={this.state.location}>
-                    <MaterialCommunityIcons name="map-marker-right" size={20} color="blue" />
-                </MapView.Marker>}
+            
           </MapView>
-          <View style={{position:"absolute",bottom:height*0.7,alignItems:"center",justifyContent:"center",right:width*0.48}}>
-                <FontAwesome5 name="map-marker" size={40} color={primaryColor}/>
-          </View>
+            <View style={{
+                left: '50%',
+              
+                position: 'absolute',
+                top: '30%'
+                }}
+            >
+                <FontAwesome5 name="map-marker" size={40} color={primaryColor} />
+         </View>
           <View style={{position:"absolute",right:20,bottom:height*0.3}}>
                 <TouchableOpacity 
                   onPress={()=>{this.getLocation()}}
@@ -113,7 +128,10 @@ export default class SelectAddress extends Component {
                         <Text style={[styles.text]}>YOUR LOCATION</Text>
                     </View>
                      <View>
-                          <Text style={[styles.text,{color:"#000",fontSize:22}]}>{this.state.address}</Text>
+                         {
+                            this.state.fetching ? <ActivityIndicator color={primaryColor} size={"large"}/> : <Text style={[styles.text, { color: "#000", fontSize: 22 }]}>{this.state.address}</Text>
+                         }
+                          
                      </View>
                 </View>
                 <View style={{alignItems:"center",justifyContent:"center",flex:1}}>

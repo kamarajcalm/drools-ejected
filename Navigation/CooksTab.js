@@ -12,12 +12,13 @@ import { LinearGradient } from 'expo-linear-gradient';
 import Constants from 'expo-constants';
 import { FontAwesome, MaterialCommunityIcons, MaterialIcons, SimpleLineIcons, Entypo, Fontisto, Feather, Ionicons, FontAwesome5 } from '@expo/vector-icons';
 
-import HistoryStack from '../stacks/HistoryStack';
+
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import MyTabBar2 from '../components/MyTabBar2';
 import ProfileStack from '../CooksStack/ProfileStack';
 import OrdersStack from '../CooksStack/OrdersStack';
+import HistoryStack from '../CooksStack/HistoryStack';
 const Tab = createBottomTabNavigator();
 class CooksTab extends Component {
     constructor(props) {
