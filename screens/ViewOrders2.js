@@ -232,7 +232,7 @@ class ViewOrders2 extends Component {
                         <Text style={[styles.text, { color: primaryColor, fontSize: 25 }]}>₹ {this.state.item.total_price}</Text>
                         <Text style={[styles.text, { color: primaryColor, fontSize: 25 }]}>₹ {this.state.item.money_saved}</Text>
                         <View>
-                            <Text style={[styles.text, { color: primaryColor, fontSize: 25 }]}>₹ {this.state.item.payment_mode}</Text>
+                            <Text style={[styles.text, { color: primaryColor, fontSize: 25 }]}>{this.state.item.payment_mode}</Text>
                         </View>
                       
                     </View>

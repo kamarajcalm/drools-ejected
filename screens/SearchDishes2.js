@@ -52,7 +52,8 @@ class SearchDishes2 extends Component {
 
         if (data.type == "success") {
             data.data.forEach((i) => {
-                i.selected = false
+                i.selected = false,
+                i.quantity = 1
             })
             this.setState({ items: data.data })
         }
@@ -90,10 +91,11 @@ class SearchDishes2 extends Component {
             this.showSimpleMessage("Item already added", "orange", "success")
         } else {
             let pushObj = {
-                quantity: 1,
+                quantity:1,
                 id: item.id,
                 comments: "",
-                title: item.title
+                title: item.title,
+               
             }
             data.push(pushObj)
             this.setState({ selectedItems: data })

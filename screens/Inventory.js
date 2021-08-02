@@ -17,6 +17,7 @@ import Categories from './Categories';
 import Stocks from './Stocks';
 import InventoryOrders from './InventoryOrders';
 import SubscriptionPlans from './SubscriptionPlans';
+
 class Inventory extends Component {
   constructor(props) {
     super(props);
@@ -24,7 +25,7 @@ class Inventory extends Component {
           { key: 'Categories', title: 'Categories' },
           { key: 'Stocks', title: 'Stocks'},
           { key: 'Orders', title: 'Orders' },
-          { key: 'Plans', title: 'Plans' },
+          { key: 'Plans', title: 'Subscription-Plans' },
 
       ];
     this.state = {
@@ -79,6 +80,7 @@ class Inventory extends Component {
             </LinearGradient>
 
             <TabView
+                
                 style={{ backgroundColor: "#ffffff" }}
                 navigationState={{ index, routes }}
                 renderScene={this.renderScene}
@@ -86,19 +88,26 @@ class Inventory extends Component {
                 initialLayout={{width}}
                 renderTabBar={(props) =>
                     <TabBar
+                        scrollEnabled={true}
                         {...props}
                         renderLabel={({ route, focused, color }) => (
-                            <Text style={{ color: focused ? themeColor : 'gray', margin: 8, fontWeight: "bold" }}>
+               
+                                      <Text style={{ color: focused ? themeColor : 'gray', fontWeight: "bold" ,fontFamily}}>
                                 {route.title}
                             </Text>
+                       
+                          
                         )}
-                        style={{ backgroundColor: "#fff", height: 50, fontWeight: "bold", color: "red" }}
-                        labelStyle={{ fontWeight: "bold", color: "red" }}
+                        tabStyle={{fontFamily}}
+                        style={{ backgroundColor: "#fff", height: 50, fontWeight: "bold", color: "red" ,fontFamily}}
+                        labelStyle={{ fontWeight: "bold", color: "red", fontFamily }}
                         indicatorStyle={{ backgroundColor: themeColor, height: 5 }}
                     />
                 }
 
             />
+
+     
       </View>
     );
   }
