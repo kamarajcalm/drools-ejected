@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Dimensions, TouchableOpacity, StyleSheet,FlatList,Image,ActivityIndicator} from 'react-native';
+import { View, Text, Dimensions, TouchableOpacity, StyleSheet,FlatList,Image,ActivityIndicator,Alert} from 'react-native';
 const { height, width } = Dimensions.get('window')
 import settings from '../AppSettings'
 import { connect } from 'react-redux';
@@ -15,6 +15,7 @@ import Constants from 'expo-constants';
 import orders from '../data/orders';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import momemt from 'moment';
+import FlashMessage, { showMessage, hideMessage } from "react-native-flash-message";
 import { FontAwesome, MaterialCommunityIcons, MaterialIcons, SimpleLineIcons, Entypo, Fontisto, Feather, Ionicons, FontAwesome5 } from '@expo/vector-icons';
 import HttpsClient from '../HttpsClient';
 class History extends Component {
@@ -29,6 +30,17 @@ class History extends Component {
             loadmore:true,
             first:true
         };
+    }
+    showSimpleMessage(content, color, type = "info", props = {}) {
+        const message = {
+            message: content,
+            backgroundColor: color,
+            icon: { icon: "auto", position: "left" },
+            type,
+            ...props,
+        };
+
+        showMessage(message);
     }
     hideDatePicker = () => {
         this.setState({show:false})
@@ -93,6 +105,32 @@ class History extends Component {
              })
          }
      
+    }
+    deleteItem = async(item,index)=>{
+        let api = `${url}/api/drools/cart/${item.id}/`
+        let del = await HttpsClient.delete(api)
+        if(del.type=="success"){
+            let duplicate =  this.state.orders
+            duplicate.splice(index,1)
+            this.setState({ orders:duplicate})
+            return this.showSimpleMessage("Deleted SuccessFully","green","success")
+        }else{
+            return this.showSimpleMessage("Try Again", "red", "danger")
+        }
+    }
+    createAlert = (item, index) => {
+        Alert.alert(
+            "Do you want to delete?",
+            ``,
+            [
+                {
+                    text: "No",
+                    onPress: () => console.log("Cancel Pressed"),
+                    style: "cancel"
+                },
+                { text: "Yes", onPress: () => { this.deleteItem(item, index) } }
+            ]
+        );
     }
     render() {
      
@@ -167,6 +205,14 @@ class History extends Component {
                                             <Text style={[styles.text, { color: "#fafafa" }]}>Price : ₹{item.total_price}</Text>
                                         </View>
                                     </View>
+                                </View>
+                                <View style={{position:"absolute",top:10,right:10}}>
+                                    <TouchableOpacity 
+                                      onPress={()=>{this.createAlert(item,index)}}
+                                    >
+                                        <MaterialIcons name="delete" size={24} color="red"/>
+                                    </TouchableOpacity>
+                              
                                 </View>
                             </TouchableOpacity>
                         )

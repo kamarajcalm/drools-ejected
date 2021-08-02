@@ -650,7 +650,7 @@ class ViewOrders extends Component {
                                     <View>
                                         <Text style={[styles.text, { color: this.validateColor(item) }]}> {item.item_status}</Text>
                                     </View>
-                                    {this.state.item.cart_status != "Completed" &&   <View style={{flexDirection:"row",flex:1,alignItems:"center",justifyContent:"space-around"}}>
+                                    {this.state.item.cart_status != "Completed" && item.item_status=="Pending"&&<View style={{flexDirection:"row",flex:1,alignItems:"center",justifyContent:"space-around"}}>
                                         <TouchableOpacity style={{ alignItems: "center", justifyContent: "center" }}
                                             onPress={() => {
                                                 this.decreaseQuantity(item, index)

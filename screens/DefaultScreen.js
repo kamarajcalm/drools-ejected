@@ -30,6 +30,18 @@ class DefaultScreen extends Component {
         };
     }
     getUser = async()=>{
+        // return this.props.navigation.dispatch(
+        //     CommonActions.reset({
+        //         index: 0,
+        //         routes: [
+        //             {
+        //                 name: 'CustomerTab',
+
+        //             },
+
+        //         ],
+        //     })
+        // )
        let login = await AsyncStorage.getItem("login")
        let user = await AsyncStorage.getItem("user")
        if(login){
@@ -88,7 +100,7 @@ class DefaultScreen extends Component {
                 this.getUser()
             }
         } catch (e) {
-            return
+            return this.getUser()
         }
     }
     componentDidMount(){

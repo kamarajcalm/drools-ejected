@@ -16,6 +16,7 @@ import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
 import Categories from './Categories';
 import Stocks from './Stocks';
 import InventoryOrders from './InventoryOrders';
+import SubscriptionPlans from './SubscriptionPlans';
 class Inventory extends Component {
   constructor(props) {
     super(props);
@@ -23,6 +24,7 @@ class Inventory extends Component {
           { key: 'Categories', title: 'Categories' },
           { key: 'Stocks', title: 'Stocks'},
           { key: 'Orders', title: 'Orders' },
+          { key: 'Plans', title: 'Plans' },
 
       ];
     this.state = {
@@ -32,13 +34,14 @@ class Inventory extends Component {
   }
     renderScene = ({ route, }) => {
         switch (route.key) {
-
             case 'Categories':
                 return <Categories navigation={this.props.navigation}/>
             case 'Stocks':
                 return <Stocks navigation ={this.props.navigation}/>
             case 'Orders':
                 return <InventoryOrders navigation={this.props.navigation} />
+            case 'Plans':
+                return <SubscriptionPlans navigation={this.props.navigation} />
             default:
                 return null;
         }

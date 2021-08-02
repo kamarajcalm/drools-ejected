@@ -15,6 +15,7 @@ import LoginScreen from '../Login/LoginScreen';
 import CooksTab from './CooksTab';
 import CreateAccount from '../Login/CreateAccount';
 import SelectAddress from '../Login/SelectAddress';
+import CustomerTab from './CustomerTab';
 
 const Stack = createStackNavigator();
  class AppNavigator extends Component {
@@ -33,6 +34,7 @@ const Stack = createStackNavigator();
                 <Stack.Screen name="CreateAccount" component={CreateAccount} options={{ headerShown: false }} />
                 <Stack.Screen name="SelectAddress" component={SelectAddress} options={{ headerShown: false }} />
                 <Stack.Screen name="CookTab" component={CooksTab} options={{ headerShown: false }} />
+                <Stack.Screen name="CustomerTab" component={CustomerTab} options={{ headerShown: false }} />
             </Stack.Navigator>
         </NavigationContainer>
     );

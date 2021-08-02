@@ -57,9 +57,9 @@ export default class SelectAddress extends Component {
         })
  
     }
-    handleCheck =(region)=>{
-        clearTimeout(this.timer);
-        this.timer = setTimeout( async() => {
+    handleChange = async(region)=>{
+
+        
             this.setState({fetching:true})
           
             let address = await Location.reverseGeocodeAsync({
@@ -67,11 +67,17 @@ export default class SelectAddress extends Component {
                 longitude:region.longitude,
             })
             console.log(address)
-            this.setState({ address: address[0]?.name, fetching: false, location:{
-                latitude: region.latitude,
+            this.setState({ 
+                address: address[0]?.name, 
+                fetching: false, 
+                location:{
+                    latitude: region.latitude,
+                    longitude: region.longitude,
+              } ,
+               latitude: region.latitude,
                 longitude: region.longitude,
-            } })
-        }, 500);
+        })
+
     }
  componentDidMount(){
      this.getLocation();
@@ -93,33 +99,18 @@ export default class SelectAddress extends Component {
           <MapView 
                 customMapStyle={mapstyle}
                 provider={PROVIDER_GOOGLE}
-                style={{flex:0.75}}
+                style={{flex:0.7}}
                 initialRegion={this.state?.location}
                 showsMyLocationButton={true}
                 showsPointsOfInterest={true}
                 showsUserLocation={true}
                 followsUserLocation={true}
+                onRegionChangeComplete={this.handleChange}
           >
             
           </MapView>
-            <View style={{
-                left: '50%',
-              
-                position: 'absolute',
-                top: '30%'
-                }}
-            >
-                <FontAwesome5 name="map-marker" size={40} color={primaryColor} />
-         </View>
-          <View style={{position:"absolute",right:20,bottom:height*0.3}}>
-                <TouchableOpacity 
-                  onPress={()=>{this.getLocation()}}
-                >
-                    <MaterialIcons name="my-location" size={24} color="black" />
-                </TouchableOpacity>
-          </View>
-       
-          <View style={{flex:0.25}}>
+            
+          <View style={{flex:0.3}}>
                 <View style={{paddingVertical:10,paddingHorizontal:20,borderBottomWidth:0.5,borderColor:"gray"}}>
                     <Text style={[styles.text,{color:"#000",fontSize:20}]}>Select An Delivery Location</Text>
                 </View>
@@ -135,11 +126,57 @@ export default class SelectAddress extends Component {
                      </View>
                 </View>
                 <View style={{alignItems:"center",justifyContent:"center",flex:1}}>
-                    <TouchableOpacity style={{backgroundColor:primaryColor,height:height*0.05,width:width*0.5,alignItems:'center',justifyContent:"center"}}>
+                    <TouchableOpacity style={{backgroundColor:primaryColor,height:height*0.05,width:width*0.5,alignItems:'center',justifyContent:"center"}}
+                        onPress={() => {
+                            const address = {
+                                address: this.state.address,
+                                latitude: this.state.latitude,
+                                longitude: this.state.longitude
+                            }
+                            this.props.route.params.backFunction(address)
+                            this.props.navigation.goBack()
+                        }}
+                    >
                          <Text style={[styles.text,{color:"#fff"}]}>CONFIRM LOCATION</Text>
                     </TouchableOpacity>
                 </View>
           </View>
+
+                                              {/* ABSOLUTE POSITIONSS */}
+            <View style={{
+                left: '50%',
+
+                position: 'absolute',
+                top: '30%'
+            }}
+            >
+                <FontAwesome5 name="map-marker" size={40} color={primaryColor} />
+            </View>
+            <View style={{ position: "absolute", right: 20, bottom: height * 0.3 }}>
+                <TouchableOpacity
+                    style={[styles.roundWithShadow]}
+                    onPress={() => { this.getLocation() }}
+                >
+                    <MaterialIcons name="my-location" size={24} color="black" />
+                </TouchableOpacity>
+            </View>
+            <View style={{ position: "absolute", left: 20, top: 30 }}>
+                <TouchableOpacity
+                    style={[styles.roundWithShadow]}
+                    onPress={() => { 
+                        const address = {
+                            address:this.state.address,
+                            latitude:this.state.latitude,
+                            longitude:this.state.longitude
+                        }
+                        this.props.route.params.backFunction(address)
+                        this.props.navigation.goBack() 
+                    }}
+                >
+                    <Ionicons name="arrow-back-outline" size={24} color="black" />
+                </TouchableOpacity>
+
+            </View>
       </View>
     );
   }
@@ -147,5 +184,14 @@ export default class SelectAddress extends Component {
 const styles = StyleSheet.create({
     text: {
         fontFamily
+    },
+    roundWithShadow:{
+        shadowOffset:{
+            width:0,
+            height:2
+        },
+        shadowOpacity:0.1,
+        shadowRadius:2,
+        height: 30, width: 30, borderRadius: 15, backgroundColor: "#fff", elevation: 5, alignItems: "center", justifyContent: "center"
     }
 })

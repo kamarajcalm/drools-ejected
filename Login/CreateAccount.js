@@ -22,7 +22,11 @@ export default class CreateAccount extends Component {
     super(props);
     this.state = {
         name:"",
-        phone:""
+        phone:"",
+        address:null,
+        password:"",
+        confirmPassword:"",
+        street:""
     };
   }
     getLocation = async () => {
@@ -33,9 +37,15 @@ export default class CreateAccount extends Component {
         }
     
     }
+    createAccount = async()=>{
+
+    }
 componentDidMount(){
     this.getLocation();
 }
+    backFunction =(address)=>{
+        this.setState({address})
+    }
   render() {
     return (
         <View style={{ flex: 1, backgroundColor: themeColor }}>
@@ -88,16 +98,71 @@ componentDidMount(){
                                     onChangeText={(phone) => { this.setState({ phone })}}
                                 />
                         </View>
+     
                         <View style={{alignItems:"center",justifyContent:"center",marginTop:10}}>
                                 <View>
-                                    <Text style={[styles.text,{color:"#fff",fontSize:22}]}>Select an Address</Text>
+                                    <Text style={[styles.text,{color:"#fff",fontSize:22}]}>Select an Delivery Address</Text>
                                 </View>
                                 <TouchableOpacity style={{marginTop:10}}
-                                    onPress={() => { this.props.navigation.navigate("SelectAddress")}}
+                                   onPress={() => { this.props.navigation.navigate("SelectAddress", { backFunction: (address) => { this.backFunction(address)}})}}
                                 >
                                      <Ionicons name="add-circle-sharp" size={32} color={primaryColor} />
                                 </TouchableOpacity>
                         </View>
+                <View style={{ paddingHorizontal: 20, marginTop: 20 }}>
+                    <View>
+                        <Text style={[styles.text, { color: "#fff", fontSize: 22 }]}>Address : </Text>
+                    </View>
+                    <View>
+                        <Text style={[styles.text,{color:"#fff"}]}>{this.state.address?.address}</Text>
+                    </View>
+                </View>
+                <View style={{ paddingHorizontal: 20, marginTop: 20 }}>
+                    <View>
+                        <Text style={[styles.text, { color: "#fff", fontSize: 20 }]}>Building Name /Room No/ Street: </Text>
+                    </View>
+                    <TextInput
+                        secureTextEntry={true}
+                        multiline={true}
+                        value={this.state.confirmPassword}
+                        style={{ height: height*0.1, width: width * 0.8, backgroundColor: "#fafafa", marginTop: 10, paddingLeft: 5,textAlignVertical:"top"}}
+                        selectionColor={themeColor}
+                        onChangeText={(confirmPassword) => { this.setState({ confirmPassword }) }}
+                    />
+                </View>
+                <View style={{ paddingHorizontal: 20, marginTop: 20 }}>
+                    <View>
+                        <Text style={[styles.text, { color: "#fff", fontSize: 22 }]}>Password: </Text>
+                    </View>
+                    <TextInput
+                        secureTextEntry={true}
+
+                        value={this.state.password}
+                        style={{ height: 35, width: width * 0.8, backgroundColor: "#fafafa", marginTop: 10, paddingLeft: 5 }}
+                        selectionColor={themeColor}
+                        onChangeText={(password) => { this.setState({ password }) }}
+                    />
+                </View>
+                <View style={{ paddingHorizontal: 20, marginTop: 20 }}>
+                    <View>
+                        <Text style={[styles.text, { color: "#fff", fontSize: 22 }]}>Confirm Password: </Text>
+                    </View>
+                    <TextInput
+                        secureTextEntry={true}
+
+                        value={this.state.confirmPassword}
+                        style={{ height: 35, width: width * 0.8, backgroundColor: "#fafafa", marginTop: 10, paddingLeft: 5 }}
+                        selectionColor={themeColor}
+                        onChangeText={(confirmPassword) => { this.setState({ confirmPassword }) }}
+                    />
+                </View>
+                <View style={{margin: 20,alignItems:"center",justifyContent:"center" }}>
+                        <TouchableOpacity style={{height:height*0.05,width:width*0.4,alignItems:"center",justifyContent:"center",backgroundColor:primaryColor}}
+                          onPress={()=>{this.createAccount()}}
+                        >
+                             <Text style={[styles.text,{color:"#fff"}]}>Create Account</Text>
+                        </TouchableOpacity>
+               </View>
             </ScrollView>
       </View>
     );
