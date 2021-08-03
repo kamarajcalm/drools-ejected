@@ -263,6 +263,22 @@ class ViewOrders extends Component {
             this.showSimpleMessage(`${post?.data?.failed}`, "red", "failure")
         }
     }
+    acceptOrder = async()=>{
+        let api = `${url}/api/drools/cart/${this.state.item.id}/`
+          let sendData ={
+              is_accepted: !this.state.item.is_accepted
+          }
+        let patch = await HttpsClient.patch(api,sendData)
+        if(patch.type=="success"){
+            let duplicate = this.state.item
+            duplicate.is_accepted =!duplicate.is_accepted
+            this.setState({ item: duplicate})
+            this.showSimpleMessage(`${duplicate.is_accepted?"Accepted":"rejected"} successfully`,"green","success")
+
+        }else{
+            this.showSimpleMessage("Try Again", "green", "success")
+        }
+    }
     footer =()=>{
         return(
             <View style={{marginVertical:10}}>
@@ -322,6 +338,17 @@ class ViewOrders extends Component {
                     </TouchableOpacity>
               
                 </View>}
+                {
+                    this.state.item.order_type == "Takeaway" && 
+                    <View style={{alignItems:"center",justifyContent:"center",marginTop:20}}>
+                        <TouchableOpacity style={{ height: height * 0.05, width: width * 0.4, alignItems: "center", justifyContent: "center", backgroundColor: this.state.item.is_accepted?"red":"green"}}
+                            onPress={() => { this.acceptOrder()}}
+                        >
+                            <Text style={[styles.text, { color: "#fff" }]}>{this.state.item.is_accepted?"Reject":"Accept"}</Text>
+                        </TouchableOpacity>
+                    </View>
+                   
+                }
                 {this.state.item.cart_status == "Completed"&& <View style={{alignItems:"center",justifyContent:"center",marginVertical:30,flexDirection:"row"}}>
                     <TouchableOpacity style={{ height: height * 0.05, width: width * 0.4, alignItems: "center", justifyContent: "center", backgroundColor: "green" }}
                         onPress={() => {this.print()}}
@@ -352,11 +379,13 @@ class ViewOrders extends Component {
                             <View style={{ alignSelf: "flex-end", marginRight: 20 }}>
                                 <Text style={[styles.text, { color: "#fff", fontSize: 22, }]}>Mobile :</Text>
                             </View>
-                    
+                            <View style={{ alignSelf: "flex-end", marginRight: 20 }}>
+                                <Text style={[styles.text, { color: "#fff", fontSize: 22, }]}>Address :</Text>
+                            </View>
                         </View>
                         <View style={{ flex: 0.2, alignItems: "center", justifyContent: "center" }}>
                             <Text style={[styles.text, { color: primaryColor, fontSize: 25 }]}> {this.state.item.customer_name}</Text>
-                            <Text style={[styles.text, { color: primaryColor, fontSize: 25 }]}> {this.state.item.customer_mobile}</Text>
+                            <Text style={[styles.text, { color: primaryColor, fontSize: 25 }]}> {this.state.item.customer_address}</Text>
                   
                         </View>
                     </View>

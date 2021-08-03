@@ -12,6 +12,11 @@ import AddItems from '../screens/AddItems';
 import CreateOrders from '../screens/CreateOrders';
 import ViewInventoryOrders from '../screens/ViewInventoryOrders';
 import { TransitionSpecs, CardStyleInterpolators } from '@react-navigation/stack';
+import ViewPlan from '../screens/ViewPlan';
+import planTimeTable from '../screens/planTimeTable';
+import PlanMenu from '../screens/PlanMenu';
+import AddMenuItems from '../screens/AddMenuItems';
+import PlanUsers from '../screens/PlanUsers';
 const Stack = createStackNavigator();
 export default class InventoryStack extends Component {
     constructor(props) {
@@ -40,6 +45,11 @@ export default class InventoryStack extends Component {
                 <Stack.Screen name="AddItems" component={AddItems} options={{ headerShown:false}}/>
                 <Stack.Screen name="CreateOrders" component={CreateOrders} options={{ headerShown:false}}/>
                 <Stack.Screen name="ViewInventoryOrders" component={ViewInventoryOrders} options={{ headerShown:false}}/>
+                <Stack.Screen name="ViewPlan" component={ViewPlan} options={{ headerShown:false}}/>
+                <Stack.Screen name="planTimeTable" component={planTimeTable} options={{ headerShown:false}}/>
+                <Stack.Screen name="PlanMenu" component={PlanMenu} options={{ headerShown:false}}/>
+                <Stack.Screen name="AddMenuItems" component={AddMenuItems} options={{ headerShown:false}}/>
+                <Stack.Screen name="PlanUsers" component={PlanUsers} options={{ headerShown:false}}/>
             </Stack.Navigator>
         );
     }

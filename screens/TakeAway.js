@@ -31,7 +31,7 @@ class TakeAway extends Component {
         this.setState({refreshing:true})
         let api = `${url}/api/drools/cart/?order_type=Takeaway&cart_status=Pending`
         const data = await HttpsClient.get(api)
-        console.log(data , "ooooo")
+        console.log(api , "ooooo")
         if (data.type == "success") {
             this.setState({ orders: data.data, refreshing:false},()=>{
                
