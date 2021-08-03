@@ -3,18 +3,20 @@ import { View, Text, Dimensions, TouchableOpacity, StyleSheet, ActivityIndicator
 const { height, width } = Dimensions.get('window')
 import settings from '../AppSettings'
 import { connect } from 'react-redux';
-import { selectTheme } from '../actions';
+import { selectTheme, selectUser} from '../actions';
 const gradients = settings.gradients
 const primaryColor = settings.primaryColor
 const secondaryColor = settings.secondaryColor
 const themeColor = settings.themeColor
 const fontFamily = settings.fontFamily
+const url = settings.url
 import { LinearGradient } from 'expo-linear-gradient';
 import Constants from 'expo-constants';
 import { CommonNavigationAction, CommonActions } from '@react-navigation/native';
 import * as Notifications from 'expo-notifications';
 import { FontAwesome, MaterialCommunityIcons, MaterialIcons, SimpleLineIcons, Entypo, Fontisto, Feather, Ionicons, FontAwesome5 } from '@expo/vector-icons';
 import * as Updates from 'expo-updates';
+import HttpsClient from '../HttpsClient';
 Notifications.setNotificationHandler({
     handleNotification: async () => ({
         shouldShowAlert: true,
@@ -30,47 +32,71 @@ class DefaultScreen extends Component {
         };
     }
     getUser = async()=>{
-        // return this.props.navigation.dispatch(
-        //     CommonActions.reset({
-        //         index: 0,
-        //         routes: [
-        //             {
-        //                 name: 'CustomerTab',
-
-        //             },
-
-        //         ],
-        //     })
-        // )
+   
        let login = await AsyncStorage.getItem("login")
        let user = await AsyncStorage.getItem("user")
        if(login){
-           if (user =="Cook"){
-               return this.props.navigation.dispatch(
-                   CommonActions.reset({
-                       index: 0,
-                       routes: [
-                           {
-                               name:'CookTab',
+            let api = `${url}/api/profile/users/?myself=true`
+            let data = await HttpsClient.get(api)
+             if(data.type=="success"){
+                 this.props.selectUser(data.data[0]);
 
-                           },
+                 if (data.data[0].occupation == "Cook") {
+                     return this.props.navigation.dispatch(
+                         CommonActions.reset({
+                             index: 0,
+                             routes: [
+                                 {
+                                     name: 'CookTab',
 
-                       ],
-                   })
-               )
-           }
-           return this.props.navigation.dispatch(
-               CommonActions.reset({
-                   index: 0,
-                   routes: [
-                       {
-                           name: 'AdminTab',
+                                 },
 
-                       },
+                             ],
+                         })
+                     )
+                 }
+                 if (data.data[0].occupation == "Customer") {
+                     return this.props.navigation.dispatch(
+                         CommonActions.reset({
+                             index: 0,
+                             routes: [
+                                 {
+                                     name: 'CustomerTab',
 
-                   ],
-               })
-           )
+                                 },
+
+                             ],
+                         })
+                     )
+                 }
+                 return this.props.navigation.dispatch(
+                     CommonActions.reset({
+                         index: 0,
+                         routes: [
+                             {
+                                 name: 'AdminTab',
+
+                             },
+
+                         ],
+                     })
+                 )
+             }else{
+                 return this.props.navigation.dispatch(
+                     CommonActions.reset({
+                         index: 0,
+                         routes: [
+                             {
+                                 name: 'LoginScreen',
+
+                             },
+
+                         ],
+                     })
+                 )
+             }
+    
+       
        }else{
            return this.props.navigation.dispatch(
                CommonActions.reset({
@@ -127,6 +153,7 @@ const mapStateToProps = (state) => {
 
     return {
         theme: state.selectedTheme,
+        user: state.selectedUser,
     }
 }
-export default connect(mapStateToProps, { selectTheme })(DefaultScreen);
+export default connect(mapStateToProps, { selectTheme, selectUser})(DefaultScreen);

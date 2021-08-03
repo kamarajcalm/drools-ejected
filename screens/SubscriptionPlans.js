@@ -100,8 +100,35 @@ export default class SubscriptionPlans extends Component {
         let post = await HttpsClient.post(api,sendData)
         if(post.type=="success"){
             this.setState({ creating: false ,modal:false,name:"",price:""})
+            this.getPlans()
             return this.showSimpleMessage("Plan Created SuccessFully", "green", "success")
         }else{
+            this.setState({ creating: false })
+            return this.showSimpleMessage("Try Again", "red", "danger")
+        }
+    }
+    edit = async()=>{
+        this.setState({ creating: true })
+        if (this.state.name == "") {
+            this.setState({ creating: false })
+            return this.showSimpleMessage("Please fill Plan Name", "orange", "info")
+        }
+        if (this.state.price == "") {
+            this.setState({ creating: false })
+            return this.showSimpleMessage("Please fill Price", "orange", "info")
+        }
+        let api = `${url}/api/drools/droolsplans/${this.state.selectedItem.id}/`
+        let sendData = {
+            title: this.state.name,
+            price: this.state.price,
+            plan_type: this.state.value
+        }
+        let post = await HttpsClient.patch(api, sendData)
+        if (post.type == "success") {
+            this.setState({ creating: false, modal: false, name: "", price: "" })
+            this.getPlans()
+            return this.showSimpleMessage("Plan Edited SuccessFully", "green", "success")
+        } else {
             this.setState({ creating: false })
             return this.showSimpleMessage("Try Again", "red", "danger")
         }
@@ -195,11 +222,18 @@ export default class SubscriptionPlans extends Component {
                                     placeholder="select a frequency"
                                 />
                             </View>
-                            <View style={{ margin: 20, alignItems: "center", justifyContent: "center" }}>
+                          <View style={{ margin: 20, alignItems: "center", justifyContent: "center" }}>
                                 {!this.state.creating?<TouchableOpacity style={{ height: height * 0.05, width: width * 0.4, alignItems: "center", justifyContent: "center", backgroundColor: primaryColor }}
-                                    onPress={() => { this.create() }}
+                                    onPress={() => { 
+                                        if(this.state.edit) {
+                                              this.edit()
+                                        }else{
+                                             this.create()
+                                        }
+                                    
+                                    }}
                                 >
-                                    <Text style={[styles.text, { color: "#fff" }]}>Create</Text>
+                                    <Text style={[styles.text, { color: "#fff" }]}>{this.state.edit?"edit":"Create"}</Text>
                                 </TouchableOpacity>:
                                     <View style={{ height: height * 0.05, width: width * 0.4, alignItems: "center", justifyContent: "center", backgroundColor: primaryColor }}>
                                       <ActivityIndicator  size={"large"} color={"#fff"}/>
@@ -267,7 +301,9 @@ export default class SubscriptionPlans extends Component {
                                          >
                                             <MaterialIcons name="delete" size={24} color="red" />
                                          </TouchableOpacity>
-                                         <TouchableOpacity>
+                                         <TouchableOpacity 
+                                            onPress={() => { this.setState({ edit: true, name: item.title, price: item.price.toString(),value:item.plan_type,modal:true,selectedItem:item})}}
+                                         >
                                             <Entypo name="edit" size={24} color="orange" />
                                          </TouchableOpacity>
                                     </View>
@@ -287,7 +323,7 @@ export default class SubscriptionPlans extends Component {
                     borderRadius: 20
                 }}>
                     <TouchableOpacity
-                        onPress={() => { this.setState({modal:true}) }}
+                        onPress={() => { this.setState({modal:true,edit:false}) }}
                     >
                         <AntDesign name="pluscircle" size={40} color={primaryColor} />
                     </TouchableOpacity>

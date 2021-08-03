@@ -22,3 +22,9 @@ export const setOnePlusOne = (status) => {
         payload: status
     }
 }
+export const selectUser = (user) => {
+    return {
+        type: 'USER_SELECTED',
+        payload: user
+    }
+}

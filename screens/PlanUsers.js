@@ -24,10 +24,36 @@ class PlanUsers extends Component {
         let item = props.route.params.item
         super(props);
         this.state = {
-            item
+            item,
+            users:[]
         };
     }
-
+    getUsers = async()=>{
+        let api = `${url}/api/drools/planmembers/?plan=${this.state.item.id}`
+        let data = await HttpsClient.get(api)
+        console.log(api)
+        if(data.type="success"){
+            this.setState({ users:data.data})
+        }
+    }
+ componentDidMount(){
+     this.getUsers()
+ }
+    header =()=>{
+        return(
+            <View style={{flexDirection:"row",marginTop:10}}>
+                  <View style={{flex:0.1,alignItems:"center",justifyContent:"center"}}>
+                            <Text style={[styles.text,{color:"#000",fontSize:20,textDecorationLine:"underline"}]}>#</Text>
+                  </View>
+                  <View style={{flex:0.6,alignItems:"center",justifyContent:"center"}}>
+                    <Text style={[styles.text, { color: "#000", fontSize: 20, textDecorationLine: "underline"}]}>Name</Text>
+                  </View>
+                  <View style={{flex:0.3,alignItems:"center",justifyContent:"center"}}>
+                    <Text style={[styles.text, { color: "#000", fontSize: 20, textDecorationLine: "underline"}]}>Active</Text>
+                  </View>
+            </View>
+        )
+    }
     render() {
         return (
             <View style={{ flex: 1 }}>
@@ -52,7 +78,27 @@ class PlanUsers extends Component {
                     </View>
                 </LinearGradient>
                 <View style={{ flex: 1 }}>
+                     <FlatList 
+                       ListHeaderComponent={this.header()}
+                       data={this.state.users}
+                       keyExtractor={(item,index)=>index.toString()}
+                       renderItem ={({item,index})=>{
+                                return(
+                                    <View style={{ flexDirection: "row", marginTop: 10 }}>
+                                        <View style={{ flex: 0.1, alignItems: "center", justifyContent: "center" }}>
+                                            <Text style={[styles.text, { color: "#000", fontSize: 18, textDecorationLine: "underline" }]}>{index+1}</Text>
+                                        </View>
+                                        <View style={{ flex: 0.6, alignItems: "center", justifyContent: "center" }}>
+                                            <Text style={[styles.text, { color: "#000", fontSize: 18, }]}>{item.fullName}</Text>
+                                        </View>
+                                        <View style={{ flex: 0.3, alignItems: "center", justifyContent: "center" }}>
+                                            <Text style={[styles.text, { color: "#000", fontSize: 18, textDecorationLine: "underline" }]}>Active</Text>
+                                        </View>
+                                    </View>
+                                )
 
+                       }}
+                     />
                 </View>
 
                 <View style={{
@@ -66,7 +112,7 @@ class PlanUsers extends Component {
                     borderRadius: 20
                 }}>
                     <TouchableOpacity
-                        onPress={() => { this.props.navigation.navigate("AddMenuItems", { item: this.state.item }) }}
+                        onPress={() => { this.props.navigation.navigate("AddUsers", { item: this.state.item }) }}
                     >
                         <AntDesign name="pluscircle" size={40} color={primaryColor} />
                     </TouchableOpacity>

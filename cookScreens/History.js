@@ -39,9 +39,26 @@ class History extends Component {
     getOrders = async() =>{
         let api = `${url}/api/drools/ordercompletion/?date=${this.state.today}`
         let data = await HttpsClient.get(api)
-        
+        //  console.log(api)
+        // console.log(data.data)
        if(data.type=="success"){
-           this.setState({ orders: data?.data[0]?.data||[]})
+           let orders= []
+           let ordersFinal = []
+           data.data.forEach((item)=>{
+               orders.push(item.data)
+           })
+
+           orders.forEach((item2)=>{
+               if (Array.isArray(item2)){
+                    item2.forEach((i)=>{
+                        ordersFinal.push(i)
+                    })
+                 }else{
+                   ordersFinal.push(item2)
+                 }
+           })
+           
+           this.setState({ orders: ordersFinal})
        }
      
     }

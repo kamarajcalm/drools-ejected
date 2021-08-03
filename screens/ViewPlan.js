@@ -43,7 +43,7 @@ const screenHeight = Dimensions.get("screen").height
                         <Ionicons name="caret-back" size={24} color={secondaryColor} />
                     </TouchableOpacity>
                     <View style={{ flex: 0.6, alignItems: "center", justifyContent: "center" }}>
-                        <Text style={[styles.text, { color: "#fff", fontSize: 18 }]}>{this.state.item.planName}</Text>
+                        <Text style={[styles.text, { color: "#fff", fontSize: 18 }]}>{this.state.item.title}</Text>
 
                     </View>
                     <View style={{ flex: 0.2, alignItems: "center", justifyContent: "center" }}>
@@ -64,7 +64,7 @@ const screenHeight = Dimensions.get("screen").height
                        
                   </TouchableOpacity>
                   <TouchableOpacity 
-                    onPress={() => { this.props.navigation.navigate("PlanMenu", { item: this.state.item }) }}
+                    onPress={() => { this.props.navigation.navigate("PlanMenu",{item:this.state.item })}}
                   >
                     <View style={{ alignItems: "center", justifyContent: "center" }}>
                         <MaterialIcons name="restaurant-menu" size={24} color={primaryColor} />

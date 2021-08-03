@@ -23,9 +23,16 @@ const selectedOnePlusOne = (onePlusOne = false, action) => {
     }
     return onePlusOne
 }
+const selectedUserReducer = (selectedUser = null, action) => {
+    if (action.type === "USER_SELECTED") {
+        return action.payload;
+    }
+    return selectedUser
+}
 export default combineReducers({
     selectedTheme: selectedThemeReducer,
     bluetoothStatus: selectedBluetoothStatus,
     todayIncome: selectedTodayIncome,
-    onePlusOne: selectedOnePlusOne
+    onePlusOne: selectedOnePlusOne,
+    selectedUser: selectedUserReducer,
 })

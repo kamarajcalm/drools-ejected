@@ -248,7 +248,7 @@ const screenHeight = Dimensions.get('screen').height
          let sendData = {
              items,
              status: "Finished",
-             json:this.state.cookOrders
+             json:item
          }
          let post = await HttpsClient.post(api, sendData)
          if (post.type == "success") {

@@ -9,6 +9,7 @@ const primaryColor = settings.primaryColor
 const secondaryColor = settings.secondaryColor
 const fontFamily = settings.fontFamily
 const themeColor = settings.themeColor
+const url = settings.url
 import { LinearGradient } from 'expo-linear-gradient';
 import Constants from 'expo-constants';
 import orders from '../data/orders';
@@ -17,6 +18,8 @@ import momemt from 'moment';
 import { CommonNavigationAction, CommonActions } from '@react-navigation/native'
 import { FontAwesome, MaterialCommunityIcons, MaterialIcons, SimpleLineIcons, Entypo, Fontisto, Feather, Ionicons, FontAwesome5 } from '@expo/vector-icons';
 import * as Location from 'expo-location';
+import FlashMessage, { showMessage, hideMessage } from "react-native-flash-message";
+import HttpsClient from '../HttpsClient';
 export default class CreateAccount extends Component {
   constructor(props) {
     super(props);
@@ -26,7 +29,8 @@ export default class CreateAccount extends Component {
         address:null,
         password:"",
         confirmPassword:"",
-        street:""
+        street:"",
+        lastname:""
     };
   }
     getLocation = async () => {
@@ -37,8 +41,65 @@ export default class CreateAccount extends Component {
         }
     
     }
-    createAccount = async()=>{
+    showSimpleMessage(content, color, type = "info", props = {}) {
+        const message = {
+            message: content,
+            backgroundColor: color,
+            icon: { icon: "auto", position: "left" },
+            type,
+            ...props,
+        };
 
+        showMessage(message);
+    }
+    createAccount = async()=>{
+        this.setState({creating:true})
+        if(this.state.name ==""){
+            this.setState({ creating: false })
+            return this.showSimpleMessage("please fill First Name","orange","info")
+        }
+        if (this.state.lastname == "") {
+            this.setState({ creating: false })
+            return this.showSimpleMessage("please fill Last Name", "orange", "info")
+        }
+        if (this.state.phone.length <10) {
+            this.setState({ creating: false })
+            return this.showSimpleMessage("please fill 10 digit mobile Number", "orange", "info")
+        }
+        if (this.state.address==null) {
+            this.setState({ creating: false })
+            return this.showSimpleMessage("please select an address", "orange", "info")
+        }
+        if (this.state.password == "") {
+            this.setState({ creating: false })
+            return this.showSimpleMessage("please enter password", "orange", "info")
+        }
+        if (this.state.password != this.state.confirmPassword) {
+            this.setState({ creating: false })
+            return this.showSimpleMessage("password does not match", "orange", "info")
+        }
+        let api =`${url}/api/profile/userRegister/`
+        let sendData ={
+            first_name:this.state.name,
+            last_name:this.state.lastname,
+            mobile:this.state.phone,
+            address:this.state.address.address,
+            street:this.state.street,
+            lat: this.state.address.latitude,
+            long:this.state.address.longitude,
+            password:this.state.password,
+            bodyType:"formData"
+        }
+        let post = await HttpsClient.post(api,sendData)
+        console.log(post)
+        if(post.type=="success"){
+            this.setState({creating:false})
+            this.showSimpleMessage("Account Created SuccessFully","green","success")
+            return this.props.navigation.goBack()
+        }else{
+            this.setState({ creating: false })
+            this.showSimpleMessage("Try Again", "red", "danger")
+        }
     }
 componentDidMount(){
     this.getLocation();
@@ -76,13 +137,25 @@ componentDidMount(){
             <ScrollView>
                         <View style={{paddingHorizontal:20,marginTop:20}}>
                             <View>
-                                    <Text style={[styles.text, { color: "#fff", fontSize: 22 }]}>Name : </Text>
+                                    <Text style={[styles.text, { color: "#fff", fontSize: 22 }]}>First Name : </Text>
                             </View>
                             <TextInput 
                                value={this.state.name}
                                style={{height:35,width:width*0.8,backgroundColor:"#fafafa",marginTop:10,paddingLeft:5}}
                                selectionColor={themeColor}
                                onChangeText ={(name)=>{this.setState({name})}}
+                            />
+
+                        </View>
+                        <View style={{ paddingHorizontal: 20, marginTop: 20 }}>
+                            <View>
+                                <Text style={[styles.text, { color: "#fff", fontSize: 22 }]}>Last Name : </Text>
+                            </View>
+                            <TextInput
+                                value={this.state.lastname}
+                                style={{ height: 35, width: width * 0.8, backgroundColor: "#fafafa", marginTop: 10, paddingLeft: 5 }}
+                                selectionColor={themeColor}
+                                 onChangeText={(lastname) => { this.setState({ lastname }) }}
                             />
 
                         </View>
@@ -124,10 +197,10 @@ componentDidMount(){
                     <TextInput
                         secureTextEntry={true}
                         multiline={true}
-                        value={this.state.confirmPassword}
+                        value={this.state.street}
                         style={{ height: height*0.1, width: width * 0.8, backgroundColor: "#fafafa", marginTop: 10, paddingLeft: 5,textAlignVertical:"top"}}
                         selectionColor={themeColor}
-                        onChangeText={(confirmPassword) => { this.setState({ confirmPassword }) }}
+                        onChangeText={(street) => { this.setState({ street }) }}
                     />
                 </View>
                 <View style={{ paddingHorizontal: 20, marginTop: 20 }}>
