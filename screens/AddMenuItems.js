@@ -65,7 +65,11 @@ class AddMenuItems extends Component {
             day:day[0].label,
             frequency: frequency[0].label,
             days:day,
-            frequencies: frequency
+            frequencies: frequency,
+            itemName:"",
+            dishes:[],
+            selectedDish:null,
+            selectedDishes:[]
         };
     }
     setOpen = (open) => {
@@ -105,6 +109,37 @@ class AddMenuItems extends Component {
         this.setState(state => ({
             frequencies: callback(state.frequencies)
         }));
+    }
+    showSimpleMessage(content, color, type = "info", props = {}) {
+        const message = {
+            message: content,
+            backgroundColor: color,
+            icon: { icon: "auto", position: "left" },
+            type,
+            ...props,
+        };
+
+        showMessage(message);
+    }
+    searchItem = async(text)=>{
+        this.setState({ itemName: text})
+        let api = `${url}/api/drools/items/?search=${text}`
+        let data = await HttpsClient.get(api)
+        if(data.type=="success"){
+            this.setState({dishes:data.data})
+        }
+    }
+    addItems = async()=>{
+        if(this.state.selectedDish == null){
+            return this.showSimpleMessage("Please Add Item","orange","info")
+        }
+        this.state.selectedDishes.push(this.state.selectedDish)
+        this.setState({ selectedDish: null, selectedDishes:this.state.selectedDishes,itemName:""})
+    }
+    removeItem =(item,index) =>{
+        let duplicate = this.state.selectedDishes
+        duplicate.splice(index,1)
+        this.setState({ selectedDishes: duplicate})
     }
     render() {
         const {open,value,}=this.state
@@ -147,13 +182,55 @@ class AddMenuItems extends Component {
                         <View>
                             <Text style={[styles.text, { color: "#000", fontSize: 22 }]}>Add Items : </Text>
                         </View>
-                        <TextInput
-                            value={this.state.name}
-                            style={{ height: 35, width: width * 0.8, backgroundColor: "#fafafa", marginTop: 10, paddingLeft: 5 }}
-                            selectionColor={themeColor}
-                            onChangeText={(name) => { this.setState({ name })}}
-                        />
+                        {
+                            this.state.selectedDishes.map((item,index)=>{
+                                    return(
+                                        <View key={index} style={{alignItems:"center",justifyContent:"center",flexDirection:"row"}}>
+                                            <View>
+                                                <Text style={[styles.text,{color:"#000"}]}>{item.title}</Text>
+                                            </View>
+                                            <TouchableOpacity 
+                                             style={{marginLeft:5}}
+                                             onPress ={()=>{this.removeItem(item,index)}}
+                                            >
+                                                <Entypo name="circle-with-cross" size={24} color="red" />
+                                            </TouchableOpacity>
+                                        </View>
+                                    )
+                            })
+                        }
+                        <View style={{flexDirection:"row"}}>
+                            <TextInput
+                                value={this.state.itemName}
+                                style={{ height: 35, width: width * 0.7, backgroundColor: "#fafafa", marginTop: 10, paddingLeft: 5 }}
+                                selectionColor={themeColor}
+                                onChangeText={(itemName) => { this.searchItem(itemName) }}
+                            />
+                            <TouchableOpacity style={{ height: 35, width: width * 0.2, alignItems: "center", justifyContent: "center", backgroundColor: primaryColor, marginTop: 10,marginLeft:10 }}
+                             onPress ={()=>{this.addItems()}}
+                            >
+                                <Text style={[styles.text,{color:"#fff"}]}>Add</Text>
+                            </TouchableOpacity>
+                        </View>
+                      
                     </View>
+                   {this.state.dishes.length>0&& <View style={{ marginHorizontal: 20, width: width * 0.8, backgroundColor: '#fafafa', borderColor: "#333", borderTopWidth: 0.5}}>
+                        {
+                            this.state.dishes.map((i, index) => {
+                                return (
+                                    <TouchableOpacity
+                                        key={index}
+                                        style={{ padding: 15, justifyContent: "center", width: width * 0.8, borderColor: "#333", borderBottomWidth: 0.3, height: 35 }}
+                                        onPress={() => {
+                                            this.setState({ itemName: i.title, selectedDish: i, dishes:[]})
+                                        }}
+                                    >
+                                        <Text style={[styles.text, { color: themeColor, }]}>{i.title}</Text>
+                                    </TouchableOpacity>
+                                )
+                            })
+                        }
+                    </View>}
                     <View style={{ paddingHorizontal: 20, marginTop: 20,}}>
                         <View>
                             <Text style={[styles.text, { color: "#000", fontSize: 22 }]}>Select Day:</Text>
@@ -181,7 +258,7 @@ class AddMenuItems extends Component {
 
 
                     </View>
-                    <View style={{ width: width * 0.8, marginLeft: 20,  marginTop: 10 }}>
+                    <View style={{ width: width * 0.8, marginLeft: 20, marginTop: 10, height: this.state.open2 ? height * 0.2 : height * 0.08, }}>
                         <DropDownPicker
                             style={{ height: height * 0.05 }}
                             containerStyle={{ height: height * 0.05 }}
