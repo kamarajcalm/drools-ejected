@@ -19,57 +19,14 @@ import Modal from 'react-native-modal';
 import FlashMessage, { showMessage, hideMessage } from "react-native-flash-message";
 import HttpsClient from '../HttpsClient';
 const screenHeight = Dimensions.get("screen").height
-const data = [
-    {
 
-            Morning:"Combo 1",
-            AfterNoon:"Combo 2",
-            Night:"Combo 3",
-            day:"Monday"
-    },
-    {
-        Morning: "Combo 1",
-        AfterNoon: "Combo 2",
-        Night: "Combo 3",
-        day: "Tuesday"
-    },
-    {
-        Morning: "Combo 1",
-        AfterNoon: "Combo 2",
-        Night: "Combo 3",
-        day: "Wednesday"
-    },
-    {
-        Morning: "Combo 1",
-        AfterNoon: "Combo 2",
-        Night: "Combo 3",
-        day: "Thursday"
-    },
-    {
-        Morning: "Combo 1",
-        AfterNoon: "Combo 2",
-        Night: "Combo 3",
-        day: "Friday"
-    },
-    {
-        Morning: "Combo 1",
-        AfterNoon: "Combo 2",
-        Night: "Combo 3",
-        day: "Saturday"
-    },
-    {
-        Morning: "Combo 1",
-        AfterNoon: "Combo 2",
-        Night: "Combo 3",
-        day: "Sunday"
-    },
-]
 class planTimeTable extends Component {
     constructor(props) {
-   
+       let item = props.route.params.item
         super(props);
         this.state = {
-            timeTable:data
+            item,
+            timeTable:[]
         };
     }
     seperator =()=>{
@@ -78,6 +35,21 @@ class planTimeTable extends Component {
 
             </View>
         )
+    }
+    getTimeTable = async() =>{
+       let api =`${url}/api/drools/addTimetable/?plan=${this.state.item.id}`
+       let data = await HttpsClient.get(api)
+       if(data.type ="success"){
+           this.setState({ timeTable:data.data})
+       }
+       
+    }
+    componentDidMount(){
+       this.getTimeTable()   
+    }
+    getDay = (index)=>{
+        let days = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"]
+         return days[index]
     }
     render() {
         return (
@@ -110,76 +82,92 @@ class planTimeTable extends Component {
                          keyExtractor={(item,index)=>index.toString()}
                          renderItem={({item,index})=>{
                              return(
-                                 <View style={{marginVertical:20}}>
-                                      <View style={{alignItems:"center",justifyContent:"center"}}>
-                                          <Text style={[styles.text,{color:"#000",fontSize:22,textDecorationLine:"underline"}]}>{item.day} :</Text>
+                                 <View style={{paddingVertical:20,flexDirection:"row"}}>
+                                      <View style={{alignItems:"center",justifyContent:"center",flex:0.33,borderRightWidth:0.5,borderColor:"#000"}}>
+                                          <Text style={[styles.text,{color:"#000",fontSize:22,}]}>{this.getDay(index)} :</Text>
                                       </View>
+
+                                      <View style={{alignItems:"center",justifyContent:"space-around",flexDirection:"row",flex:0.67}}>
+
+                             
                                                      {/* MORNING */}
-                                    <View style={{flexDirection:"row",alignItems:"center",justifyContent:"space-around",marginTop:20}}>
+                                     {item.MORNING&&    <View style={{flexDirection:"row",alignItems:"center",justifyContent:"space-around",}}>
                                          <View style={{ }}>
                                              <View style={{flexDirection:"row"}}>
-                                                 <View>
-                                                     <Text style={[styles.text,{color:"#000",fontSize:18}]}>Morning : </Text>
-                                                 </View>
-                                                 <View>
-                                                     <Text style={[styles.text, { fontSize: 18}]}>{item.Morning}</Text>
-                                                 </View>
+                                                 <TouchableOpacity 
+                                                     onPress={() => { this.props.navigation.navigate('ViewTimeTable', { frequencyPk: item.MORNING, frequency: "Morning" }) }}
+                                                 >
+                                                         <Text style={[styles.text, { fontSize: 18, textDecorationLine: "underline", color: "#3b9dd6" }]}>Morning</Text>
+                                                 </TouchableOpacity>
+
+                                          
                                              </View>
                                            
-                                             <TouchableOpacity
+                                             {/* <TouchableOpacity
+                                                 onPress={() => { this.props.navigation.navigate("AddCombo", { planPk: this.state.item.id, frequencyPk: item.MORNING }) }}
                                               style={{alignItems:"center",justifyContent:"center"}}
                                              >
                                                  <Entypo name="edit" size={24} color="orange" />
-                                             </TouchableOpacity>
+                                             </TouchableOpacity> */}
                                          </View>
-
+                                
                                     </View>                 
-                                 
+                                 }
                                                     {/* AFTER NOON */}
-                                     <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-around", marginTop: 20 }}>
+                                     {item.AFTERNOON&& <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-around",}}>
                                          <View style={{}}>
                                              <View style={{ flexDirection: "row" }}>
-                                                 <View>
-                                                     <Text style={[styles.text, { color: "#000", fontSize: 18 }]}>AfterNoon : </Text>
-                                                 </View>
-                                                 <View>
-                                                     <Text style={[styles.text, { fontSize: 18 }]}>{item.AfterNoon}</Text>
-                                                 </View>
+                                                 <TouchableOpacity 
+                                                     onPress={() => { this.props.navigation.navigate('ViewTimeTable', { frequencyPk: item.AFTERNOON, frequency: "AfterNoon" }) }}
+                                                 >
+                                                         <Text style={[styles.text, { fontSize: 18, textDecorationLine: "underline", color:"#3b9dd6" }]}>AfterNoon</Text>
+                                                 </TouchableOpacity>
+                                                 {/* <TouchableOpacity 
+                                                     onPress={() => { this.props.navigation.navigate('ViewTimeTable', { frequencyPk: item.AFTERNOON, frequency: "AfterNoon" })}}
+                                                 >
+                                                     <Text style={[styles.text, { fontSize: 18,textDecorationLine:"underline" }]}>View</Text>
+                                                 </TouchableOpacity> */}
                                              </View>
 
-                                             <TouchableOpacity
+                                             {/* <TouchableOpacity
+                                                 onPress={() => { this.props.navigation.navigate("AddCombo", { planPk: this.state.item.id, frequencyPk: item.AFTERNOON  }) }}
                                                  style={{ alignItems: "center", justifyContent: "center" }}
                                              >
                                                  <Entypo name="edit" size={24} color="orange" />
-                                             </TouchableOpacity>
+                                             </TouchableOpacity> */}
                                          </View>
 
-                                     </View>
+                                     </View>}
 
-                                     <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-around", marginTop: 20 }}>
+                                     {item.NIGHT &&  <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-around",  }}>
                                          <View style={{}}>
                                              <View style={{ flexDirection: "row" }}>
-                                                 <View>
-                                                     <Text style={[styles.text, { color: "#000", fontSize: 18 }]}>Night : </Text>
-                                                 </View>
-                                                 <View>
-                                                     <Text style={[styles.text, { fontSize: 18 }]}>{item.AfterNoon}</Text>
-                                                 </View>
+                                                 <TouchableOpacity
+                                                     onPress={() => { this.props.navigation.navigate('ViewTimeTable', { frequencyPk: item.NIGHT, frequency: "Night" }) }}
+                                                 >
+                                                         <Text style={[styles.text, { fontSize: 18, textDecorationLine: "underline", color: "#3b9dd6"}]}>Night</Text>
+                                                 </TouchableOpacity>
+                                               
                                              </View>
 
-                                             <TouchableOpacity
+                                             {/* <TouchableOpacity
+                                                 onPress={() => { this.props.navigation.navigate("AddCombo", { planPk: this.state.item.id, frequencyPk: item.NIGHT })}}
                                                  style={{ alignItems: "center", justifyContent: "center" }}
                                              >
                                                  <Entypo name="edit" size={24} color="orange" />
-                                             </TouchableOpacity>
+                                             </TouchableOpacity> */}
                                          </View>
 
+                                     </View>}
+                                                        
                                      </View>
                                  </View>
                              )
                          }}
                       />
                 </View>
+
+      
             </View>
         );
     }
@@ -187,6 +175,13 @@ class planTimeTable extends Component {
 const styles = StyleSheet.create({
     text: {
         fontFamily
+    },
+    button:{
+        height:height*0.05,
+        width:width*0.3,
+        alignItems:"center",
+        justifyContent:"center",
+        backgroundColor:primaryColor
     }
 })
 const mapStateToProps = (state) => {

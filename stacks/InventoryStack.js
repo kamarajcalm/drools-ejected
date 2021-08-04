@@ -18,6 +18,8 @@ import PlanMenu from '../screens/PlanMenu';
 import AddMenuItems from '../screens/AddMenuItems';
 import PlanUsers from '../screens/PlanUsers';
 import AddUsers from '../screens/AddUsers';
+import AddCombo from '../screens/AddCombo';
+import ViewTimeTable from '../screens/ViewTimeTable';
 const Stack = createStackNavigator();
 export default class InventoryStack extends Component {
     constructor(props) {
@@ -52,6 +54,8 @@ export default class InventoryStack extends Component {
                 <Stack.Screen name="AddMenuItems" component={AddMenuItems} options={{ headerShown:false}}/>
                 <Stack.Screen name="PlanUsers" component={PlanUsers} options={{ headerShown:false}}/>
                 <Stack.Screen name="AddUsers" component={AddUsers} options={{ headerShown:false}}/>
+                <Stack.Screen name="AddCombo" component={AddCombo} options={{ headerShown:false}}/>
+                <Stack.Screen name="ViewTimeTable" component={ViewTimeTable} options={{ headerShown:false}}/>
             </Stack.Navigator>
         );
     }

@@ -85,7 +85,8 @@ class ViewOrders extends Component {
             takeAwayDiscount:"",
             diningDiscount:"",
             oneplus:false,
-            paymentmode:null
+            paymentmode:null,
+            refreshing:false,
         };
     }
     showSimpleMessage(content, color, type = "info", props = {}) {
@@ -206,6 +207,20 @@ class ViewOrders extends Component {
             [BluetoothEscposPrinter.ALIGN.LEFT, BluetoothEscposPrinter.ALIGN.RIGHT],
             ["GRAND TOTAL", `${this.state.item.total_price}`], { fonttype: 0 });
         await BluetoothEscposPrinter.printText("--------------------------------\n\r", {});
+
+        
+        await BluetoothEscposPrinter.printerAlign(BluetoothEscposPrinter.ALIGN.CENTER);
+        await BluetoothEscposPrinter.printText(`PaymentMode:${this.state?.item?.payment_mode}\n\r`, {});
+        let printwidth = [10,22]
+        if (this.state.item.order_type == "TakeAway" ){
+            await BluetoothEscposPrinter.printColumn(printwidth,
+                [BluetoothEscposPrinter.ALIGN.LEFT, BluetoothEscposPrinter.ALIGN.RIGHT],
+                [`Name`, `${this.state.item?.customer_name}`], {});
+            await BluetoothEscposPrinter.printColumn(printwidth,
+                [BluetoothEscposPrinter.ALIGN.LEFT, BluetoothEscposPrinter.ALIGN.RIGHT],
+                [`Mobile`, `${this.state.item?.customer_mobile}`], {});
+        }
+          
         await BluetoothEscposPrinter.printText("\n\r", {});
         await BluetoothEscposPrinter.printerAlign(BluetoothEscposPrinter.ALIGN.CENTER);
         await BluetoothEscposPrinter.printText("THANK YOU\n\r", {
@@ -450,6 +465,9 @@ class ViewOrders extends Component {
             items: callback(state.items)
         }));
     }
+    refresh =()=>{
+        this.getOrders()
+    }
     toggleSwitch =()=>{
         this.props.setOnePlusOne(!this.props.oneplusOne)
     }
@@ -655,6 +673,8 @@ class ViewOrders extends Component {
 
           
                <FlatList 
+                    refreshing={this.state.refreshing}
+                    onRefresh ={()=>{this.refresh()}}
                     style={{marginTop:20}}
                     data={this.state.item.items}
                     keyExtractor ={(item,index)=>index.toString()}

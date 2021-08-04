@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Dimensions, TouchableOpacity, Alert, StyleSheet, FlatList, Image, TextInput, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
+import { View, Text, Dimensions, TouchableOpacity, Alert, StyleSheet, FlatList, Image, TextInput, KeyboardAvoidingView, Platform, ScrollView, ActivityIndicator } from 'react-native';
 const { height, width } = Dimensions.get('window')
 import settings from '../AppSettings'
 import { connect } from 'react-redux';
@@ -60,17 +60,23 @@ class AddMenuItems extends Component {
         super(props);
         this.state = {
             item,
-            open:false,
-            open2:false,
-            day:day[0].label,
-            frequency: frequency[0].label,
-            days:day,
-            frequencies: frequency,
+      
+          
             itemName:"",
             dishes:[],
             selectedDish:null,
-            selectedDishes:[]
+            selectedDishes:[],
+            name:"",
+            edit:false
         };
+    }
+  
+    componentDidMount(){
+        let edit = this.props.route.params.edit
+        let item = this.props.route.params.item
+        if(edit){
+            this.setState({ edit: true, name: item.title,selectedDishes:item.items})
+        }
     }
     setOpen = (open) => {
         this.setState({
@@ -141,8 +147,55 @@ class AddMenuItems extends Component {
         duplicate.splice(index,1)
         this.setState({ selectedDishes: duplicate})
     }
+    editItem = async(item,index)=>{
+        let api = `${url}/api/drools/addMenu/`
+        let sendData = {
+            title: this.state.item.title,
+            removeitem:item.id
+        }
+        let post = await HttpsClient.post(api,sendData)
+        if(post.type =="success"){
+            let duplicate = this.state.selectedDishes
+            duplicate.splice(index, 1)
+            this.setState({ selectedDishes: duplicate })
+            this.showSimpleMessage("Removed SuccessFully","green","success")
+        }else{
+            this.showSimpleMessage("Try Again", "red", "danger")
+        }
+    }
+    create = async()=>{
+        this.setState({creating:true})
+        if(this.state.name==""){
+            this.setState({ creating: false })
+            return this.showSimpleMessage("Please Add  Name", "orange", "info")
+        }
+       if(this.state.selectedDishes.length==0){
+           this.setState({ creating: false })
+           return this.showSimpleMessage("Please Add Items","orange","info")
+       }
+        let api = `${url}/api/drools/addMenu/`
+        let itemadd =[]
+        this.state.selectedDishes.forEach((i)=>{
+          return  itemadd.push(i.id)
+        })
+        let sendData ={
+                title:this.state.name,
+                itemadd
+        }
+        let post = await HttpsClient.post(api,sendData)
+        console.log(post)
+        if(post.type=="success"){
+            this.setState({ creating: false })
+            this.showSimpleMessage("Menu Created Succesfully", "green", "success")
+            return this.props.navigation.goBack()
+        }else{
+            this.setState({ creating: false })
+            return this.showSimpleMessage("Try Again", "red", "danger")
+        }
+    }
+
     render() {
-        const {open,value,}=this.state
+    
         return (
             <View style={{ flex: 1 }}>
                 {/* Headers */}
@@ -171,7 +224,7 @@ class AddMenuItems extends Component {
                             <Text style={[styles.text, { color: "#000", fontSize: 22 }]}>Combo Name : </Text>
                         </View>
                         <TextInput
-
+                            editable={this.state.edit?false:true}
                             value={this.state.name}
                             style={{ height: 35, width: width * 0.8, backgroundColor: "#fafafa", marginTop: 10, paddingLeft: 5 }}
                             selectionColor={themeColor}
@@ -191,7 +244,15 @@ class AddMenuItems extends Component {
                                             </View>
                                             <TouchableOpacity 
                                              style={{marginLeft:5}}
-                                             onPress ={()=>{this.removeItem(item,index)}}
+                                             onPress ={()=>{
+                                              
+                                                 if(this.state.edit){
+                                                     this.editItem(item, index)
+                                                    
+                                                 }else{
+                                                     this.removeItem(item, index)
+                                                 }
+                                             }}
                                             >
                                                 <Entypo name="circle-with-cross" size={24} color="red" />
                                             </TouchableOpacity>
@@ -231,7 +292,7 @@ class AddMenuItems extends Component {
                             })
                         }
                     </View>}
-                    <View style={{ paddingHorizontal: 20, marginTop: 20,}}>
+                    {/* <View style={{ paddingHorizontal: 20, marginTop: 20,}}>
                         <View>
                             <Text style={[styles.text, { color: "#000", fontSize: 22 }]}>Select Day:</Text>
                         </View>
@@ -270,11 +331,21 @@ class AddMenuItems extends Component {
                             setItems={this.setItems2}
                             placeholder="select a Day"
                         />
-                    </View>
+                    </View> */}
                     <View style={{alignItems:"center",justifyContent:"center",marginTop:20}}>
-                        <TouchableOpacity style={{height:height*0.05,width:width*0.4,alignItems:"center",justifyContent:"center",backgroundColor:primaryColor}}>
-                               <Text style={[styles.text,{color:"#fff"}]}>Create</Text>
-                        </TouchableOpacity>
+                        {!this.state.creating?    <TouchableOpacity style={{height:height*0.05,width:width*0.4,alignItems:"center",justifyContent:"center",backgroundColor:primaryColor}}
+                          onPress={()=>{
+                              this.create()
+                           
+                        
+                        }}
+                        >
+                               <Text style={[styles.text,{color:"#fff"}]}>{this.state.edit?"Edit":"Create"}</Text>
+                        </TouchableOpacity>:
+                            <View style={{ height: height * 0.05, width: width * 0.4, alignItems: "center", justifyContent: "center", backgroundColor: primaryColor }}>
+                            <ActivityIndicator  size={"large"} color={"#fff"}/>
+                        </View>
+                        }
                     </View>
                 </ScrollView>
 

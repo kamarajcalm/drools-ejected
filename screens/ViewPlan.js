@@ -63,16 +63,7 @@ const screenHeight = Dimensions.get("screen").height
                       </View>
                        
                   </TouchableOpacity>
-                  <TouchableOpacity 
-                    onPress={() => { this.props.navigation.navigate("PlanMenu",{item:this.state.item })}}
-                  >
-                    <View style={{ alignItems: "center", justifyContent: "center" }}>
-                        <MaterialIcons name="restaurant-menu" size={24} color={primaryColor} />
-                    </View>
-                    <View style={{ alignItems: "center", justifyContent: "center" }}>
-                        <Text style={[styles.text, { color: "#000", fontSize: 22 }]}>Menu</Text>
-                    </View>
-                  </TouchableOpacity>
+               
                 <TouchableOpacity 
                     onPress={() => { this.props.navigation.navigate("PlanUsers",{item:this.state.item})}}
                 >

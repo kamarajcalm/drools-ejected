@@ -33,6 +33,7 @@ class SeacrchDishes extends Component {
     searchDishes =async(text)=>{
         this.setState({ selectedCategory:null})
         let api = `${url}/api/drools/items/?search=${text}`
+        console.log(api)
         let data =await HttpsClient.get(api)
      
         if(data.type =="success"){
@@ -55,7 +56,7 @@ class SeacrchDishes extends Component {
     getItems = async () => {
         let api = `${url}/api/drools/items/?category=${this.state.selectedCategory.id}`
         let data = await HttpsClient.get(api)
-      
+    
         if (data.type == "success") {
             data.data.forEach((i) => {
                 i.selected = false

@@ -91,7 +91,7 @@ export default class SubscriptionPlans extends Component {
             this.setState({ creating: false })
             return this.showSimpleMessage("Please fill Price", "orange", "info")
         }
-        let api = `${url}/api/drools/droolsplans/`
+        let api = `${url}/api/drools/createPlan/`
         let sendData ={
             title:this.state.name,
             price:this.state.price,
@@ -319,13 +319,22 @@ export default class SubscriptionPlans extends Component {
                     right: 20,
                     flex: 1,
                     alignItems: "center",
-                    justifyContent: "center",
-                    borderRadius: 20
+                    justifyContent: "space-around",
+                    borderRadius: 20,
+                    flexDirection:"row"
                 }}>
                     <TouchableOpacity
                         onPress={() => { this.setState({modal:true,edit:false}) }}
                     >
                         <AntDesign name="pluscircle" size={40} color={primaryColor} />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        onPress={() => { this.props.navigation.navigate("PlanMenu",)}}
+                    >
+                        <View style={{ alignItems: "center", justifyContent: "center" }}>
+                            <MaterialIcons name="restaurant-menu" size={40} color={primaryColor} />
+                        </View>
+                      
                     </TouchableOpacity>
                 </View>
                 {
