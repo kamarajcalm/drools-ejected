@@ -28,3 +28,9 @@ export const selectUser = (user) => {
         payload: user
     }
 }
+export const setShowIncome = (bool) => {
+    return {
+        type: 'SHOW_INCOME',
+        payload: bool
+    }
+}

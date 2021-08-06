@@ -3,13 +3,14 @@ import { View, Text, Dimensions, TouchableOpacity, StyleSheet, FlatList, Image }
 const { height, width } = Dimensions.get('window')
 import settings from '../AppSettings'
 import { connect } from 'react-redux';
-import { selectTheme ,setTodayIncome} from '../actions';
+import { selectTheme ,setTodayIncome,setShowIncome} from '../actions';
 const gradients = settings.gradients
 const primaryColor = settings.primaryColor
 const secondaryColor = settings.secondaryColor
 const fontFamily = settings.fontFamily
 const themeColor = settings.themeColor
 const url =settings.url
+const screenHeight = Dimensions.get("screen").height
 import { StatusBar, } from 'expo-status-bar';
 import { LinearGradient } from 'expo-linear-gradient';
 import Constants from 'expo-constants';
@@ -17,6 +18,7 @@ import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
 import orders from '../data/orders'
 import { FontAwesome, AntDesign, MaterialCommunityIcons, MaterialIcons, SimpleLineIcons, Entypo, Fontisto, Feather, Ionicons, FontAwesome5 } from '@expo/vector-icons';
 import HttpsClient from '../HttpsClient';
+import Modal from 'react-native-modal';
 import moment from 'moment';
 
  class NormalOrders extends Component {
@@ -25,7 +27,8 @@ import moment from 'moment';
     super(props);
     this.state = {
         orders:[],
-        refreshing:false
+        refreshing:false,
+        modal:false
     };
   }
      getOrders = async()=>{
@@ -70,23 +73,30 @@ import moment from 'moment';
          }
          return "orange"
      }
+     refresh =()=>{
+        this.getOrders();
+        this.getIncome();
+     }
+
   render() {
     return (
       <View style={{flex:1}}>
-            <LinearGradient
+         {this.props.user.is_manager&&<LinearGradient
                 style={{ height: height * 0.05, flexDirection: "row", alignItems: "center", justifyContent: "center" }}
                 colors={gradients}
             >
-                <View style={{ flex: 1, flexDirection: "row",alignItems:"center",justifyContent:"center" }}>
+                <TouchableOpacity style={{ flex: 1, flexDirection: "row",alignItems:"center",justifyContent:"center" }}
+                    onPress={() => { this.props.setShowIncome(true)}}
+                >
                     <View>
                         <Text style={[styles.text, { color: "#fff", fontSize: 20 }]}>Today Income: ₹ {this.props.todayIncome}</Text>
                     </View>
-                </View>
-            </LinearGradient>
+                </TouchableOpacity>
+            </LinearGradient>}
             <FlatList
 
                         refreshing={this.state.refreshing}
-                        onRefresh={()=>{this.getOrders()}}
+                        onRefresh={()=>{this.refresh()}}
                         style={{backgroundColor:"#333"}}
                         data={this.state.orders}
                         keyExtractor={(item, index) => index.toString()}
@@ -156,6 +166,8 @@ import moment from 'moment';
                     <AntDesign name="pluscircle" size={40} color={primaryColor} />
                 </TouchableOpacity>
             </View>
+
+    
       </View>
     );
   }
@@ -169,7 +181,8 @@ const mapStateToProps = (state) => {
 
     return {
         theme: state.selectedTheme,
-        todayIncome:state.todayIncome
+        todayIncome:state.todayIncome,
+        user:state.selectedUser
     }
 }
-export default connect(mapStateToProps, { selectTheme, setTodayIncome })(NormalOrders);
+export default connect(mapStateToProps, { selectTheme, setTodayIncome, setShowIncome })(NormalOrders);

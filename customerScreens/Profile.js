@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Dimensions, TouchableOpacity, StyleSheet, FlatList, Image, Alert, AsyncStorage } from 'react-native';
+import { View, Text, Dimensions, TouchableOpacity, StyleSheet, FlatList, Image, Alert, AsyncStorage} from 'react-native';
 const { height, width } = Dimensions.get('window')
 import settings from '../AppSettings'
 import { connect } from 'react-redux';
@@ -35,6 +35,20 @@ class Profile extends Component {
         ],
       })
     )
+  }
+  createAlert = (item, index) => {
+    Alert.alert(
+      `Do You Want To Logout`,
+      ``,
+      [
+        {
+          text: "No",
+          onPress: () => console.log("Cancel Pressed"),
+          style: "cancel"
+        },
+        { text: "Yes", onPress: () => { this.logOut() } }
+      ]
+    );
   }
   render() {
     return (

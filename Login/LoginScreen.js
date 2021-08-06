@@ -165,7 +165,7 @@ class LoginScreen extends Component {
                             style={{ height:38, width: width * 0.9, backgroundColor: "#eee", borderRadius: 5, paddingLeft: 10 }}
                             placeholder={"Password"}
                             textContentType={"password"}
-                            secureTextEntry={true}
+                            secureTextEntry={false}
                             selectionColor={themeColor}
                             value={this.state.password}
                             onChangeText={(password) => {this.setState({ password })}}

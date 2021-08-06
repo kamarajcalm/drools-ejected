@@ -3,7 +3,7 @@ import { View, Text, Dimensions, TouchableOpacity, StyleSheet,FlatList,Image,Act
 const { height, width } = Dimensions.get('window')
 import settings from '../AppSettings'
 import { connect } from 'react-redux';
-import { selectTheme } from '../actions';
+import { selectTheme ,setTodayIncome,setShowIncome} from '../actions';
 const gradients = settings.gradients
 const primaryColor = settings.primaryColor
 const secondaryColor = settings.secondaryColor
@@ -31,6 +31,7 @@ class History extends Component {
             first:true
         };
     }
+
     showSimpleMessage(content, color, type = "info", props = {}) {
         const message = {
             message: content,
@@ -65,12 +66,23 @@ class History extends Component {
             this.setState({refreshing:false})
         }
     }
+    getIncome = async()=>{
+        let api = `${url}/api/drools/netIncome/`
+        let data = await HttpsClient.get(api)
+        if(data.type =="success"){
+            this.props.setTodayIncome(data.data.today_income)
+        }
+
+    }
     componentDidMount() {
+     
         this.getOrders()
+        this.getIncome()
         this._unsubscribe = this.props.navigation.addListener('focus', () => {
             if(!this.state.first){
                 this.setState({ orders: [], offset: 0, loadmore: true }, () => {
                     this.getOrders()
+                    this.getIncome()
                 })
             }
         });
@@ -136,15 +148,17 @@ class History extends Component {
      
         return (
            <View style={{flex:1,backgroundColor:themeColor}}>
-                <LinearGradient
+            <LinearGradient
                     style={{ height: height * 0.05, flexDirection: "row", alignItems: "center", justifyContent: "center" }}
                     colors={gradients}
                 >
-                    <View style={{ flex: 1, flexDirection: "row" }}>
+                    <TouchableOpacity style={{ flex: 1, flexDirection: "row" }}
+                        onPress={() => { this.props.setShowIncome(true) }}
+                    >
                        
                         <View style={{ flex: 0.7, alignItems: "center", justifyContent: "center" }}>
                           
-                            <Text style={[styles.text, { color: "#fff", fontSize: 20 }]}>Today Income: ₹ {this.props.todayIncome}</Text>
+                          {this.props.user.is_manager&&  <Text style={[styles.text, { color: "#fff", fontSize: 20 }]}>Today Income: ₹ {this.props.todayIncome}</Text>}
                         </View>
                         <TouchableOpacity style={{ flex: 0.3, alignItems: "center", justifyContent: "space-around" ,flexDirection:"row"}}
                          onPress ={()=>{this.setState({show:true})}}
@@ -154,14 +168,15 @@ class History extends Component {
                         </View>
                             <Fontisto name="date" size={24} color="#fff" />
                         </TouchableOpacity>
-                    </View>
+                    </TouchableOpacity>
                 </LinearGradient>
                 <FlatList
                     bounces={false}
                     ListFooterComponent={this.footer()}
                     refreshing={this.state.refreshing}
                     onRefresh={()=>{this.setState({orders:[],offset:0,loadmore:true},()=>{
-                        this.getOrders()
+                        this.getOrders();
+                        this.getIncome();
                     })}}
                     style={{ backgroundColor: "#333" }}
                     data={this.state.orders}
@@ -206,14 +221,14 @@ class History extends Component {
                                         </View>
                                     </View>
                                 </View>
-                                <View style={{position:"absolute",top:10,right:10}}>
+                            {this.props.user.is_manager&&<View style={{position:"absolute",top:10,right:10}}>
                                     <TouchableOpacity 
                                       onPress={()=>{this.createAlert(item,index)}}
                                     >
                                         <MaterialIcons name="delete" size={24} color="red"/>
                                     </TouchableOpacity>
                               
-                                </View>
+                                </View>}
                             </TouchableOpacity>
                         )
                     }}
@@ -237,7 +252,8 @@ const mapStateToProps = (state) => {
 
     return {
         theme: state.selectedTheme,
-        todayIncome: state.todayIncome
+        todayIncome: state.todayIncome,
+        user:state.selectedUser
     }
 }
-export default connect(mapStateToProps, { selectTheme })(History);
+export default connect(mapStateToProps, { selectTheme, setTodayIncome, setShowIncome})(History);

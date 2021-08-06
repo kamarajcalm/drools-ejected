@@ -3,7 +3,7 @@ import { View, Text, Dimensions, TouchableOpacity, StyleSheet, FlatList, Image }
 const { height, width } = Dimensions.get('window')
 import settings from '../AppSettings'
 import { connect } from 'react-redux';
-import { selectTheme } from '../actions';
+import { selectTheme, setTodayIncome, setShowIncome} from '../actions';
 const gradients = settings.gradients
 const primaryColor = settings.primaryColor
 const secondaryColor = settings.secondaryColor
@@ -40,11 +40,20 @@ class TakeAway extends Component {
             this.setState({refreshing:false})
         }
     }
+    getIncome = async()=>{
+        let api = `${url}/api/drools/netIncome/`
+        let data = await HttpsClient.get(api)
+        if(data.type =="success"){
+            this.props.setTodayIncome(data.data.today_income)
+        }
+
+    }
     componentDidMount() {
         this.getOrders()
+        this.getIncome()
         this._unsubscribe = this.props.navigation.addListener('focus', () => {
             this.getOrders()
-
+            this.getIncome()
         });
     }
     componentWillUnmount() {
@@ -55,23 +64,29 @@ class TakeAway extends Component {
             return "orange"
         }
     }
+    refresh =()=>{
+        this.getOrders();
+        this.getIncome()
+    }
     render() {
         
         return (
             <View style={{ flex: 1 }}>
-                <LinearGradient
+              {this.props.user.is_manager&& <LinearGradient
                     style={{ height: height * 0.05, flexDirection: "row", alignItems: "center", justifyContent: "center" }}
                     colors={gradients}
                 >
-                    <View style={{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "center" }}>
+                    <TouchableOpacity style={{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "center" }}
+                        onPress={() => { this.props.setShowIncome(true) }}
+                    >
                         <View>
                             <Text style={[styles.text, { color: "#fff", fontSize: 20 }]}>Today Income: ₹ {this.props.todayIncome}</Text>
                         </View>
-                    </View>
-                </LinearGradient>
+                    </TouchableOpacity>
+                </LinearGradient>}
                 <FlatList
                      refreshing={this.state.refreshing}
-                     onRefresh={()=>{this.getOrders()}}
+                     onRefresh={()=>{this.refresh()}}
                     style={{ backgroundColor: "#333" }}
                     data={this.state.orders}
                     keyExtractor={(item, index) => index.toString()}
@@ -155,7 +170,8 @@ const mapStateToProps = (state) => {
 
     return {
         theme: state.selectedTheme,
-        todayIncome: state.todayIncome
+        todayIncome: state.todayIncome,
+        user:state.selectedUser
     }
 }
-export default connect(mapStateToProps, { selectTheme })(TakeAway);
+export default connect(mapStateToProps, { selectTheme, setTodayIncome, setShowIncome})(TakeAway);
