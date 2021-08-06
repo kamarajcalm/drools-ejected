@@ -63,7 +63,7 @@ export default class SubscriptionPlans extends Component {
     componentDidMount() {
           this.getPlans()
         this._unsubscribe = this.props.navigation.addListener('focus', () => {
-           
+            this.getPlans()
 
         });
     }

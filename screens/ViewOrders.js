@@ -164,35 +164,37 @@ class ViewOrders extends Component {
             [`BILLNO:${this.state.item.id}`, `DATE:${moment(new Date()).format("DD/MM/YYYY")}`], { fonttype: 0 });
         await BluetoothEscposPrinter.printText("\n\r", {});
         await BluetoothEscposPrinter.printText("--------------------------------\n\r", {});
-        let columnWidts = [10, 6, 8, 8]
+        let columnWidts = [16, 6, 5, 5]
         await BluetoothEscposPrinter.printColumn(columnWidts,
             [BluetoothEscposPrinter.ALIGN.LEFT, BluetoothEscposPrinter.ALIGN.CENTER, BluetoothEscposPrinter.ALIGN.CENTER, BluetoothEscposPrinter.ALIGN.RIGHT],
-            ["ITEM", 'QTY', 'Price', 'Amt'], {});
+            ["ITEM", 'PRICE', 'QTY', 'AMT'], {});
         await BluetoothEscposPrinter.printText("--------------------------------\n\r", {});
         this.state.item.items.forEach(async (i) => {
-            let columnWidth = [10, 6, 8, 8]
+            let columnWidth = [16, 6, 5, 5]
             await BluetoothEscposPrinter.printColumn(columnWidth,
                 [BluetoothEscposPrinter.ALIGN.LEFT, BluetoothEscposPrinter.ALIGN.CENTER, BluetoothEscposPrinter.ALIGN.CENTER, BluetoothEscposPrinter.ALIGN.RIGHT],
-                [`${i.itemTitle}`, `${i.quantity}`, `${i.item_price}`, `${i.total_price - Math.ceil((i.total_price*5)/100)}`], {});
+                [`${i.itemTitle}`, `${i.item_price - Math.ceil((i.item_price * 5) / 100)}`, `${i.quantity}`, `${(i.item_price - Math.ceil((i.item_price * 5) / 100)) * i.quantity}`], {});
         })
         let columnWidth0 = [9, 12, 11]
         await BluetoothEscposPrinter.printText("--------------------------------\n\r", {});
-        let columnWidth4 = [10, 6, 8, 8]
+        let columnWidth4 = [16, 6, 5, 5]
         await BluetoothEscposPrinter.printColumn(columnWidth4,
             [BluetoothEscposPrinter.ALIGN.LEFT, BluetoothEscposPrinter.ALIGN.CENTER, BluetoothEscposPrinter.ALIGN.CENTER, BluetoothEscposPrinter.ALIGN.RIGHT],
-            ["TOTAL", `${this.getSubtotal()}`, '', `${this.state.item.cart_bill}`], {});
-        await BluetoothEscposPrinter.printText("--------------------------------\n\r", {});
-
-
-
-
+            ["TOTAL", ``, `${this.getSubtotal()}`, `${this.state.item.cart_bill}`], {});
 
         // await BluetoothEscposPrinter.printColumn(columnWidth0,
         //     [BluetoothEscposPrinter.ALIGN.LEFT, BluetoothEscposPrinter.ALIGN.CENTER, BluetoothEscposPrinter.ALIGN.RIGHT],
         //     [``, `CGST @2.50%`, ` + ${Math.floor(this.state.item.gst/2)}`], {});
         await BluetoothEscposPrinter.printColumn(columnWidth0,
             [BluetoothEscposPrinter.ALIGN.LEFT, BluetoothEscposPrinter.ALIGN.CENTER, BluetoothEscposPrinter.ALIGN.RIGHT],
-            [``, `GST`, ` + ${this.state.item.gst}`], {});
+            [``, `CGST @2.50%`, ` + ${(this.state.item.gst) / 2}`], {});
+        await BluetoothEscposPrinter.printColumn(columnWidth0,
+            [BluetoothEscposPrinter.ALIGN.LEFT, BluetoothEscposPrinter.ALIGN.CENTER, BluetoothEscposPrinter.ALIGN.RIGHT],
+            [``, `SGST @2.50%`, ` + ${(this.state.item.gst) / 2}`], {});
+        await BluetoothEscposPrinter.printText("--------------------------------\n\r", {});
+        await BluetoothEscposPrinter.printColumn(columnWidth0,
+            [BluetoothEscposPrinter.ALIGN.LEFT, BluetoothEscposPrinter.ALIGN.CENTER, BluetoothEscposPrinter.ALIGN.RIGHT],
+            [``, ``, `${(this.state.item.cart_bill + this.state.item.gst)}`], {});
         if (this.state.item.oneplusone) {
             await BluetoothEscposPrinter.printColumn(columnWidth0,
                 [BluetoothEscposPrinter.ALIGN.LEFT, BluetoothEscposPrinter.ALIGN.CENTER, BluetoothEscposPrinter.ALIGN.RIGHT],
@@ -208,19 +210,28 @@ class ViewOrders extends Component {
             ["GRAND TOTAL", `${this.state.item.total_price}`], { fonttype: 0 });
         await BluetoothEscposPrinter.printText("--------------------------------\n\r", {});
 
-        
+
         await BluetoothEscposPrinter.printerAlign(BluetoothEscposPrinter.ALIGN.CENTER);
         await BluetoothEscposPrinter.printText(`PaymentMode:${this.state?.item?.payment_mode}\n\r`, {});
-        let printwidth = [10,22]
-        if (this.state.item.order_type == "TakeAway" ){
+        let printwidth = [10, 22]
+        if (this.state.item.order_type == "Takeaway") {
             await BluetoothEscposPrinter.printColumn(printwidth,
                 [BluetoothEscposPrinter.ALIGN.LEFT, BluetoothEscposPrinter.ALIGN.RIGHT],
-                [`Name`, `${this.state.item?.customer_name}`], {});
+                [`Name :`, `${this.state.item?.customer_name}`], {});
             await BluetoothEscposPrinter.printColumn(printwidth,
                 [BluetoothEscposPrinter.ALIGN.LEFT, BluetoothEscposPrinter.ALIGN.RIGHT],
-                [`Mobile`, `${this.state.item?.customer_mobile}`], {});
+                [`Mobile :`, `${this.state.item?.customer_mobile}`], {});
+            await BluetoothEscposPrinter.printerAlign(BluetoothEscposPrinter.ALIGN.CENTER);
+            await BluetoothEscposPrinter.printText("ADDRESS:\n\r", {
+                encoding: 'GBK',
+                codepage: 0,
+                widthtimes: 0,
+                heigthtimes: 0,
+                fonttype: 1,
+            });
+            await BluetoothEscposPrinter.printText(`${this.state.item.customer_address}`, {});
         }
-          
+
         await BluetoothEscposPrinter.printText("\n\r", {});
         await BluetoothEscposPrinter.printerAlign(BluetoothEscposPrinter.ALIGN.CENTER);
         await BluetoothEscposPrinter.printText("THANK YOU\n\r", {
@@ -383,26 +394,41 @@ class ViewOrders extends Component {
                 </View>}
                 {
                     this.state.item.order_type =="Takeaway"&&
+                    <View>
+
+            
                     <View style={{ flexDirection: "row", height: height * 0.06, margin: 20 }}>
                         <View style={{ flex: 0.2 }}>
 
                         </View>
-                        <View style={{ flex: 0.6, alignItems: "center", justifyContent: "center" }}>
+                        <View style={{ flex: 0.4, alignItems: "center", justifyContent: "center" }}>
                             <View style={{ alignSelf: "flex-end", marginRight: 20 }}>
                                 <Text style={[styles.text, { color: "#fff", fontSize: 22, }]}>Name :</Text>
                             </View>
                             <View style={{ alignSelf: "flex-end", marginRight: 20 }}>
                                 <Text style={[styles.text, { color: "#fff", fontSize: 22, }]}>Mobile :</Text>
                             </View>
-                            <View style={{ alignSelf: "flex-end", marginRight: 20 }}>
-                                <Text style={[styles.text, { color: "#fff", fontSize: 22, }]}>Address :</Text>
-                            </View>
+                           
                         </View>
-                        <View style={{ flex: 0.2, alignItems: "center", justifyContent: "center" }}>
-                            <Text style={[styles.text, { color: primaryColor, fontSize: 25 }]}> {this.state.item.customer_name}</Text>
-                            <Text style={[styles.text, { color: primaryColor, fontSize: 25 }]}> {this.state.item.customer_address}</Text>
+                        <View style={{ flex: 0.4, alignItems: "center", justifyContent: "center" }}>
+                            <View>
+                                <Text style={[styles.text, { color: primaryColor, fontSize: 22 }]}> {this.state.item.customer_name}</Text>
+                            </View>
+                            <View>
+                                <Text style={[styles.text, { color: primaryColor, fontSize: 22 }]}> {this.state.item.customer_mobile}</Text>
+                            </View>
+                            
                   
                         </View>
+                    </View>
+                    <View>
+                        <View style={{alignItems:"center",justifyContent:"center"}}>
+                                <Text style={[styles.text,{color:primaryColor,fontSize:22,textDecorationLine:"underline"}]}>Address:</Text>
+                        </View>
+                        <View style={{marginVertical:10,paddingHorizontal:10}}>
+                                <Text style={[styles.text,{color:"#fff",fontSize:22}]}>{this.state.item.customer_address}</Text>
+                        </View>
+                    </View>
                     </View>
                 }
             </View>

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Dimensions, TouchableOpacity, StyleSheet, FlatList, Image, TextInput, ScrollView } from 'react-native';
+import { View, Text, Dimensions, TouchableOpacity, StyleSheet, FlatList, Image, TextInput, ScrollView, ActivityIndicator } from 'react-native';
 const { height, width } = Dimensions.get('window')
 import settings from '../AppSettings'
 import { connect } from 'react-redux';
@@ -177,7 +177,7 @@ class SearchDishes2 extends Component {
 
     }
     addItems = async () => {
-    
+            this.setState({creating:true})
             let api = `${url}/api/drools/addCart/`
             let sendData = {
                 items: this.state.selectedItems,
@@ -187,8 +187,12 @@ class SearchDishes2 extends Component {
       
             let post = await HttpsClient.post(api, sendData)
             if (post.type == "success") {
+                this.setState({ creating: false })
                 this.showSimpleMessage("Item Added successFully","green","success")
-                this.props.navigation.goBack()
+               return this.props.navigation.goBack()
+            }else{
+                this.setState({ creating: false })
+                this.showSimpleMessage("Try Again", "red", "danger")
             }
 
      
@@ -443,14 +447,21 @@ class SearchDishes2 extends Component {
                     >
                         <Text style={[styles.text, { color: "#fff", }]}>Selected ({this.state.selectedItems.length})</Text>
                     </View>
-                 {this.state.selectedItems.length>0&&   <TouchableOpacity
-                        style={{ height: height * 0.05, width: width * 0.3, backgroundColor: primaryColor, alignItems: "center", justifyContent: "center" }}
-                        onPress={() => {
-                          this.addItems()
-                        }}
-                    >
-                        <Text style={[styles.text, { color: "#fff", }]}>Proceed</Text>
-                    </TouchableOpacity>}
+                 {this.state.selectedItems.length>0&&<View>
+                     {!this.state.creating?   <TouchableOpacity
+                            style={{ height: height * 0.05, width: width * 0.3, backgroundColor: primaryColor, alignItems: "center", justifyContent: "center" }}
+                            onPress={() => {
+                                this.addItems()
+                            }}
+                        >
+                            <Text style={[styles.text, { color: "#fff", }]}>Proceed</Text>
+                        </TouchableOpacity>:
+                            <View style={{ height: height * 0.05, width: width * 0.3, backgroundColor: primaryColor, alignItems: "center", justifyContent: "center" }}>
+                              <ActivityIndicator  size={"large"} color={"#fff"}/>
+                        </View>
+                        }
+
+                 </View>}
                 </View>
                 
             </View>

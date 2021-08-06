@@ -30,16 +30,60 @@ class ViewTimeTable extends Component {
             data:null
         };
     }
+    showSimpleMessage(content, color, type = "info", props = {}) {
+        const message = {
+            message: content,
+            backgroundColor: color,
+            icon: { icon: "auto", position: "left" },
+            type,
+            ...props,
+        };
+
+        showMessage(message);
+    }
     getTimeTable = async()=>{
         let api = `${url}/api/drools/plantimetable/${this.state.frequencyPk}/`
         let data = await HttpsClient.get(api)
+        console.log(api)
         if(data.type =="success"){
             this.setState({ data:data.data})
         }
     }
    componentDidMount(){
        this.getTimeTable()
+       this._unsubscribe = this.props.navigation.addListener('focus', () => {
+           this.getTimeTable()
+       });
    }
+    deleteItem = async(item,index)=>{
+        let api = `${url}/api/drools/addTimetable/`
+        let sendData = {
+            edit: true,
+            timetable: this.state.frequencyPk,
+            removeitem:item.id
+        }
+        let post = await HttpsClient.post(api,sendData) 
+        if(post.type=="success"){
+            this.getTimeTable()
+            return this.showSimpleMessage("Deleted SuccessFully","green","success")
+        }else{
+            return this.showSimpleMessage("Try Again", "red", "danger")
+        }
+    }
+    createAlert = (item, index) => {
+        Alert.alert(
+            "Do you want to delete?",
+            ``,
+            [
+                {
+                    text: "No",
+                    onPress: () => console.log("Cancel Pressed"),
+                    style: "cancel"
+                },
+                { text: "Yes", onPress: () => { this.deleteItem(item, index) } }
+            ]
+        );
+    }
     render() {
         return (
             <View style={{ flex: 1 }}>
@@ -77,10 +121,10 @@ class ViewTimeTable extends Component {
                                 return(
                                     <View key={index} style={{alignItems:"center",justifyContent:"center",flexDirection:"row"}}>
                                         <View>
-                                            <Text>{index+1} .</Text>
+                                            <Text style={[styles.text,{color:"#000"}]}>{index+1} .</Text>
                                         </View>
                                         <View>
-                                            <Text> {item.title}</Text>
+                                            <Text style={[styles.text,{color:primaryColor}]}> {item.title}</Text>
                                         </View>
                                   
                                     </View>
@@ -94,7 +138,7 @@ class ViewTimeTable extends Component {
                     </View>
                     {this.state?.data?.choices?.map((item,index)=>{
                         return(
-                            <View>
+                            <View key={index}>
                                 <View style={{ marginTop: 10, alignItems: "center", justifyContent: "center", flexDirection: "row" }}>
                                     <Text style={[styles.text, { color: "#000", fontSize: 20 }]}>Combo Name : </Text>
                                     <Text style={[styles.text, { color: "#000", fontSize: 20 }]}>{item.title}</Text>
@@ -104,26 +148,31 @@ class ViewTimeTable extends Component {
                                         return (
                                             <View key={index} style={{ alignItems: "center", justifyContent: "center", flexDirection: "row" }}>
                                                 <View>
-                                                    <Text style={[styles.text,{color:"#000"}]}>{index + 1} .</Text>
+                                                    <Text style={[styles.text,{color:'#000'}]}>{index + 1} .</Text>
                                                 </View>
                                                 <View>
-                                                    <Text style={[styles.text, { color: "#000" }]}> {item.title}</Text>
+                                                    <Text style={[styles.text, { color: primaryColor }]}> {item.title}</Text>
                                                 </View>
 
                                             </View>
                                         )
                                     })
                                 }
+                                <TouchableOpacity style={{position:"absolute",top:10,right:20}}
+                                  onPress={()=>{this.createAlert(item,index)}}
+                                >
+                                    <Entypo name="circle-with-cross" size={24} color="black" />
+                                </TouchableOpacity>
                             </View>
                         )
                     })}
                 </View>
                   <View style={{alignItems:"center",justifyContent:"center",marginVertical:15}}>
                 <TouchableOpacity
-                        onPress={() => { this.props.navigation.navigate("AddCombo", { planPk: this.state.item.id, frequencyPk: item.MORNING }) }}
+                        onPress={() => { this.props.navigation.navigate("AddCombo", {  frequencyPk: this.state.frequencyPk,data:this.state.data}) }}
                        style={{alignItems:"center",justifyContent:"center",height:height*0.05,width:width*0.3,backgroundColor:primaryColor}}
                  >
-                    <Text style={[styles.text,{color:"#fff"}]}>Edit</Text>
+                    <Text style={[styles.text,{color:"#fff"}]}>Add</Text>
                 </TouchableOpacity>
                   </View>
             </View>

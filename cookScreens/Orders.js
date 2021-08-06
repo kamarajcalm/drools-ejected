@@ -335,17 +335,20 @@ const screenHeight = Dimensions.get('screen').height
                                           
                                         </View>
                                     </View>
-                                    <View style={{flexDirection:"row",alignItems:"center",justifyContent:"center"}}>
-                                        <Text style={[styles.text,{color:"#fff"}]}>Table : </Text>
-                                        {
-                                            item.objs.map((item, index) => {
-                                                return (
-                                                    <Text key={index} style={[styles.text,{color:"#fff"}]}>
-                                                        {item.tableTitle},
-                                                    </Text>
-                                                )
-                                            })
-                                        }
+                                    <View style={{flexDirection:"row",alignItems:"center",justifyContent:"space-between"}}>
+                                        <View style={{flexDirection:"row"}}>
+                                            <Text style={[styles.text, { color: "#fff" }]}>Table : </Text>
+                                            {
+                                                item.objs.map((item, index) => {
+                                                    return (
+                                                        <Text key={index} style={[styles.text, { color: "#fff" }]}>
+                                                            {item.tableTitle},
+                                                        </Text>
+                                                    )
+                                                })
+                                            }
+                                        </View>
+                                    
                                     </View>
                            
                                </TouchableOpacity>

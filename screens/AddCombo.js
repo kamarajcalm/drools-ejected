@@ -171,7 +171,12 @@ class AddCombo extends Component {
         showMessage(message);
     }
     create = async()=>{
-    //    this.setState({creating:true})
+        this.setState({creating:true})
+        if(this.state.defaultDish==null){
+            this.setState({ creating: false })
+            return this.showSimpleMessage("Please Add Default Dish","orange","info")
+        }
+   
         let api = `${url}/api/drools/addTimetable/`
         let choices = []
         this.state.choices.forEach((i)=>{
@@ -186,7 +191,23 @@ class AddCombo extends Component {
         }
   
         let post = await HttpsClient.post(api,sendData)
-        console.log(post)
+    if(post.type =="success"){
+        this.setState({ creating: false })
+        this.showSimpleMessage("Added SuccessFully","green","success")
+        return this.props.navigation.goBack()
+    }else{
+        this.setState({ creating: false })
+        this.showSimpleMessage("Try Again", "red", "danger")
+    }
+    }
+    componentDidMount(){
+        let data = this.props.route.params.data
+        if (data.default){
+            this.setState({ defaultDish: data.default, defaultName: data.default.title})
+        }
+        if (data.choices.length>0){
+            this.setState({ choices:data.choices})
+        }
     }
   render() {
       const { open, value, } = this.state

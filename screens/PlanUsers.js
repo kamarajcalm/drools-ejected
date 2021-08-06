@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Dimensions, TouchableOpacity, Alert, StyleSheet, FlatList, Image, TextInput, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
+import { View, Text, Dimensions, TouchableOpacity, Alert, StyleSheet, FlatList, Image, TextInput, KeyboardAvoidingView, Platform, ScrollView ,Switch} from 'react-native';
 const { height, width } = Dimensions.get('window')
 import settings from '../AppSettings'
 import { connect } from 'react-redux';
@@ -36,6 +36,17 @@ class PlanUsers extends Component {
             this.setState({ users:data.data})
         }
     }
+    showSimpleMessage(content, color, type = "info", props = {}) {
+        const message = {
+            message: content,
+            backgroundColor: color,
+            icon: { icon: "auto", position: "left" },
+            type,
+            ...props,
+        };
+
+        showMessage(message);
+    }
  componentDidMount(){
      this.getUsers()
  }
@@ -53,6 +64,36 @@ class PlanUsers extends Component {
                   </View>
             </View>
         )
+    }
+    toggleActivate = async(item,index) =>{
+        let api = `${url}/api/drools/planmembers/${item.id}/`
+        let sendData = {
+            active:!item.active
+        }
+        let post = await HttpsClient.patch(api,sendData)
+        if(post.type=="success"){
+            let duplicate = this.state.users
+            duplicate[index].active = !duplicate[index].active
+            this.setState({ users:duplicate})
+          return  this.showSimpleMessage("Edited SuccessFully","green","success")
+
+        }else{
+            this.showSimpleMessage("Try Again", "red", "danger")
+        }
+    }
+    createAlert = (item, index) => {
+        Alert.alert(
+            `Do you want to ${item.active?"De-Activate":"Activate"}?`,
+            ``,
+            [
+                {
+                    text: "No",
+                    onPress: () => console.log("Cancel Pressed"),
+                    style: "cancel"
+                },
+                { text: "Yes", onPress: () => { this.toggleActivate(item, index) } }
+            ]
+        );
     }
     render() {
         return (
@@ -92,7 +133,13 @@ class PlanUsers extends Component {
                                             <Text style={[styles.text, { color: "#000", fontSize: 18, }]}>{item.fullName}</Text>
                                         </View>
                                         <View style={{ flex: 0.3, alignItems: "center", justifyContent: "center" }}>
-                                            <Text style={[styles.text, { color: "#000", fontSize: 18, textDecorationLine: "underline" }]}>Active</Text>
+                                            <Switch
+                                                trackColor={{ false: "#767577", true: "#81b0ff" }}
+                                                thumbColor={item.active ? "#f5dd4b" : "#f4f3f4"}
+                                                ios_backgroundColor="#3e3e3e"
+                                                onValueChange={() => { this.createAlert(item,index)}}
+                                                value={item.active}
+                                            />
                                         </View>
                                     </View>
                                 )

@@ -76,8 +76,8 @@ class ViewOrders2 extends Component {
     }
     
     print = async () => {
-        
-        await BluetoothEscposPrinter.printPic(base64Image, { width: 200, left: 100 ,gap:0});
+
+        await BluetoothEscposPrinter.printPic(base64Image, { width: 200, left: 100, gap: 0 });
         await BluetoothEscposPrinter.printerAlign(BluetoothEscposPrinter.ALIGN.CENTER);
         await BluetoothEscposPrinter.setBlob(0);
         await BluetoothEscposPrinter.setBlob(0);
@@ -98,36 +98,38 @@ class ViewOrders2 extends Component {
             [`BILLNO:${this.state.item.id}`, `DATE:${moment(new Date()).format("DD/MM/YYYY")}`], { fonttype: 0 });
         await BluetoothEscposPrinter.printText("\n\r", {});
         await BluetoothEscposPrinter.printText("--------------------------------\n\r", {});
-        let columnWidts = [10, 6, 8, 8]
+        let columnWidts = [16, 6, 5, 5]
         await BluetoothEscposPrinter.printColumn(columnWidts,
             [BluetoothEscposPrinter.ALIGN.LEFT, BluetoothEscposPrinter.ALIGN.CENTER, BluetoothEscposPrinter.ALIGN.CENTER, BluetoothEscposPrinter.ALIGN.RIGHT],
-            ["ITEM", 'QTY', 'Price', 'Amt'], {});
+            ["ITEM", 'PRICE', 'QTY', 'AMT'], {});
         await BluetoothEscposPrinter.printText("--------------------------------\n\r", {});
         this.state.item.items.forEach(async (i) => {
-            let columnWidth = [10, 6, 8, 8]
+            let columnWidth = [16, 6, 5, 5]
             await BluetoothEscposPrinter.printColumn(columnWidth,
                 [BluetoothEscposPrinter.ALIGN.LEFT, BluetoothEscposPrinter.ALIGN.CENTER, BluetoothEscposPrinter.ALIGN.CENTER, BluetoothEscposPrinter.ALIGN.RIGHT],
-                [`${i.itemTitle}`, `${i.quantity}`, `${i.item_price}`, `${i.total_price - Math.ceil((i.total_price * 5) / 100)}`], {});
+                [`${i.itemTitle}`, `${i.item_price - Math.ceil((i.item_price * 5) / 100)}`, `${i.quantity}`, `${(i.item_price - Math.ceil((i.item_price * 5) / 100)) * i.quantity}`], {});
         })
         let columnWidth0 = [9, 12, 11]
         await BluetoothEscposPrinter.printText("--------------------------------\n\r", {});
-        let columnWidth4 = [10, 6, 8, 8]
+        let columnWidth4 = [16, 6, 5, 5]
         await BluetoothEscposPrinter.printColumn(columnWidth4,
             [BluetoothEscposPrinter.ALIGN.LEFT, BluetoothEscposPrinter.ALIGN.CENTER, BluetoothEscposPrinter.ALIGN.CENTER, BluetoothEscposPrinter.ALIGN.RIGHT],
-            ["TOTAL", `${this.getSubtotal()}`, '', `${this.state.item.cart_bill}`], {});
-        await BluetoothEscposPrinter.printText("--------------------------------\n\r", {});
+            ["TOTAL", ``, `${this.getSubtotal()}`, `${this.state.item.cart_bill}`], {});
 
-
-    
-
-      
         // await BluetoothEscposPrinter.printColumn(columnWidth0,
         //     [BluetoothEscposPrinter.ALIGN.LEFT, BluetoothEscposPrinter.ALIGN.CENTER, BluetoothEscposPrinter.ALIGN.RIGHT],
         //     [``, `CGST @2.50%`, ` + ${Math.floor(this.state.item.gst/2)}`], {});
         await BluetoothEscposPrinter.printColumn(columnWidth0,
             [BluetoothEscposPrinter.ALIGN.LEFT, BluetoothEscposPrinter.ALIGN.CENTER, BluetoothEscposPrinter.ALIGN.RIGHT],
-            [``, `GST`, ` + ${this.state.item.gst}`], {});
-        if (this.state.item.oneplusone){
+            [``, `CGST @2.50%`, ` + ${(this.state.item.gst) / 2}`], {});
+        await BluetoothEscposPrinter.printColumn(columnWidth0,
+            [BluetoothEscposPrinter.ALIGN.LEFT, BluetoothEscposPrinter.ALIGN.CENTER, BluetoothEscposPrinter.ALIGN.RIGHT],
+            [``, `SGST @2.50%`, ` + ${(this.state.item.gst) / 2}`], {});
+        await BluetoothEscposPrinter.printText("--------------------------------\n\r", {});
+        await BluetoothEscposPrinter.printColumn(columnWidth0,
+            [BluetoothEscposPrinter.ALIGN.LEFT, BluetoothEscposPrinter.ALIGN.CENTER, BluetoothEscposPrinter.ALIGN.RIGHT],
+            [``, ``, `${(this.state.item.cart_bill + this.state.item.gst)}`], {});
+        if (this.state.item.oneplusone) {
             await BluetoothEscposPrinter.printColumn(columnWidth0,
                 [BluetoothEscposPrinter.ALIGN.LEFT, BluetoothEscposPrinter.ALIGN.CENTER, BluetoothEscposPrinter.ALIGN.RIGHT],
                 [``, `Offer Name`, ` - 1+1`], {});
@@ -141,6 +143,29 @@ class ViewOrders2 extends Component {
             [BluetoothEscposPrinter.ALIGN.LEFT, BluetoothEscposPrinter.ALIGN.RIGHT],
             ["GRAND TOTAL", `${this.state.item.total_price}`], { fonttype: 0 });
         await BluetoothEscposPrinter.printText("--------------------------------\n\r", {});
+
+
+        await BluetoothEscposPrinter.printerAlign(BluetoothEscposPrinter.ALIGN.CENTER);
+        await BluetoothEscposPrinter.printText(`PaymentMode:${this.state?.item?.payment_mode}\n\r`, {});
+        let printwidth = [10, 22]
+        if (this.state.item.order_type == "Takeaway") {
+            await BluetoothEscposPrinter.printColumn(printwidth,
+                [BluetoothEscposPrinter.ALIGN.LEFT, BluetoothEscposPrinter.ALIGN.RIGHT],
+                [`Name :`, `${this.state.item?.customer_name}`], {});
+            await BluetoothEscposPrinter.printColumn(printwidth,
+                [BluetoothEscposPrinter.ALIGN.LEFT, BluetoothEscposPrinter.ALIGN.RIGHT],
+                [`Mobile :`, `${this.state.item?.customer_mobile}`], {});
+            await BluetoothEscposPrinter.printerAlign(BluetoothEscposPrinter.ALIGN.CENTER);
+            await BluetoothEscposPrinter.printText("ADDRESS:\n\r", {
+                encoding: 'GBK',
+                codepage: 0,
+                widthtimes: 0,
+                heigthtimes: 0,
+                fonttype: 1,
+            });
+            await BluetoothEscposPrinter.printText(`${this.state.item.customer_address}`, {});
+        }
+
         await BluetoothEscposPrinter.printText("\n\r", {});
         await BluetoothEscposPrinter.printerAlign(BluetoothEscposPrinter.ALIGN.CENTER);
         await BluetoothEscposPrinter.printText("THANK YOU\n\r", {
@@ -209,7 +234,7 @@ class ViewOrders2 extends Component {
                     <View style={{ flex: 0.2 }}>
 
                     </View>
-                    <View style={{ flex: 0.6, alignItems: "center", justifyContent: "center" }}>
+                    <View style={{ flex: 0.5, alignItems: "center", justifyContent: "center" }}>
                         <View style={{ alignSelf: "flex-end", marginRight: 20 }}>
                             <Text style={[styles.text, { color: "#fff", fontSize: 22, }]}>bill :</Text>
                         </View>
@@ -226,13 +251,22 @@ class ViewOrders2 extends Component {
                             <Text style={[styles.text, { color: "#fff", fontSize: 22, }]}>PaymentMode :</Text>
                         </View>
                     </View>
-                    <View style={{ flex: 0.2, alignItems: "center", justifyContent: "center" }}>
-                        <Text style={[styles.text, { color: primaryColor, fontSize: 25 }]}>₹ {this.state.item.cart_bill}</Text>
-                        <Text style={[styles.text, { color: primaryColor, fontSize: 25 }]}>₹ {this.state.item.gst}</Text>
-                        <Text style={[styles.text, { color: primaryColor, fontSize: 25 }]}>₹ {this.state.item.total_price}</Text>
-                        <Text style={[styles.text, { color: primaryColor, fontSize: 25 }]}>₹ {this.state.item.money_saved}</Text>
+                    <View style={{ flex: 0.3, alignItems: "center", justifyContent: "center" }}>
                         <View>
-                            <Text style={[styles.text, { color: primaryColor, fontSize: 25 }]}>{this.state.item.payment_mode}</Text>
+                            <Text style={[styles.text, { color: primaryColor, fontSize: 22 }]}>₹ {this.state.item.cart_bill}</Text>
+                        </View>
+                          <View>
+                            <Text style={[styles.text, { color: primaryColor, fontSize: 22 }]}>₹ {this.state.item.gst}</Text>
+                          </View>
+                           <View>
+                            <Text style={[styles.text, { color: primaryColor, fontSize: 22 }]}>₹ {this.state.item.total_price}</Text>
+                           </View>
+                           <View>
+                            <Text style={[styles.text, { color: primaryColor, fontSize: 22 }]}>₹ {this.state.item.money_saved}</Text>
+                           </View>
+        
+                        <View>
+                            <Text style={[styles.text, { color: primaryColor, fontSize: 22 }]}>{this.state.item.payment_mode}</Text>
                         </View>
                       
                     </View>

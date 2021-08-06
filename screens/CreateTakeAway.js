@@ -27,7 +27,8 @@ class CreateTakeAway extends Component {
             Items: [],
             dishes: [],
             name:"",
-            phone:""
+            phone:"",
+            address:""
         };
     }
     getTables = async () => {
@@ -72,7 +73,8 @@ class CreateTakeAway extends Component {
             type:"Takeaway",
             user:true,
             name:this.state.name,
-            mobile:this.state.phone
+            mobile:this.state.phone,
+            address:this.state.address
         }
         let post = await HttpsClient.post(api, sendData)
         console.log(post)
@@ -177,6 +179,16 @@ class CreateTakeAway extends Component {
                                 style={{ height: 38, width: width * 0.9, paddingLeft: 5, marginTop: 10, backgroundColor: "#fafafa" }}
                                 selectionColor={primaryColor}
                                 onChangeText={(phone) => { this.setState({ phone }) }}
+                            />
+                        </View>
+                        <View style={{ marginTop: 10 }}>
+                            <Text style={[styles.text, { fontSize: 22 }]}>Address :</Text>
+                            <TextInput
+                                multiline={true}
+                                value={this.state.address}
+                                style={{ height:height*0.1, width: width * 0.9, paddingLeft: 5, marginTop: 10, backgroundColor: "#fafafa" ,textAlignVertical:"top"}}
+                                selectionColor={primaryColor}
+                                onChangeText={(address) => {this.setState({ address })}}
                             />
                         </View>
                         <View style={{ marginTop: 30 }}>
