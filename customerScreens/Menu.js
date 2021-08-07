@@ -19,61 +19,22 @@ import Modal from 'react-native-modal';
 import FlashMessage, { showMessage, hideMessage } from "react-native-flash-message";
 import HttpsClient from '../HttpsClient';
 const screenHeight = Dimensions.get("screen").height;
-const data = [
-  {
-    day: "Mon",
-    Morning: "combo1",
-    afterNoon: "combo2",
-    Night: "Combo3"
-  },
-  {
-    day: "Tue",
-    Morning: "combo1",
-    afterNoon: "combo2",
-    Night: "Combo3"
-  },
-  {
-    day: "Wed",
-    Morning: "combo1",
-    afterNoon: "combo2",
-    Night: "Combo3"
-  },
-  {
-    day: "Thu",
-    Morning: "combo1",
-    afterNoon: "combo2",
-    Night: "Combo3"
-  },
-  {
-    day: "Fri",
-    Morning: "combo1",
-    afterNoon: "combo2",
-    Night: "Combo3"
-  },
-  {
-    day: "Sat",
-    Morning: "combo1",
-    afterNoon: "combo2",
-    Night: "Combo3"
-  },
-  {
-    day: "Sun",
-    Morning: "combo1",
-    afterNoon: "combo2",
-    Night: "Combo3"
-  },
-]
 class Menu extends Component {
   constructor(props) {
 
     super(props);
     this.state = {
       menus: [],
-   
+      modal:false,
+      selectedItem:null
     };
   }
   getMenu = async () => {
-   
+     const api = `${url}/api/drools/getTimetable/`
+     const data = await HttpsClient.get(api)
+     if(data.type=="success"){
+       this.setState({menus:data.data})
+     }
   }
   componentDidMount() {
     this.getMenu()
@@ -123,6 +84,107 @@ class Menu extends Component {
     )
 
   }
+  changeDefault =()=>{
+    this.setState({modal:false})
+  }
+  modal =()=>{
+    console.log(this.state.selectedItem)
+    return(
+      <Modal 
+        deviceHeight={screenHeight}
+        isVisible={this.state.modal}
+        onBackdropPress ={()=>{this.setState({modal:false})}}
+        statusBarTranslucent={true}
+      >
+          <View style={{flex:1,alignItems:"center",justifyContent:"center"}}>
+                 <View style={{height:height*0.5,width:width*0.9,backgroundColor:"#fff",borderRadius:10}}>
+                       <View style={{alignItems:"center",justifyContent:"center",marginVertical:10}}>
+                            <Text style={[styles.text,{color:"#000",fontSize:22,textDecorationLine:"underline"}]}>{this.state.selectedItem?.session} :</Text>
+                       </View>
+                       <View style={{paddingHorizontal:10,flexDirection:"row"}}>
+                         <View>
+                               <Text style={[styles.text,{color:"#000",fontSize:18,textDecorationLine:"underline"}]}>Default</Text>
+                         </View>
+                         <View>
+                            <Text style={[styles.text,{color:"#000",fontSize:18,}]}> : {this.state.selectedItem?.default.title}</Text>
+                         </View>
+                       </View>
+                       <View style={{alignItems:"center",justifyContent:"center",}}>
+                            {
+                              this.state.selectedItem?.default?.items?.map((item,index)=>{
+                                    return(
+                                      <View key={index} style={{flexDirection:"row",marginTop:10}}>
+                                        <View>
+                                            <Text style={[styles.text,{color:primaryColor}]}>{index+1} . </Text> 
+                                        </View>
+                                          <View>
+                                            <Text style={[styles.text,{color:primaryColor}]}>{item}</Text> 
+                                          </View>  
+                                      </View>
+                                    )
+                              })
+                            }
+                       </View>
+                       <View style={{alignItems:"center",justifyContent:"center",marginTop:10}}>
+                            <Text style={[styles.text,{color:"#000",fontSize:20,textDecorationLine:"underline"}]}>Choices :</Text>
+                       </View>
+                       <FlatList 
+                          showsVerticalScrollIndicator={false}
+                          contentContainerStyle={{paddingBottom:20}}
+                          data={this.state.selectedItem?.choices||[]}
+                          keyExtractor={(item,index)=>index.toString()}
+                          renderItem ={({item,index})=>{
+                              return(
+                                <View style={{paddingHorizontal:10}}>
+                                      <View style={{flexDirection:"row"}}>
+                                        <View>
+                                               <Text style={[styles.text,{color:"#000",fontSize:18,textDecorationLine:"underline"}]}>{index+1} . </Text> 
+                                        </View>
+                                           <View >
+                                                  <Text style={[styles.text,{color:"#000",fontSize:18,textDecorationLine:"underline"}]}>{item.title} :</Text> 
+                                           </View>
+                                    
+                                      </View>
+                                         <View style={{flexDirection:"row"}}>
+                                           <View style={{flex:0.2,alignItems:"center",justifyContent:"center"}}>
+
+                                           </View>
+                                           <View style={{flex:0.6,alignItems:"center",justifyContent:"center"}}>
+                                              {
+                                                item?.items?.map((item,index)=>{
+                                                      return(
+                                                        <View key={index} style={{flexDirection:"row",marginTop:10}}>
+                                                          <View>
+                                                              <Text style={[styles.text,{color:primaryColor}]}>{index+1} . </Text> 
+                                                          </View>
+                                                            <View>
+                                                              <Text style={[styles.text,{color:primaryColor}]}>{item}</Text> 
+                                                            </View>  
+                                                        </View>
+                                                      )
+                                                })
+                                              }
+                                           </View>
+                                             <View style={{flex:0.2,alignItems:"center",justifyContent:"center"}}>
+                                                 <TouchableOpacity style={{height:height*0.05,width:"100%",alignItems:"center",justifyContent:"center",backgroundColor:primaryColor}}
+                                                 
+                                                 onPress={()=>{this.changeDefault()}}
+                                                 >
+                                                         <Text style={[styles.text,{color:"#fff"}]}>Change</Text>
+                                                 </TouchableOpacity>
+                                           </View>
+                       
+                       </View>
+                                </View>
+                              )
+                          }}
+                       />
+                 </View>
+                 
+          </View>
+      </Modal>
+    )
+  }
   render() {
     return (
       <View style={{ flex: 1 }}>
@@ -147,34 +209,45 @@ class Menu extends Component {
             </View>
           </View>
         </LinearGradient>
-        <View style={{ flex: 1 }}>
+        <View style={{ flex: 1,backgroundColor:"#000" }}>
             <FlatList 
                ItemSeparatorComponent={this.seperator}
                ListHeaderComponent={this.header}
-               data={data}
+               data={this.state.menus}
                keyExtractor={(item,index)=>index.toString()}
                renderItem ={({item,index})=>{
+               
                   return(
-                    <View style={{ flexDirection: "row", backgroundColor: "#fff",minHeight:height*0.08}}>
+                    <View style={{ flexDirection: "row", backgroundColor: "#000",minHeight:height*0.1}}>
                       <View style={{ flex: 0.2, alignItems: "center", justifyContent: "center" }}>
-                        <Text style={[styles.text, { color: "#000", fontSize: 16}]}>{item.day}</Text>
+                        <Text style={[styles.text, { color: "#fff", fontSize: 10}]}>{item.weekday}</Text>
+                        <Text style={[styles.text, { color: "#fff", fontSize: 12}]}>{item.date}</Text>
                       </View>
-                      <View style={{ flex: 0.266, alignItems: "center", justifyContent: "center" }}>
-                        <Text style={[styles.text, {  fontSize: 16}]}>{item.Morning}</Text>
-                      </View>
-                      <View style={{ flex: 0.266, alignItems: "center", justifyContent: "center" }}>
-                        <Text style={[styles.text, {  fontSize: 16}]}>{item.afterNoon}</Text>
-                      </View>
-                      <View style={{ flex: 0.266, alignItems: "center", justifyContent: "center" }}>
-                        <Text style={[styles.text, {  fontSize: 16 }]}>{item.Night}</Text>
-                      </View>
+                      <TouchableOpacity style={{ flex: 0.266, alignItems: "center", justifyContent: "center" }}
+                       onPress={()=>{this.setState({modal:true,selectedItem:item.sessions[0]})}}
+                      
+                      >
+                        <Text style={[styles.text, {  fontSize: 10,color:"#fff"}]}>{item.sessions[0].default.title}</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity style={{ flex: 0.266, alignItems: "center", justifyContent: "center" }}
+                      onPress={()=>{this.setState({modal:true,selectedItem:item.sessions[1]})}}
+                      >
+                        <Text style={[styles.text, {  fontSize: 10,color:"#fff"}]}>{item.sessions[1].default.title}</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity style={{ flex: 0.266, alignItems: "center", justifyContent: "center" }}
+                        onPress={()=>{this.setState({modal:true,selectedItem:item.sessions[2]})}}
+                      >
+                        <Text style={[styles.text, {  fontSize: 10,color:"#fff" }]}>{item.sessions[2].default.title}</Text>
+                      </TouchableOpacity>
                     </View>
                   )
                }}
             />
         </View>
 
-    
+        {
+          this.modal()
+        }
       </View>
     );
   }
