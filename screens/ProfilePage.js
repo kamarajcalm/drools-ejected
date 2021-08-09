@@ -98,6 +98,22 @@ class ProfilePage extends Component {
                             <Entypo name="triangle-right" size={24} color="#fff" />
                          </View>
                     </TouchableOpacity>
+                    <TouchableOpacity style={{flexDirection:"row",height:height*0.05,paddingHorizontal:20,width,marginTop:20}}
+                     onPress={()=>{this.props.navigation.navigate('ProfileInfo')}}
+                    >
+                        <View style={{flex:0.8,flexDirection:"row"}}>
+                            <View style={{ alignItems: "center", justifyContent: "center" }}>
+                          <FontAwesome name="address-card" size={24} color="#fff" />
+                            </View>
+                            <View style={{ alignItems: "center", justifyContent: "center", marginLeft: 20 }}>
+                                <Text style={[styles.text, { color: "#fff" }]}>Profile Info</Text>
+                            </View>
+                        </View>
+                      
+                         <View style={{flex:0.2,alignItems:"center",justifyContent:'center'}}>
+                            <Entypo name="triangle-right" size={24} color="#fff" />
+                         </View>
+                    </TouchableOpacity>
                     <TouchableOpacity style={{ flexDirection: "row", height: height * 0.05, paddingHorizontal: 20, width, marginTop: 20 }}
                         onPress={() => { this.props.navigation.navigate('ExpenseScreen')}}
                     >
@@ -171,6 +187,22 @@ class ProfilePage extends Component {
                             </View>
                             <View style={{ alignItems: "center", justifyContent: "center", marginLeft: 20 }}>
                                 <Text style={[styles.text, { color: "#fff" }]}>BlueTooth Devices</Text>
+                            </View>
+                        </View>
+
+                        <View style={{ flex: 0.2, alignItems: "center", justifyContent: 'center' }}>
+                            <Entypo name="triangle-right" size={24} color="#fff" />
+                        </View>
+                    </TouchableOpacity>
+                        <TouchableOpacity style={{ flexDirection: "row", height: height * 0.05, paddingHorizontal: 20, width, marginTop: 20 }}
+                        onPress={() => { this.props.navigation.navigate('PasswordScreen') }}
+                    >
+                        <View style={{ flex: 0.8, flexDirection: "row" }}>
+                            <View style={{ alignItems: "center", justifyContent: "center" }}>
+                                <MaterialCommunityIcons name="onepassword" size={24} color="#fff" />
+                            </View>
+                            <View style={{ alignItems: "center", justifyContent: "center", marginLeft: 20 }}>
+                                <Text style={[styles.text, { color: "#fff" }]}>Change Password</Text>
                             </View>
                         </View>
 

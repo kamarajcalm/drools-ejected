@@ -34,10 +34,15 @@ class Menu extends Component {
   getMenu = async () => {
      const api = `${url}/api/drools/getTimetable/`
      const data = await HttpsClient.get(api)
+     console.log(data)
+    
       // in data.data sessions contains respective frequency by looping through frequecy we get either booked a menu or not 
            
      if(data.type=="success"){
-       this.setState({menus:data.data})
+       if(!data.data.error){
+            this.setState({menus:data.data})
+       }
+       
      }
   }
   componentDidMount() {
@@ -256,7 +261,13 @@ class Menu extends Component {
            </TouchableOpacity>
     )
   }
-
+empty =()=>{
+  return(
+    <View style={{height:height*0.6,alignItems:"center",justifyContent:"center"}}>
+       <Text style={[styles.text,{color:"#fff"}]}>Please Contact Admin to subscribe to our plans</Text>
+    </View>
+  )
+}
   render() {
     return (
       <View style={{ flex:1}}>
@@ -273,7 +284,7 @@ class Menu extends Component {
        
             </View>
             <View style={{ flex: 0.6, alignItems: "center", justifyContent: "center" }}>
-              <Text style={[styles.text, { color: "#fff", fontSize: 18 }]}>{this.state.menus[0]?.plan}</Text>
+              <Text style={[styles.text, { color: "#fff", fontSize: 18 }]}>{this.state.menus[0]?.plan||"No Plans"}</Text>
 
             </View>
             <View style={{ flex: 0.2, alignItems: "center", justifyContent: "center" }}>
@@ -283,6 +294,7 @@ class Menu extends Component {
         </LinearGradient>
         <View style={{ flex: 1,backgroundColor:"#000" }}>
             <FlatList 
+               ListEmptyComponent={this.empty()}
                ItemSeparatorComponent={this.seperator}
                ListHeaderComponent={this.header}
                data={this.state.menus}

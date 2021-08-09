@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Dimensions, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, Dimensions, TouchableOpacity, StyleSheet,Keyboard } from 'react-native';
 const { height, width } = Dimensions.get('window')
 import settings from '../AppSettings'
 const gradients = settings.gradients
@@ -12,6 +12,7 @@ export default class MyTabbar3 extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            showTab:true
         };
     }
     icon = (label, isFocused) => {
@@ -34,8 +35,25 @@ export default class MyTabbar3 extends Component {
         }
         
     }
+        componentDidMount(){
+        Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
+        Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
+    }
+    componentWillUnmount(){
+        Keyboard.removeListener('keyboardDidShow', this._keyboardDidShow);
+        Keyboard.removeListener('keyboardDidHide', this._keyboardDidHide);
+    }
+    _keyboardDidShow = () => {
+        this.setState({showTab:false})
+    };
+
+    _keyboardDidHide = () => {
+        this.setState({ showTab: true })
+    };
     render() {
         const { state, descriptors, navigation } = this.props
+        if(this.state.showTab){
+    
         return (
             <LinearGradient
                 style={{ height: height * 0.07, flexDirection: "row", alignItems: "center", justifyContent: "center" }}
@@ -93,6 +111,9 @@ export default class MyTabbar3 extends Component {
                 })}
             </LinearGradient>
         );
+            }else{
+                return null
+            }
     }
 }
 const styles = StyleSheet.create({

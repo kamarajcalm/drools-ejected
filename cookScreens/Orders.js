@@ -263,9 +263,8 @@ const screenHeight = Dimensions.get('screen').height
              this.getOrders()
          })
      }
-     getTables =(item) =>{
-     
-     }
+ 
+
     render() {
       
         return (
@@ -336,7 +335,8 @@ const screenHeight = Dimensions.get('screen').height
                                         </View>
                                     </View>
                                     <View style={{flexDirection:"row",alignItems:"center",justifyContent:"space-between"}}>
-                                        <View style={{flexDirection:"row"}}>
+                                      
+                                       <View style={{flexDirection:"row"}}>
                                             <Text style={[styles.text, { color: "#fff" }]}>Table : </Text>
                                             {
                                                 item.objs.map((item, index) => {
@@ -348,7 +348,10 @@ const screenHeight = Dimensions.get('screen').height
                                                 })
                                             }
                                         </View>
-                                    
+                                      {item.takeaway&&<View style={{flexDirection:"row",marginTop:5}}>
+                                            <Text style={[styles.text, { color: "#fff" }]}>TakeAway : {item.cartpk}</Text>
+                                          
+                                        </View>}
                                     </View>
                            
                                </TouchableOpacity>

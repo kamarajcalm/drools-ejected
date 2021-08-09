@@ -25,7 +25,7 @@ class Inventory extends Component {
           { key: 'Categories', title: 'Categories' },
           { key: 'Stocks', title: 'Stocks'},
           { key: 'Orders', title: 'Orders' },
-          { key: 'Plans', title: 'Subscription-Plans' },
+          { key: 'Plans', title: 'Plans' },
 
       ];
     this.state = {
@@ -88,7 +88,6 @@ class Inventory extends Component {
                 initialLayout={{width}}
                 renderTabBar={(props) =>
                     <TabBar
-                        scrollEnabled={true}
                         {...props}
                         renderLabel={({ route, focused, color }) => (
                
