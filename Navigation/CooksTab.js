@@ -19,6 +19,7 @@ import MyTabBar2 from '../components/MyTabBar2';
 import ProfileStack from '../CooksStack/ProfileStack';
 import OrdersStack from '../CooksStack/OrdersStack';
 import HistoryStack from '../CooksStack/HistoryStack';
+import PlanStacks from '../CooksStack/PlanStacks';
 const Tab = createBottomTabNavigator();
 class CooksTab extends Component {
     constructor(props) {
@@ -26,16 +27,17 @@ class CooksTab extends Component {
         this.state = {
         };
     }
-
     render() {
-
         return (
             <Tab.Navigator
                 tabBar={props => <MyTabBar2 {...props} />}
             >
                 <Tab.Screen name="Orders" component={OrdersStack} />
+              
                 <Tab.Screen name="History" component={HistoryStack} />
+                    <Tab.Screen name="P-Orders" component={PlanStacks} />
                 <Tab.Screen name="Profile" component={ProfileStack} />
+              
             </Tab.Navigator>
         );
     }

@@ -32,6 +32,7 @@ export default class MyTabbar3 extends Component {
                 <Ionicons name="person-circle-sharp" size={24} color={isFocused ? primaryColor : secondaryColor} />
             )
         }
+        
     }
     render() {
         const { state, descriptors, navigation } = this.props

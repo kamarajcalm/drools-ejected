@@ -38,6 +38,7 @@ class DefaultScreen extends Component {
        if(login){
             let api = `${url}/api/profile/users/?myself=true`
             let data = await HttpsClient.get(api)
+          
              if(data.type=="success"){
                  this.props.selectUser(data.data[0]);
 

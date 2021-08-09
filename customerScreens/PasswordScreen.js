@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Dimensions, TouchableOpacity, StyleSheet, FlatList, Image, Alert, AsyncStorage,ScrollView,TextInput} from 'react-native';
+import { View, Text, Dimensions, TouchableOpacity, StyleSheet, FlatList, Image, Alert, AsyncStorage,ScrollView,TextInput, ActivityIndicator} from 'react-native';
 const { height, width } = Dimensions.get('window')
 import settings from '../AppSettings'
 import { connect } from 'react-redux';
@@ -9,6 +9,7 @@ const primaryColor = settings.primaryColor
 const secondaryColor = settings.secondaryColor
 const fontFamily = settings.fontFamily
 const themeColor = settings.themeColor
+const url =settings.url
 import { LinearGradient } from 'expo-linear-gradient';
 import Constants from 'expo-constants';
 import orders from '../data/orders';
@@ -17,6 +18,8 @@ import momemt from 'moment';
 import { CommonNavigationAction, CommonActions } from '@react-navigation/native'
 import { FontAwesome, MaterialCommunityIcons, MaterialIcons, SimpleLineIcons, Entypo, Fontisto, Feather, Ionicons, FontAwesome5 } from '@expo/vector-icons';
 import { Linking } from 'react-native';
+import FlashMessage, { showMessage, hideMessage } from "react-native-flash-message";
+import HttpsClient from '../HttpsClient';
 class PasswordScreen extends Component {
   constructor(props) {
     super(props);
@@ -29,7 +32,66 @@ class PasswordScreen extends Component {
 componentDidMount(){
   console.log(this.props.user)
 }
+      showSimpleMessage(content, color, type = "info", props = {}) {
+        const message = {
+            message: content,
+            backgroundColor: color,
+            icon: { icon: "auto", position: "left" },
+            type,
+            ...props,
+        };
 
+        showMessage(message);
+    }
+  logOut =()=>{
+    AsyncStorage.clear();
+    return this.props.navigation.dispatch(
+      CommonActions.reset({
+        index: 0,
+        routes: [
+          {
+            name: 'DefaultScreen',
+
+          },
+        ],
+      })
+    )
+  }   
+save = async()=>{
+   this.setState({creating:true})
+  if(this.state.oldPassword==""){
+      this.setState({creating:false})
+    return this.showSimpleMessage("please fill old Password","orange","info")
+  }
+  if(this.state.newPassword==""){
+          this.setState({creating:false})
+    return this.showSimpleMessage("please fill new Password","orange","info")
+  }
+    if(this.state.confirmNewPassword==""){
+            this.setState({creating:false})
+    return this.showSimpleMessage("please confirm new Password","orange","info")
+  }
+    if(this.state.newPassword!=this.state.confirmNewPassword){
+            this.setState({creating:false})
+    return this.showSimpleMessage("confirm password does not match","orange","info")
+  }
+  let api =`${url}/api/profile/changePassword/`
+     let sendData ={
+         oldpassword:this.state.oldPassword,
+         newpassword:this.state.newPassword,
+         user:this.props.user.user.id
+     }
+     let post = await HttpsClient.post(api,sendData)
+     console.log(post)
+     if(post.type=="success"){
+               this.setState({creating:false})
+       this.showSimpleMessage("password Changed SuccessFully","green","success")
+       return this.logOut()
+     }else{
+               this.setState({creating:false})
+       this.showSimpleMessage("please enter correct password","red","danger")
+     }
+}
   render() {
     return (
       <View style={{flex:1,backgroundColor:"#000"}}>
@@ -98,11 +160,15 @@ componentDidMount(){
                     />
                 </View>
                  <View style={{alignItems:"center",justifyContent:"center",marginVertical:30}}>
-                     <TouchableOpacity style={{height:height*0.05,width:width*0.4,alignItems:"center",justifyContent:"center",backgroundColor:primaryColor}}
-                      onPress={()=>{}}
+                     {!this.state.creating?<TouchableOpacity style={{height:height*0.05,width:width*0.4,alignItems:"center",justifyContent:"center",backgroundColor:primaryColor}}
+                      onPress={()=>{this.save()}}
                      >
                            <Text style={[styles.text,{color:"#fff"}]}>Save</Text>
-                     </TouchableOpacity>
+                     </TouchableOpacity>:
+                     <View  style={{height:height*0.05,width:width*0.4,alignItems:"center",justifyContent:"center",backgroundColor:primaryColor}}>
+                          <ActivityIndicator  size={"large"} color={"#fff"}/>
+                     </View>
+                     }
                 </View>
         </ScrollView>   
     

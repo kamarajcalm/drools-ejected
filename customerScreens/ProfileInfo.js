@@ -91,7 +91,20 @@ componentDidMount(){
                      </View>
                   </View>
                    <View style={{flex:0.5,alignItems:"center",justifyContent:"center"}}>
-                        <Text style={[styles.text,{color:"#fff",fontSize:20}]}>{this.props?.user?.user.username}</Text>
+                        <Text style={[styles.text,{color:"#fff",fontSize:20}]}>{this.props?.user?.address}</Text>
+                   </View>
+                </View>
+                      <View style={{flexDirection:"row",marginTop:20}}>
+                  <View style={{flex:0.5,flexDirection:"row"}}>
+                    <View style={{flex:0.9,alignItems:"center",justifyContent:"center"}}>
+                           <Text style={[styles.text,{color:"#fff",fontSize:20}]}>Street</Text>
+                    </View>
+                     <View style={{flex:0.1,alignItems:"center",justifyContent:"center"}}>
+                           <Text style={[styles.text,{color:"#fff",fontSize:20}]}> : </Text>
+                     </View>
+                  </View>
+                   <View style={{flex:0.5,alignItems:"center",justifyContent:"center"}}>
+                        <Text style={[styles.text,{color:"#fff",fontSize:20}]}>{this.props?.user?.street}</Text>
                    </View>
                 </View>
                 <View style={{alignItems:"center",justifyContent:"center",marginVertical:30}}>

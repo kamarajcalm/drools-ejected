@@ -40,9 +40,10 @@ import FlashMessage, { showMessage, hideMessage } from "react-native-flash-messa
          showMessage(message);
      }
      addUser = async(item,index)=>{
+     
         let api =`${url}/api/drools/planmembers/`
         let sendData ={
-            user: item.id,
+            user: item.user.id,
             plan:this.state.item.id
         }
         let post = await HttpsClient.post(api,sendData)

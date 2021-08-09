@@ -20,6 +20,11 @@ export default class MyTabBar2 extends Component {
                 <FontAwesome5 name="exchange-alt" size={24} color={isFocused ? primaryColor : secondaryColor} />
             )
         }
+           if (label == "P-Orders") {
+            return (
+              <MaterialIcons name="subscriptions" size={24} color={isFocused ? primaryColor : secondaryColor}  />
+            )
+        }
         if (label == "History") {
             return (
                 <FontAwesome name="history" size={24} color={isFocused ? primaryColor : secondaryColor} />

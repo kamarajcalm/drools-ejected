@@ -75,6 +75,7 @@ class SeacrchDishes extends Component {
         });
         if (found) {
             duplicate[idx].quantity = found.quantity
+            duplicate[idx].comments = found.comments
             this.showSimpleMessage("Item already added", "orange", "success")
         } else {
             let pushObj = {

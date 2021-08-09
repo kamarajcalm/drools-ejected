@@ -138,6 +138,7 @@ const Month = ["Janauary","Feb"]
          this.setState({ refreshing:true})
          let api = `${url}/api/drools/monthlyIncome/?month=${this.state.month}&year=${this.state.year}`
          const data = await HttpsClient.get(api)
+         console.log(api,"hjhkjhk")
          if(data.type=="success"){
              this.setState({ incomes: data.data.incomes, income: data.data, refreshing:false})
          }else{

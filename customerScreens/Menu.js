@@ -18,6 +18,7 @@ import { FontAwesome, MaterialCommunityIcons, MaterialIcons, SimpleLineIcons, En
 import Modal from 'react-native-modal';
 import FlashMessage, { showMessage, hideMessage } from "react-native-flash-message";
 import HttpsClient from '../HttpsClient';
+import moment from 'moment';
 const screenHeight = Dimensions.get("screen").height;
 class Menu extends Component {
   constructor(props) {
@@ -26,12 +27,15 @@ class Menu extends Component {
     this.state = {
       menus: [],
       modal:false,
-      selectedItem:null
+      selectedItem:null,
+      selectedPlan:null
     };
   }
   getMenu = async () => {
      const api = `${url}/api/drools/getTimetable/`
      const data = await HttpsClient.get(api)
+      // in data.data sessions contains respective frequency by looping through frequecy we get either booked a menu or not 
+           
      if(data.type=="success"){
        this.setState({menus:data.data})
      }
@@ -84,8 +88,24 @@ class Menu extends Component {
     )
 
   }
-  changeDefault =()=>{
-    this.setState({modal:false})
+  changeDefault = async(item)=>{
+    console.log(item,"choiceeeee")
+    let api = `${url}/api/drools/bookOrder/`
+    let sendData ={
+      plan:this.state.selectedPlan.planpk,
+      date:this.state.selectedPlan.date,
+      category:this.state.selectedItem.session,
+      item:item.custompk
+    }
+    
+   let post = await HttpsClient.post(api,sendData)
+    if(post.type=="success"){
+         this.getMenu()
+         this.setState({modal:false})
+      return  this.showSimpleMessage("Menu Selected SuccessFully","green","success")
+    }else{
+      return  this.showSimpleMessage("Try Again","red","danger")
+    }
   }
   modal =()=>{
     console.log(this.state.selectedItem)
@@ -109,21 +129,39 @@ class Menu extends Component {
                             <Text style={[styles.text,{color:"#000",fontSize:18,}]}> : {this.state.selectedItem?.default.title}</Text>
                          </View>
                        </View>
+                       <View style={{flexDirection:"row",paddingHorizontal:10}}>
+                              <View style={{flex:0.2,alignItems:"center",justifyContent:"center"}}>
+                
+                              </View>
+                              <View style={{flex:0.6,alignItems:"center",justifyContent:"center"}}>
+                                  {
+                                    this.state.selectedItem?.default?.items?.map((item,index)=>{
+                                          return(
+                                            <View key={index} style={{flexDirection:"row",marginTop:10}}>
+                                              <View>
+                                                  <Text style={[styles.text,{color:primaryColor}]}>{index+1} . </Text> 
+                                              </View>
+                                                <View>
+                                                  <Text style={[styles.text,{color:primaryColor}]}>{item}</Text> 
+                                                </View>  
+                                            </View>
+                                          )
+                                    })
+                                  }
+                              </View>
+                              <View style={{flex:0.2,alignItems:"center",justifyContent:"center"}}>
+                                      
+                                                 <TouchableOpacity style={{height:height*0.05,width:"100%",alignItems:"center",justifyContent:"center",backgroundColor:primaryColor}}
+                                                 
+                                                 onPress={()=>{this.changeDefault(this.state.selectedItem?.default)}}
+                                                 >
+                                                         <Text style={[styles.text,{color:"#fff"}]}>Select</Text>
+                                                 </TouchableOpacity>
+                                     
+                              </View>
+                       </View>
                        <View style={{alignItems:"center",justifyContent:"center",}}>
-                            {
-                              this.state.selectedItem?.default?.items?.map((item,index)=>{
-                                    return(
-                                      <View key={index} style={{flexDirection:"row",marginTop:10}}>
-                                        <View>
-                                            <Text style={[styles.text,{color:primaryColor}]}>{index+1} . </Text> 
-                                        </View>
-                                          <View>
-                                            <Text style={[styles.text,{color:primaryColor}]}>{item}</Text> 
-                                          </View>  
-                                      </View>
-                                    )
-                              })
-                            }
+                         
                        </View>
                        <View style={{alignItems:"center",justifyContent:"center",marginTop:10}}>
                             <Text style={[styles.text,{color:"#000",fontSize:20,textDecorationLine:"underline"}]}>Choices :</Text>
@@ -134,6 +172,7 @@ class Menu extends Component {
                           data={this.state.selectedItem?.choices||[]}
                           keyExtractor={(item,index)=>index.toString()}
                           renderItem ={({item,index})=>{
+                           let it = item
                               return(
                                 <View style={{paddingHorizontal:10}}>
                                       <View style={{flexDirection:"row"}}>
@@ -166,12 +205,16 @@ class Menu extends Component {
                                               }
                                            </View>
                                              <View style={{flex:0.2,alignItems:"center",justifyContent:"center"}}>
-                                                 <TouchableOpacity style={{height:height*0.05,width:"100%",alignItems:"center",justifyContent:"center",backgroundColor:primaryColor}}
+                                                {this.state.selectedItem.bookedtitle!=item.title? <TouchableOpacity style={{height:height*0.05,width:"100%",alignItems:"center",justifyContent:"center",backgroundColor:primaryColor}}
                                                  
-                                                 onPress={()=>{this.changeDefault()}}
+                                                 onPress={()=>{this.changeDefault(it)}}
                                                  >
-                                                         <Text style={[styles.text,{color:"#fff"}]}>Change</Text>
+                                                         <Text style={[styles.text,{color:"#fff"}]}>Select</Text>
                                                  </TouchableOpacity>
+                                                 :<View style={{height:height*0.05,width:"100%",alignItems:"center",justifyContent:"center",}}>
+                                                      <Text style={[styles.text,{color:"green"}]}>Booked</Text>  
+                                                 </View>
+                                                }
                                            </View>
                        
                        </View>
@@ -185,9 +228,38 @@ class Menu extends Component {
       </Modal>
     )
   }
+  validateSession =(session,item)=>{
+    if(session.booked){
+      return(
+           <TouchableOpacity style={{ flex: 0.266, alignItems: "center", justifyContent: "center" }}
+
+               onPress={()=>{
+                   if(item.date==moment(new Date()).format("YYYY-MM-DD")){
+                        this.showSimpleMessage("You cannot change Today's menu","orange","info")
+                   }
+                   else{
+                     this.setState({modal:true,selectedItem:session,selectedPlan:item})
+                   }
+               }}
+                      
+           >
+                <Text style={[styles.text, {  fontSize: 10,color:"#fff"}]}>{session.bookedtitle}</Text>
+           </TouchableOpacity>
+      )
+    }
+    return(
+           <TouchableOpacity style={{ flex: 0.266, alignItems: "center", justifyContent: "center" }}
+                       onPress={()=>{this.setState({modal:true,selectedItem:session,selectedPlan:item})}}
+                      
+                      >
+                <Text style={[styles.text, {  fontSize: 10,color:"red"}]}>Book now</Text>
+           </TouchableOpacity>
+    )
+  }
+
   render() {
     return (
-      <View style={{ flex: 1 }}>
+      <View style={{ flex:1}}>
         <StatusBar style={"light"} />
         {/* Headers */}
         <LinearGradient
@@ -201,7 +273,7 @@ class Menu extends Component {
        
             </View>
             <View style={{ flex: 0.6, alignItems: "center", justifyContent: "center" }}>
-              <Text style={[styles.text, { color: "#fff", fontSize: 18 }]}>Standard Plan</Text>
+              <Text style={[styles.text, { color: "#fff", fontSize: 18 }]}>{this.state.menus[0]?.plan}</Text>
 
             </View>
             <View style={{ flex: 0.2, alignItems: "center", justifyContent: "center" }}>
@@ -223,22 +295,15 @@ class Menu extends Component {
                         <Text style={[styles.text, { color: "#fff", fontSize: 10}]}>{item.weekday}</Text>
                         <Text style={[styles.text, { color: "#fff", fontSize: 12}]}>{item.date}</Text>
                       </View>
-                      <TouchableOpacity style={{ flex: 0.266, alignItems: "center", justifyContent: "center" }}
-                       onPress={()=>{this.setState({modal:true,selectedItem:item.sessions[0]})}}
-                      
-                      >
-                        <Text style={[styles.text, {  fontSize: 10,color:"#fff"}]}>{item.sessions[0].default.title}</Text>
-                      </TouchableOpacity>
-                      <TouchableOpacity style={{ flex: 0.266, alignItems: "center", justifyContent: "center" }}
-                      onPress={()=>{this.setState({modal:true,selectedItem:item.sessions[1]})}}
-                      >
-                        <Text style={[styles.text, {  fontSize: 10,color:"#fff"}]}>{item.sessions[1].default.title}</Text>
-                      </TouchableOpacity>
-                      <TouchableOpacity style={{ flex: 0.266, alignItems: "center", justifyContent: "center" }}
-                        onPress={()=>{this.setState({modal:true,selectedItem:item.sessions[2]})}}
-                      >
-                        <Text style={[styles.text, {  fontSize: 10,color:"#fff" }]}>{item.sessions[2].default.title}</Text>
-                      </TouchableOpacity>
+                      {
+                        this.validateSession(item.sessions[0],item)
+                      }
+                      {
+                        this.validateSession(item.sessions[1],item)
+                      }
+                      {
+                          this.validateSession(item.sessions[2],item)
+                      }
                     </View>
                   )
                }}

@@ -40,6 +40,7 @@ class LoginScreen extends Component {
         showMessage(message);
     }
     login =async()=>{
+        console.log(`${url}/api/profile/login/?mode=api`)
         this.setState({loading:true})
         if (this.state.mobile == "") {
             this.setState({ loading: false })

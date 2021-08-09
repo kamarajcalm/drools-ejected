@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { View, Text, Dimensions, TouchableOpacity, StyleSheet, FlatList, Image, Alert, AsyncStorage, TextInput, ScrollView} from 'react-native';
+import { View, Text, Dimensions, TouchableOpacity, StyleSheet, FlatList, Image, Alert, AsyncStorage, TextInput, ScrollView, KeyboardAvoidingView, Platform} from 'react-native';
 const { height, width } = Dimensions.get('window')
 import settings from '../AppSettings'
 import { connect } from 'react-redux';
-import { selectTheme } from '../actions';
+import { selectTheme ,selectUser} from '../actions';
 const gradients = settings.gradients
 const primaryColor = settings.primaryColor
 const secondaryColor = settings.secondaryColor
@@ -20,17 +20,20 @@ import { FontAwesome, MaterialCommunityIcons, MaterialIcons, SimpleLineIcons, En
 import * as Location from 'expo-location';
 import FlashMessage, { showMessage, hideMessage } from "react-native-flash-message";
 import HttpsClient from '../HttpsClient';
-export default class EditAccount extends Component {
+ class EditAccount extends Component {
   constructor(props) {
     super(props);
+    let address ={
+        address:this.props.user.address,
+        latitude:this.props.user.lat,
+        longitude:this.props.user.lang
+    }
     this.state = {
-        name:"",
-        phone:"",
-        address:null,
-        password:"",
-        confirmPassword:"",
-        street:"",
-        lastname:""
+        name:this.props.user.user.first_name,
+        phone:this.props.user.mobile,
+        address,
+        street:this.props.user.street,
+        lastname:this.props.user.user.last_name
     };
   }
     getLocation = async () => {
@@ -52,6 +55,14 @@ export default class EditAccount extends Component {
 
         showMessage(message);
     }
+    getProfile = async()=>{
+        let api = `${url}/api/profile/users/?myself=true`
+            let data = await HttpsClient.get(api)
+          
+             if(data.type=="success"){
+                 this.props.selectUser(data.data[0]);
+             }
+    }
     createAccount = async()=>{
         this.setState({creating:true})
         if(this.state.name ==""){
@@ -70,15 +81,8 @@ export default class EditAccount extends Component {
             this.setState({ creating: false })
             return this.showSimpleMessage("please select an address", "orange", "info")
         }
-        if (this.state.password == "") {
-            this.setState({ creating: false })
-            return this.showSimpleMessage("please enter password", "orange", "info")
-        }
-        if (this.state.password != this.state.confirmPassword) {
-            this.setState({ creating: false })
-            return this.showSimpleMessage("password does not match", "orange", "info")
-        }
-        let api =`${url}/api/profile/userRegister/`
+     
+        let api =`${url}/api/profile/editProfile/`
         let sendData ={
             first_name:this.state.name,
             last_name:this.state.lastname,
@@ -86,15 +90,15 @@ export default class EditAccount extends Component {
             address:this.state.address.address,
             street:this.state.street,
             lat: this.state.address.latitude,
-            long:this.state.address.longitude,
-            password:this.state.password,
-            bodyType:"formData"
+            lang:this.state.address.longitude,
+            user:this.props.user.user.id
         }
         let post = await HttpsClient.post(api,sendData)
         console.log(post)
         if(post.type=="success"){
             this.setState({creating:false})
-            this.showSimpleMessage("Account Created SuccessFully","green","success")
+            this.showSimpleMessage("Account Edited SuccessFully","green","success")
+            this.getProfile()
             return this.props.navigation.goBack()
         }else{
             this.setState({ creating: false })
@@ -133,7 +137,11 @@ componentDidMount(){
                     </View>
                 </View>
             </LinearGradient>
+            <KeyboardAvoidingView 
+              behavior={Platform.OS=="ios"?"padding":"height"}
+            >
 
+        
             <ScrollView>
                         <View style={{paddingHorizontal:20,marginTop:20}}>
                             <View>
@@ -164,6 +172,7 @@ componentDidMount(){
                                     <Text style={[styles.text, { color: "#fff", fontSize: 22 }]}>Phone No : </Text>
                                 </View>
                                 <TextInput
+                                  maxLength={10}
                                     keyboardType={"numeric"}
                                     value={this.state.phone}
                                     style={{ height: 35, width: width * 0.8, backgroundColor: "#fafafa", marginTop: 10, paddingLeft: 5 }}
@@ -211,6 +220,7 @@ componentDidMount(){
                         </TouchableOpacity>
                </View>
             </ScrollView>
+        </KeyboardAvoidingView>
       </View>
     );
   }
@@ -221,3 +231,10 @@ const styles = StyleSheet.create({
         fontFamily
     }
 })
+const mapStateToProps = (state) => {
+  return {
+    theme: state.selectedTheme,
+    user:state.selectedUser,
+  }
+}
+export default connect(mapStateToProps, { selectTheme ,selectUser})(EditAccount);

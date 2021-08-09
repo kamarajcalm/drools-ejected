@@ -336,6 +336,14 @@ export default class SubscriptionPlans extends Component {
                         </View>
                       
                     </TouchableOpacity>
+                     <TouchableOpacity
+                        onPress={() => { this.props.navigation.navigate("PlanDeliveries")}}
+                    >
+                        <View style={{ alignItems: "center", justifyContent: "center" }}>
+                          <MaterialIcons name="delivery-dining" size={40} color={primaryColor} />
+                        </View>
+                      
+                    </TouchableOpacity>
                 </View>
                 {
                     this.modal()

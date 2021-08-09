@@ -36,6 +36,18 @@ class PlanUsers extends Component {
             this.setState({ users:data.data})
         }
     }
+    deleteUsers= async(item,index)=>{
+        let api = `${url}/api/drools/planmembers/${item.id}/`
+        let del = await HttpsClient.delete(api)
+        if(del.type=="success"){
+            let duplicate = this.state.users
+            duplicate.splice(index,1)
+            this.setState({users:duplicate})
+            return  this.showSimpleMessage("Deleted SuccessFully","green","success")
+        }else{
+                return  this.showSimpleMessage("Try Again","red","danger")   
+        }
+    }
     showSimpleMessage(content, color, type = "info", props = {}) {
         const message = {
             message: content,
@@ -49,6 +61,12 @@ class PlanUsers extends Component {
     }
  componentDidMount(){
      this.getUsers()
+        this._unsubscribe = this.props.navigation.addListener('focus', () => {
+                this.getUsers()
+        });
+ }
+ componentWillUnmount =() =>{
+      this._unsubscribe()
  }
     header =()=>{
         return(
@@ -60,7 +78,7 @@ class PlanUsers extends Component {
                     <Text style={[styles.text, { color: "#000", fontSize: 20, textDecorationLine: "underline"}]}>Name</Text>
                   </View>
                   <View style={{flex:0.3,alignItems:"center",justifyContent:"center"}}>
-                    <Text style={[styles.text, { color: "#000", fontSize: 20, textDecorationLine: "underline"}]}>Active</Text>
+                    <Text style={[styles.text, { color: "#000", fontSize: 20, textDecorationLine: "underline"}]}>Actions</Text>
                   </View>
             </View>
         )
@@ -92,6 +110,20 @@ class PlanUsers extends Component {
                     style: "cancel"
                 },
                 { text: "Yes", onPress: () => { this.toggleActivate(item, index) } }
+            ]
+        );
+    }
+        createAlert2 = (item, index) => {
+        Alert.alert(
+            `Do you want to remove?`,
+            ``,
+            [
+                {
+                    text: "No",
+                    onPress: () => console.log("Cancel Pressed"),
+                    style: "cancel"
+                },
+                { text: "Yes", onPress: () => { this.deleteUsers(item, index) } }
             ]
         );
     }
@@ -132,7 +164,7 @@ class PlanUsers extends Component {
                                         <View style={{ flex: 0.6, alignItems: "center", justifyContent: "center" }}>
                                             <Text style={[styles.text, { color: "#000", fontSize: 18, }]}>{item.fullName}</Text>
                                         </View>
-                                        <View style={{ flex: 0.3, alignItems: "center", justifyContent: "center" }}>
+                                        <View style={{ flex: 0.3, alignItems: "center", justifyContent: "space-around",flexDirection:"row" }}>
                                             <Switch
                                                 trackColor={{ false: "#767577", true: "#81b0ff" }}
                                                 thumbColor={item.active ? "#f5dd4b" : "#f4f3f4"}
@@ -140,6 +172,9 @@ class PlanUsers extends Component {
                                                 onValueChange={() => { this.createAlert(item,index)}}
                                                 value={item.active}
                                             />
+                                            <TouchableOpacity onPress={()=>{this.createAlert2(item,index)}}>
+                                                  <AntDesign name="delete" size={24} color="red" />
+                                            </TouchableOpacity>
                                         </View>
                                     </View>
                                 )

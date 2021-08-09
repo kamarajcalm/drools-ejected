@@ -63,7 +63,6 @@ const screenHeight = Dimensions.get("screen").height
                       </View>
                        
                   </TouchableOpacity>
-               
                 <TouchableOpacity 
                     onPress={() => { this.props.navigation.navigate("PlanUsers",{item:this.state.item})}}
                 >
