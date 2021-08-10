@@ -107,23 +107,39 @@ export default class TimeWise extends Component {
     getData = async () => {
         let api = `${url}/api/drools/peakTime/?month=${this.state.value}&year=${this.state.value2}`
         let data = await HttpsClient.get(api)
-        console.log(data)
+        console.log(api)
         if (data.type == "success") {
-            let set = {
-                labels: data.data.labels,
-                datasets: [
-                    {
-                        data: data.data.data
-                    }
-                ]
-            }
+            // let set = {
+            //     labels: data.data.labels,
+            //     datasets: [
+            //         {
+            //             data: data.data.data
+            //         }
+            //     ]
+            // }
 
-            this.setState({ data: set, loading: false })
+            this.setState({ data: data.data, loading: false })
         }
     }
     componentDidMount(){
       this.getData()
     }
+      header =() =>{
+      return(
+             <View style={{flexDirection:"row",marginTop:10,borderColor:"gray",borderWidth:1,}}>
+                 <View style={{ flex: 0.1, alignItems: "center", justifyContent: "center", borderColor: "gray", borderRightWidth: 1,paddingVertical:5}}>
+                        <Text style={[styles.text,{color:primaryColor,}]}>#</Text>
+                  </View>
+                 <View style={{ flex: 0.7, alignItems: "center", justifyContent: "center", borderColor: "gray", borderRightWidth: 1, paddingVertical: 5}}>
+                     <Text style={[styles.text, { color: primaryColor, }]}>Time</Text>
+                  </View>
+                 <View style={{ flex: 0.2, alignItems: "center", justifyContent: "center", borderColor: "gray", borderRightWidth: 1, paddingVertical: 5}}>
+                     <Text style={[styles.text, { color: primaryColor, }]}>Qty</Text>
+                  </View>
+              
+             </View>
+      )
+  }
     validate =(open,value,open2,value2)=>{
         if(this.state.loading){
             return(
@@ -132,7 +148,7 @@ export default class TimeWise extends Component {
         }
         return(
            <>
-                <ScrollView
+                {/* <ScrollView
                     contentContainerStyle={{paddingRight:20}}
                     bounces={false}
                     style={{marginTop:height*0.08}}
@@ -161,8 +177,30 @@ export default class TimeWise extends Component {
                         verticalLabelRotation={90}
                     />
 
-                </ScrollView>
-
+                </ScrollView> */}
+                 <FlatList
+                  contentContainerStyle={{paddingBottom:20}}
+                 style={{marginTop:height*0.1}} 
+               ListHeaderComponent={this.header()}
+               data={this.state.data}
+               keyExtractor={(item,index)=>index.toString()}
+               renderItem={({item,index})=>{
+                    return(
+                           <View style={{flexDirection:"row",borderColor:"gray",borderWidth:1,}}>
+                 <View style={{ flex: 0.1, alignItems: "center", justifyContent: "center", borderColor: "gray", borderRightWidth: 1,paddingVertical:5}}>
+                        <Text style={[styles.text,{color:"#fff",}]}>{index+1}</Text>
+                  </View>
+                 <View style={{ flex: 0.7, alignItems: "center", justifyContent: "center", borderColor: "gray", borderRightWidth: 1, paddingVertical: 5}}>
+                     <Text style={[styles.text, { color: "#fff", }]}>{item.name}</Text>
+                  </View>
+                 <View style={{ flex: 0.2, alignItems: "center", justifyContent: "center", borderColor: "gray", borderRightWidth: 1, paddingVertical: 5}}>
+                     <Text style={[styles.text, { color:"#fff", }]}>{item.count}</Text>
+                  </View>
+              
+             </View>
+                    )
+               }}
+             />
                 <View style={{ position: "absolute", top: 10, width: width * 0.4, right: 20 }}>
                     <DropDownPicker
                         style={{ height: height * 0.05 }}

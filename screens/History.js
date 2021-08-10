@@ -195,7 +195,7 @@ class History extends Component {
                                             <View style={{ flex: 0.5, }}>
                                                 <View>
                                                     <Text style={[styles.text, { fontSize: 18, color: primaryColor }]}>Table : {item.tableTitle}</Text>
-
+                                                     <Text style={[styles.text, { fontSize: 18, color: primaryColor ,textAlign:"center"}]}>{item.timeAgo}</Text>
                                                 </View>
                                             </View>
                                             <View style={{ flex: 0.5, alignItems: "flex-end", paddingRight: 20 }}>
