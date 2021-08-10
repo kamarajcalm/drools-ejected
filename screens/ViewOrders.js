@@ -233,7 +233,7 @@ class ViewOrders extends Component {
                 heigthtimes: 0,
                 fonttype: 1,
             });
-            await BluetoothEscposPrinter.printText(`${this.state.item.customer_address}`, {});
+            await BluetoothEscposPrinter.printText(`${this.state?.item?.customer_address}`, {});
         }
 
         await BluetoothEscposPrinter.printText("\n\r", {});

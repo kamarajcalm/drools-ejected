@@ -34,8 +34,8 @@ class Menu extends Component {
   getMenu = async () => {
      const api = `${url}/api/drools/getTimetable/`
      const data = await HttpsClient.get(api)
-     console.log(data)
-    
+     console.log(data.data)
+     
       // in data.data sessions contains respective frequency by looping through frequecy we get either booked a menu or not 
            
      if(data.type=="success"){
@@ -210,7 +210,7 @@ class Menu extends Component {
                                               }
                                            </View>
                                              <View style={{flex:0.2,alignItems:"center",justifyContent:"center"}}>
-                                                {this.state.selectedItem.bookedtitle!=item.title? <TouchableOpacity style={{height:height*0.05,width:"100%",alignItems:"center",justifyContent:"center",backgroundColor:primaryColor}}
+                                                {this.state?.selectedItem?.bookedtitle!=item.title? <TouchableOpacity style={{height:height*0.05,width:"100%",alignItems:"center",justifyContent:"center",backgroundColor:primaryColor}}
                                                  
                                                  onPress={()=>{this.changeDefault(it)}}
                                                  >
@@ -234,7 +234,7 @@ class Menu extends Component {
     )
   }
   validateSession =(session,item)=>{
-    if(session.booked){
+    if(session?.booked){
       return(
            <TouchableOpacity style={{ flex: 0.266, alignItems: "center", justifyContent: "center" }}
 
@@ -248,7 +248,7 @@ class Menu extends Component {
                }}
                       
            >
-                <Text style={[styles.text, {  fontSize: 10,color:"#fff"}]}>{session.bookedtitle}</Text>
+                <Text style={[styles.text, {  fontSize: 10,color:"#fff"}]}>{session?.bookedtitle}</Text>
            </TouchableOpacity>
       )
     }
@@ -268,7 +268,15 @@ empty =()=>{
     </View>
   )
 }
+emptySessions =()=>{
+  return(
+    <View style={{ flex: 0.266, alignItems: "center", justifyContent: "center" }}>
+        <Text style={{color:"#fff"}}>-</Text>
+    </View>
+  )
+}
   render() {
+    console.log(this.state?.menus[0]?.plantype)
     return (
       <View style={{ flex:1}}>
         <StatusBar style={"light"} />
@@ -307,15 +315,66 @@ empty =()=>{
                         <Text style={[styles.text, { color: "#fff", fontSize: 10}]}>{item.weekday}</Text>
                         <Text style={[styles.text, { color: "#fff", fontSize: 12}]}>{item.date}</Text>
                       </View>
+                       {
+                         this.state.menus?.[0].plantype=="AN"&&
+                           <>
+                      {
+                        this.emptySessions()
+                      }
                       {
                         this.validateSession(item.sessions[0],item)
                       }
                       {
-                        this.validateSession(item.sessions[1],item)
+                          this.validateSession(item.sessions[1],item)
+                      }
+                           </>
+                       }
+                              {
+                         this.state.menus?.[0].plantype=="MAN"&&
+                           <>
+                  
+                      {
+                        this.validateSession(item.sessions[0],item)
                       }
                       {
+                          this.validateSession(item.sessions[1],item)
+                      }
+                       {
                           this.validateSession(item.sessions[2],item)
                       }
+                           </>
+                       }
+                                     {
+                         this.state.menus?.[0].plantype=="MA"&&
+                           <>
+                  
+                      {
+                        this.validateSession(item.sessions[0],item)
+                      }
+                      {
+                          this.validateSession(item.sessions[1],item)
+                      }
+                     {
+                        this.emptySessions()
+                      }
+                           </>
+                       }
+                                           {
+                         this.state.menus?.[0].plantype=="MN"&&
+                           <>
+                  
+                      {
+                        this.validateSession(item.sessions[0],item)
+                      }
+                       {
+                        this.emptySessions()
+                      }
+                      {
+                          this.validateSession(item.sessions[1],item)
+                      }
+                    
+                           </>
+                       }
                     </View>
                   )
                }}

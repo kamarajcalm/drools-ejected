@@ -36,7 +36,7 @@ class Statistics extends Component {
     render() {
     
         return (
-            <View style={{ flex: 1 }}>
+            <View style={{ flex: 1,backgroundColor:"#000" }}>
         
                 {/* Headers */}
           
@@ -63,72 +63,56 @@ class Statistics extends Component {
                 
                  contentContainerStyle ={{alignItems:"center",}}
                 >
-                    <TouchableOpacity
-
-                        onPress={() => { this.props.navigation.navigate("StatisticsView", { item: "Fast Moving Items" }) }}
+                           <TouchableOpacity style={{flexDirection:"row",height:height*0.05,paddingHorizontal:20,width,marginTop:20}}
+                      onPress={() => { this.props.navigation.navigate("StatisticsView", { item: "Fast Moving Items" }) }}
                     >
-                    <LinearGradient
-                        style={[styles.cardStyle]}
-                        colors={gradients}
-                    >
-                       
-                         
-                            <Image 
-                                source={{ uri:"https://us.123rf.com/450wm/subbotina/subbotina1905/subbotina190500024/123093476-hamburger-and-double-cheeseburger-with-fries-wooden-table.jpg?ver=6"}}
-                                style={{height:100,width:100}}
-                            
-                            />
-                             
+                        <View style={{flex:0.8,flexDirection:"row"}}>
                             <View style={{ alignItems: "center", justifyContent: "center" }}>
-                                <Text style={[styles.text, { color: primaryColor, fontSize: 22 }]}>Fast Moving Items</Text>
+                     <Ionicons name="fast-food" size={24} color="#fff" />
                             </View>
-                    </LinearGradient>
+                            <View style={{ alignItems: "center", justifyContent: "center", marginLeft: 20 }}>
+                                <Text style={[styles.text, { color: "#fff" }]}>Fast Moving Items</Text>
+                            </View>
+                        </View>
+                      
+                         <View style={{flex:0.2,alignItems:"center",justifyContent:'center'}}>
+                            <Entypo name="triangle-right" size={24} color="#fff" />
+                         </View>
                     </TouchableOpacity>
-                    <TouchableOpacity
-
-                        onPress={() => { this.props.navigation.navigate("StatisticsView", { item: "Time Wise" }) }}
+                            <TouchableOpacity style={{flexDirection:"row",height:height*0.05,paddingHorizontal:20,width,marginTop:20}}
+                      onPress={() => { this.props.navigation.navigate("StatisticsView", { item: "Time Wise" }) }}
                     >
-                        <LinearGradient
-                            style={[styles.cardStyle]}
-                            colors={gradients}
-                        >
-
-                          
-                            <Image
-                                source={{ uri: "https://media.wired.co.uk/photos/606d9ab87aff197af7c7296f/master/pass/wired-timezones-hero.jpg" }}
-                                style={{ height: 100, width: 100 }}
-
-                            />
+                        <View style={{flex:0.8,flexDirection:"row"}}>
                             <View style={{ alignItems: "center", justifyContent: "center" }}>
-                                <Text style={[styles.text, { color: primaryColor, fontSize: 22 }]}>Peak Hours</Text>
+                     <Ionicons name="time" size={24} color="#fff" />
                             </View>
-
-                        </LinearGradient>
+                            <View style={{ alignItems: "center", justifyContent: "center", marginLeft: 20 }}>
+                                <Text style={[styles.text, { color: "#fff" }]}>Peak Hours</Text>
+                            </View>
+                        </View>
+                      
+                         <View style={{flex:0.2,alignItems:"center",justifyContent:'center'}}>
+                            <Entypo name="triangle-right" size={24} color="#fff" />
+                         </View>
                     </TouchableOpacity>
-                    <TouchableOpacity
-                        onPress={() => { this.props.navigation.navigate("StatisticsView", { item: "Net Profit" }) }}
+                               <TouchableOpacity style={{flexDirection:"row",height:height*0.05,paddingHorizontal:20,width,marginTop:20}}
+                onPress={() => { this.props.navigation.navigate("StatisticsView", { item: "Net Profit" }) }}
                     >
-                    <LinearGradient 
-                        style={[styles.cardStyle]}
-                        colors={gradients}
+                        <View style={{flex:0.8,flexDirection:"row"}}>
+                            <View style={{ alignItems: "center", justifyContent: "center" }}>
+                         <FontAwesome5 name="money-bill" size={24} color="#fff" />
+                            </View>
+                            <View style={{ alignItems: "center", justifyContent: "center", marginLeft: 20 }}>
+                                <Text style={[styles.text, { color: "#fff" }]}>Net Profit</Text>
+                            </View>
+                        </View>
+                      
+                         <View style={{flex:0.2,alignItems:"center",justifyContent:'center'}}>
+                            <Entypo name="triangle-right" size={24} color="#fff" />
+                         </View>
+                    </TouchableOpacity>
                     
-                    >
-                       
-                         
-                            <Image
-                                source={{ uri: "https://biznakenya.com/wp-content/uploads/2016/08/Profitable-Business-in-Kenya.jpg" }}
-                                style={{ height: 100, width: 100 }}
-
-                            />
-                            <View style={{ alignItems: "center", justifyContent: "center" }}>
-                                <Text style={[styles.text, { color: primaryColor, fontSize: 22 }]}>Net Profit </Text>
-                            </View>
-
-                    </LinearGradient>
-                  
-
-                    </TouchableOpacity>
-            
+                   
               
                 </ScrollView>
             </View>

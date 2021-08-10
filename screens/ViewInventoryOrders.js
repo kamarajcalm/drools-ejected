@@ -146,13 +146,15 @@ class ViewInventoryOrders extends Component {
         if(this.state.Amount ==""){
             return this.showSimpleMessage("Please add Amount", "#dd7030",)
         }
-        let api = `${url}/api/drools/orders/${this.state.item.id}/`
+        // let api = `${url}/api/drools/orders/${this.state.item.id}/`
+        let api = `${url}/api/drools/editPurchase/`
         let sendData ={
-            order_status:this.state.ordervalue,
+            order:this.state.item.id,
+            status:this.state.ordervalue,
             amount:this.state.Amount,
-            arriving_date:moment(new Date()).format("YYYY-MM-DD")
         }
-        let patch = await HttpsClient.patch(api,sendData)
+        let patch = await HttpsClient.post(api,sendData)
+        console.log(patch)
         if(patch.type =="success"){
             this.showSimpleMessage("Edited SuccessFully","green","success")
             this.getItem()

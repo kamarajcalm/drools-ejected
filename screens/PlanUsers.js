@@ -32,7 +32,7 @@ class PlanUsers extends Component {
     getUsers = async()=>{
         let api = `${url}/api/drools/planmembers/?plan=${this.state.item.id}`
         let data = await HttpsClient.get(api)
-        console.log(api)
+   console.log(data)
         if(data.type="success"){
             this.setState({ users:data.data})
         }
@@ -231,8 +231,8 @@ class PlanUsers extends Component {
                                         <View style={{ flex: 0.3, alignItems: "center", justifyContent: "space-around", }}>
                                            <View style={{flexDirection:"row",alignItems:"center",justifyContent:"space-around"}}>
                                                     <Switch
-                                                trackColor={{ false: "#767577", true: "#81b0ff" }}
-                                                thumbColor={item.active ? "#f5dd4b" : "#f4f3f4"}
+                                                trackColor={{ false: "#767577", true: "#000" }}
+                                                thumbColor={item.active ? primaryColor : "#f4f3f4"}
                                                 ios_backgroundColor="#3e3e3e"
                                                 onValueChange={() => { this.createAlert(item,index)}}
                                                 value={item.active}

@@ -114,7 +114,7 @@ import FlashMessage, { showMessage, hideMessage } from "react-native-flash-messa
                         onPress ={()=>{this.createAlert(item,index)}}
                        >
                            <View style={{alignItems:"center",justifyContent:"center"}}>
-                               <Text style={[styles.text,{color:"#000",fontSize:22}]}>{item.name} - {}</Text>
+                               <Text style={[styles.text,{color:"#000",fontSize:22}]}>{item.name} - {item.user.username}</Text>
                            </View>
                        </TouchableOpacity>
                    )
