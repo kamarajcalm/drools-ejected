@@ -11,5 +11,5 @@ export default {
     themeColor,
     primaryColor,
     secondaryColor,
-    url
+    url,
 }
