@@ -18,6 +18,7 @@ import { FontAwesome, MaterialCommunityIcons, MaterialIcons, SimpleLineIcons, En
 import Modal from 'react-native-modal';
 import FlashMessage, { showMessage, hideMessage } from "react-native-flash-message";
 import HttpsClient from '../HttpsClient';
+import moment from 'moment';
 const screenHeight = Dimensions.get("screen").height
 class PlanUsers extends Component {
     constructor(props) {
@@ -74,14 +75,48 @@ class PlanUsers extends Component {
                   <View style={{flex:0.1,alignItems:"center",justifyContent:"center"}}>
                             <Text style={[styles.text,{color:"#000",fontSize:20,textDecorationLine:"underline"}]}>#</Text>
                   </View>
-                  <View style={{flex:0.6,alignItems:"center",justifyContent:"center"}}>
-                    <Text style={[styles.text, { color: "#000", fontSize: 20, textDecorationLine: "underline"}]}>Name</Text>
+                  <View style={{flex:0.3,alignItems:"center",justifyContent:"center"}}>
+                    <Text style={[styles.text, { color: "#000", fontSize: 16, textDecorationLine: "underline"}]}>Name</Text>
                   </View>
                   <View style={{flex:0.3,alignItems:"center",justifyContent:"center"}}>
-                    <Text style={[styles.text, { color: "#000", fontSize: 20, textDecorationLine: "underline"}]}>Actions</Text>
+                    <Text style={[styles.text, { color: "#000", fontSize: 16, textDecorationLine: "underline"}]}>Expiry</Text>
+                  </View>
+                  <View style={{flex:0.3,alignItems:"center",justifyContent:"center"}}>
+                    <Text style={[styles.text, { color: "#000", fontSize: 16, textDecorationLine: "underline"}]}>Actions</Text>
                   </View>
             </View>
         )
+    }
+    renew = async(item, index)=>{
+        let api = `${url}/api/drools/planmembers/${item.id}/`
+        let  expirydate = item.expiry_date
+        let  today = moment(new Date()).format('YYYY-MM-DD')
+        let  renewDate
+        if(expirydate==today){
+            var new_date = moment(expirydate, "YYYY-MM-DD").add(30, 'days');;
+            renewDate = new_date
+        }else if(moment(expirydate).isAfter(today)){
+           
+             var new_date = moment(expirydate, "YYYY-MM-DD").add(30,'days');
+             renewDate = new_date
+        }else if(moment(expirydate).isBefore(today)){
+             var new_date = moment(today, "YYYY-MM-DD").add(30,'days');
+               renewDate = new_date
+        }
+        let sendData = {
+           expiry_date:moment(renewDate).format("YYYY-MM-DD"),
+           active:true
+        }
+    
+          let post = await HttpsClient.patch(api,sendData)
+         
+        if(post.type=="success"){
+          this.getUsers();
+          return  this.showSimpleMessage("Renewed SuccessFully","green","success")
+
+        }else{
+            this.showSimpleMessage("Try Again", "red", "danger")
+        }
     }
     toggleActivate = async(item,index) =>{
         let api = `${url}/api/drools/planmembers/${item.id}/`
@@ -126,6 +161,32 @@ class PlanUsers extends Component {
                 { text: "Yes", onPress: () => { this.deleteUsers(item, index) } }
             ]
         );
+        
+    }
+            createAlert3 = (item, index) => {
+        Alert.alert(
+            `Do you want to renew?`,
+            ``,
+            [
+                {
+                    text: "No",
+                    onPress: () => console.log("Cancel Pressed"),
+                    style: "cancel"
+                },
+                { text: "Yes", onPress: () => { this.renew(item, index) } }
+            ]
+        );
+        
+    }
+    getColor = (date)=>{
+      let  today = moment(new Date()).format('YYYY-MM-DD')
+      if(today==date){
+          return "red"
+      }
+      if(moment(date).isBefore(today)){
+          return "red" 
+      }
+      return "#000"
     }
     render() {
         return (
@@ -159,13 +220,17 @@ class PlanUsers extends Component {
                                 return(
                                     <View style={{ flexDirection: "row", marginTop: 10 }}>
                                         <View style={{ flex: 0.1, alignItems: "center", justifyContent: "center" }}>
-                                            <Text style={[styles.text, { color: "#000", fontSize: 18, textDecorationLine: "underline" }]}>{index+1}</Text>
+                                            <Text style={[styles.text, { color: "#000", fontSize: 14, textDecorationLine: "underline" }]}>{index+1}</Text>
                                         </View>
-                                        <View style={{ flex: 0.6, alignItems: "center", justifyContent: "center" }}>
-                                            <Text style={[styles.text, { color: "#000", fontSize: 18, }]}>{item.fullName}</Text>
+                                        <View style={{ flex: 0.3, alignItems: "center", justifyContent: "center" }}>
+                                            <Text style={[styles.text, { color: "#000", fontSize: 14, }]}>{item.fullName}</Text>
                                         </View>
-                                        <View style={{ flex: 0.3, alignItems: "center", justifyContent: "space-around",flexDirection:"row" }}>
-                                            <Switch
+                                            <View style={{ flex: 0.3, alignItems: "center", justifyContent: "center" }}>
+                                            <Text style={[styles.text, { color: this.getColor(item.expiry_date), fontSize: 14, }]}>{item.expiry_date}</Text>
+                                        </View>
+                                        <View style={{ flex: 0.3, alignItems: "center", justifyContent: "space-around", }}>
+                                           <View style={{flexDirection:"row",alignItems:"center",justifyContent:"space-around"}}>
+                                                    <Switch
                                                 trackColor={{ false: "#767577", true: "#81b0ff" }}
                                                 thumbColor={item.active ? "#f5dd4b" : "#f4f3f4"}
                                                 ios_backgroundColor="#3e3e3e"
@@ -175,6 +240,14 @@ class PlanUsers extends Component {
                                             <TouchableOpacity onPress={()=>{this.createAlert2(item,index)}}>
                                                   <AntDesign name="delete" size={24} color="red" />
                                             </TouchableOpacity>
+                                           </View>
+                                            <View style={{marginVertical:10,}}>
+                                                <TouchableOpacity 
+                                                 onPress={()=>{this.createAlert3(item,index)}}
+                                                >
+                                                      <Text style={[styles.text,{color:"green",textDecorationLine:"underline"}]}>Renew</Text>
+                                                </TouchableOpacity>
+                                            </View>
                                         </View>
                                     </View>
                                 )

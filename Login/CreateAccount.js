@@ -86,7 +86,7 @@ export default class CreateAccount extends Component {
             address:this.state.address.address,
             street:this.state.street,
             lat: this.state.address.latitude,
-            long:this.state.address.longitude,
+            lang:this.state.address.longitude,
             password:this.state.password,
             bodyType:"formData"
         }
