@@ -87,6 +87,8 @@ class ViewOrders extends Component {
             oneplus:false,
             paymentmode:null,
             refreshing:false,
+            complementModal:false,
+            complementItem:""
         };
     }
     showSimpleMessage(content, color, type = "info", props = {}) {
@@ -238,6 +240,17 @@ class ViewOrders extends Component {
 
         await BluetoothEscposPrinter.printText("\n\r", {});
         await BluetoothEscposPrinter.printerAlign(BluetoothEscposPrinter.ALIGN.CENTER);
+                if(this.state.complement){
+         await BluetoothEscposPrinter.printText(`Hey mate! We’ve given you a complimentary ${this.state.complementItem} :) 
+Your feedback is very valuable for us to grow. We’re a new restaurant, please do rate us out mate. \n\r`, {
+            encoding: 'GBK',
+            codepage: 0,
+            widthtimes: 0,
+            heigthtimes: 0,
+            fonttype: 1,
+        });
+
+        }
         await BluetoothEscposPrinter.printText("THANK YOU\n\r", {
             encoding: 'GBK',
             codepage: 0,
@@ -248,6 +261,14 @@ class ViewOrders extends Component {
         await BluetoothEscposPrinter.printText("\n\r", {});
         await BluetoothEscposPrinter.printText("\n\r", {});
         await BluetoothEscposPrinter.printText("\n\r", {});
+        if(this.state.item.order_type == "Takeaway"){
+            await BluetoothEscposPrinter.printText("\n\r", {});
+            await BluetoothEscposPrinter.printText("\n\r", {});
+            await BluetoothEscposPrinter.printText("\n\r", {});
+            await BluetoothEscposPrinter.printText("\n\r", {});
+            await BluetoothEscposPrinter.printText("\n\r", {});
+            await BluetoothEscposPrinter.printText("\n\r", {});
+        }
         await BluetoothTscPrinter.TEAR
     }
     getDiscount = async()=>{
@@ -500,6 +521,48 @@ class ViewOrders extends Component {
     }
     toggleSwitch =()=>{
         this.props.setOnePlusOne(!this.props.oneplusOne)
+    }
+        complementModal =()=>{
+        return (
+            <Modal
+                statusBarTranslucent={true}
+                isVisible={this.state.complementModal}
+                deviceHeight={screenHeight}
+                onBackdropPress={() => { this.setState({ complementModal: false }) }}
+            >
+                <View style={{flex:1,alignItems:"center",marginTop:40}}>
+                         <View style={{height:height*0.4,backgroundColor:"#fff",width:width*0.8}}>
+                            <View>
+                                <View>
+                                     <Text style={[styles.text,{color:"#000",fontSize:22}]}>Enter Item :</Text>
+                                </View>
+                                <TextInput 
+                                   selectionColor={primaryColor}
+                                   value= {this.state.complementItem}
+                                   style={{height:35,width:width*0.6,backgroundColor:"#fafafa",paddingLeft:5,marginTop:10,marginLeft:20}}
+                                   onChangeText={(item)=>{this.setState({complementItem:item})}}
+                                />
+                            </View>
+                               <View style={{ alignItems: "center" ,marginVertical:20}}>
+                            <TouchableOpacity style={{ height: height * 0.05, width: width * 0.4, alignItems: "center", justifyContent: "center", backgroundColor: primaryColor }}
+                                onPress={() => {
+                                    if(this.state.complementItem==""){
+                                        return this.showSimpleMessage("please enter item","orange","info")
+                                    }
+                                    this.setState({complement:true,complementModal:false})
+                                }}
+                            >
+                                <Text style={[styles.text, { color: "#fff" }]}>Save</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </View>
+
+            
+
+
+            </Modal>
+        )
     }
     completeModal = ()=>{
         return(
@@ -769,6 +832,9 @@ class ViewOrders extends Component {
               {
                   this.completeModal()
               }
+                 {
+                    this.complementModal()
+                }
                 </ScrollView>
             </View>
 
