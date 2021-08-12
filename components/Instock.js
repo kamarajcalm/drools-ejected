@@ -105,10 +105,13 @@ class Instock extends Component {
         let sendData = {
             quantity: Number(this.state.Quantity),
             price: Number(this.state.price),
-            expiry_date: this.state.expiryDate,
             main: this.state.item.id
         }
+        if( this.state.expiryDate!=""){
+            sendData.expiry_date = this.state.expiryDate
+        }
         let post = await HttpsClient.post(api, sendData)
+        console.log(post)
         if (post.type == "success") {
             this.setState({ modal: false, Quantity: "", price: "", expiryDate: "" })
             this.getItems()
@@ -125,17 +128,19 @@ class Instock extends Component {
             return this.showSimpleMessage("Please add price", "#dd7030",)
         }
         let sendData = {
-            quantity: Number(this.state.Quantity),
-            price: Number(this.state.price),
-            expiry_date: this.state.expiryDate,
-            main: this.state.item.id,
+            lossquantity: Number(this.state.Quantity),
+            itemsub:this.state.selectedItem.id,
+            order: this.state.item.id,
 
         }
+  
         if (this.state.ordervalue) {
             sendData.status = this.state.ordervalue
         }
-        let api = `${url}/api/drools/ingridientsub/${this.state.selectedItem.id}/`
-        let patch = await HttpsClient.patch(api, sendData)
+         let api = `${url}/api/drools/itemLoss/`
+        // let api = `${url}/api/drools/ingridientsub/${this.state.selectedItem.id}/`
+        let patch = await HttpsClient.post(api, sendData)
+        console.log(patch)
         if (patch.type == "success") {
             this.setState({ modal: false, Quantity: "", price: "", expiryDate: "" })
             this.getItems()
@@ -289,7 +294,9 @@ class Instock extends Component {
                 <View style={{ flex: 0.2, alignItems: "center", justifyContent: "center" }}>
                     <Text style={[styles.text, { color: "#000" }]}>Price</Text>
                 </View>
-              
+              <View style={{ flex: 0.2, alignItems: "center", justifyContent: "center" }}>
+                    <Text style={[styles.text, { color: "#000" }]}>Expiry Date</Text>
+                </View>
                 <View style={{ flex: 0.2, alignItems: "center", justifyContent: "center" }}>
                     <Text style={[styles.text, { color: "#000" }]}>Edit</Text>
                 </View>
@@ -360,7 +367,9 @@ class Instock extends Component {
                                 <View style={{ flex: 0.2, alignItems: "center", justifyContent: "center" }}>
                                     <Text style={[styles.text, { color: "#000" }]}>{item.price}</Text>
                                 </View>
-                           
+                               <View style={{ flex: 0.2, alignItems: "center", justifyContent: "center" }}>
+                                   <Text style={[styles.text, { color: "#000" }]}>{item.expiry_date}</Text>
+                              </View>
                                 <TouchableOpacity style={{ flex: 0.2, alignItems: "center", justifyContent: "center" }}
                                     onPress={() => { this.editItem(item) }}
                                 >

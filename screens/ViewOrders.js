@@ -147,6 +147,33 @@ class ViewOrders extends Component {
         })
         return total
     }
+    printComplement  = async() =>{
+            await BluetoothEscposPrinter.printPic(base64Image, { width: 200, left: 100, gap: 0 });
+        await BluetoothEscposPrinter.printerAlign(BluetoothEscposPrinter.ALIGN.CENTER);
+        await BluetoothEscposPrinter.setBlob(0);
+        await BluetoothEscposPrinter.setBlob(0)
+         await BluetoothEscposPrinter.printText(`Hey mate! We’ve given you a complimentary ${this.state.complementItem} :) 
+Your feedback is very valuable for us to grow. We’re a new restaurant, please do rate us out mate. \n\r`, {
+            encoding: 'GBK',
+            codepage: 0,
+            widthtimes: 0,
+            heigthtimes: 0,
+            fonttype: 1,
+        });
+
+        await BluetoothEscposPrinter.printText("\n\r", {});
+        await BluetoothEscposPrinter.printerAlign(BluetoothEscposPrinter.ALIGN.CENTER);
+        await BluetoothEscposPrinter.printText("****THANK YOU****\n\r", {
+            encoding: 'GBK',
+            codepage: 0,
+            widthtimes: 0,
+            heigthtimes: 0,
+            fonttype: 1,
+        });
+            await BluetoothEscposPrinter.printText("\n\r", {});
+            await BluetoothEscposPrinter.printText("\n\r", {});
+            await BluetoothEscposPrinter.printText("\n\r", {});
+    }
     print = async () => {
 
         await BluetoothEscposPrinter.printPic(base64Image, { width: 200, left: 100, gap: 0 });
@@ -240,18 +267,7 @@ class ViewOrders extends Component {
 
         await BluetoothEscposPrinter.printText("\n\r", {});
         await BluetoothEscposPrinter.printerAlign(BluetoothEscposPrinter.ALIGN.CENTER);
-                if(this.state.complement){
-         await BluetoothEscposPrinter.printText(`Hey mate! We’ve given you a complimentary ${this.state.complementItem} :) 
-Your feedback is very valuable for us to grow. We’re a new restaurant, please do rate us out mate. \n\r`, {
-            encoding: 'GBK',
-            codepage: 0,
-            widthtimes: 0,
-            heigthtimes: 0,
-            fonttype: 1,
-        });
-
-        }
-        await BluetoothEscposPrinter.printText("THANK YOU\n\r", {
+        await BluetoothEscposPrinter.printText("****THANK YOU****\n\r", {
             encoding: 'GBK',
             codepage: 0,
             widthtimes: 0,
@@ -416,6 +432,13 @@ Your feedback is very valuable for us to grow. We’re a new restaurant, please 
 
                         </View>
                     </View>
+                       <View style={{alignItems:"center",justifyContent:"center",marginVertical:20}}>
+                    <TouchableOpacity style={{ height: height * 0.05, width: width * 0.4, alignItems: "center", justifyContent: "center", backgroundColor:primaryColor }}
+                      onPress={()=>{this.setState({complementModal:true})}}
+                    >
+                           <Text style={[styles.text,{color:"#fff"}]}>Complement</Text>
+                    </TouchableOpacity>
+                </View>
                 </View>}
                 {
                     this.state.item.order_type =="Takeaway"&&
@@ -549,7 +572,10 @@ Your feedback is very valuable for us to grow. We’re a new restaurant, please 
                                     if(this.state.complementItem==""){
                                         return this.showSimpleMessage("please enter item","orange","info")
                                     }
-                                    this.setState({complement:true,complementModal:false})
+                                    this.setState({complement:true,complementModal:false},()=>{
+                                          this.printComplement();
+                                          return this.showSimpleMessage("Complement added successfully","green","success")
+                                    })
                                 }}
                             >
                                 <Text style={[styles.text, { color: "#fff" }]}>Save</Text>

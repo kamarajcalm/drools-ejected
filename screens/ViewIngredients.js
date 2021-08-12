@@ -53,7 +53,6 @@ class ViewIngredients extends Component {
     }
     renderScene = ({ route, }) => {
         switch (route.key) {
-
             case 'In Stock':
                 return <Instock navigation={this.props.navigation} props={this.props}/>
             case 'Sold':

@@ -19,9 +19,14 @@ import FlashMessage, { showMessage, hideMessage } from "react-native-flash-messa
 import Modal from 'react-native-modal';
 import { FontAwesome, MaterialCommunityIcons, MaterialIcons, SimpleLineIcons, Entypo, Fontisto, Feather, Ionicons, FontAwesome5, AntDesign} from '@expo/vector-icons';
 import HttpsClient from '../HttpsClient';
+import MonthPicker from 'react-native-month-year-picker';
+const months = ["January","Febrauary","March","April","May","June","July","August","September","Octobor","November","December"]
 const screenHeight =Dimensions.get("screen").height
 class OtherExpenses extends Component {
     constructor(props) {
+         const d = new Date()
+        const month = d.getMonth() + 1
+        const year = d.getFullYear()
         super(props);
         this.state = {
             otherExpenses: [],
@@ -32,7 +37,10 @@ class OtherExpenses extends Component {
             date2: momemt(new Date()).format("YYYY-MM-DD"),
             show:false,
             creating:false,
-            show2:false
+            show2:false,
+            year,
+            month,
+            data:null
         };
     }
     hideDatePicker = () => {
@@ -60,12 +68,24 @@ class OtherExpenses extends Component {
         this.hideDatePicker2();
     };
     getExtraExpenses = async () => {
-        let api = `${url}/api/drools/otherexpenses/?date=${this.state.date2}`
+        let api = `${url}/api/drools/otherExpenses/?month=${this.state.month}&year=${this.state.year}`
         let data = await HttpsClient.get(api)
+        console.log(api)
         if (data.type == "success") {
-            this.setState({ otherExpenses: data.data })
+            this.setState({ otherExpenses: data.data.expenses,data:data.data})
         }
     }
+       onValueChange = (event, newDate)=>{
+         this.setState({show2:false})
+         if (event =="dateSetAction"){
+             let d = new Date(newDate)
+             let month = d.getMonth()+1
+             let year = d.getFullYear()
+             this.setState({month,year},()=>{
+                  this.getExtraExpenses()
+             })
+         }
+     }
     componentDidMount() {
       
         this.getExtraExpenses()
@@ -245,8 +265,16 @@ class OtherExpenses extends Component {
             ]
         );
     }
+    footer =() =>{
+        return (
+            <View style={{marginVertical:20}}>
+                <View style={{alignSelf:"flex-end",marginHorizontal:20}}>
+                      <Text style={[styles.text,{color:"#fff",fontSize:20}]}>Total : ₹ {this.state.data?.total_expense?.sum}</Text>
+                </View>
+            </View>
+        )
+    }
     render() {
-
         return (
             <View style={{ flex: 1, backgroundColor: themeColor }}>
 
@@ -271,12 +299,13 @@ class OtherExpenses extends Component {
                         <TouchableOpacity style={{ flex: 0.3, alignItems: "center", justifyContent: "center" ,flexDirection:"row"}}
                          onPress={()=>{this.setState({show2:true})}}
                         >
-                            <Text style={[styles.text,{color:"#fff"}]}>{this.state.date2}</Text>
+                            <Text style={[styles.text,{color:"#fff"}]}>{months[this.state.month-1]},{this.state.year}</Text>
                             <MaterialIcons name="date-range" size={24} color="#fff" />
                         </TouchableOpacity>
                     </View>
                 </LinearGradient>
-                 <FlatList  
+                 <FlatList 
+                    ListFooterComponent={this.footer()} 
                     ListHeaderComponent={this.renderHeader()} 
                     data={this.state.otherExpenses}
                     keyExtractor={(item,index)=>index.toString()}
@@ -337,15 +366,25 @@ class OtherExpenses extends Component {
                     onConfirm={this.handleConfirm}
                     onCancel={this.hideDatePicker}
                 />
-                <DateTimePickerModal
+                {/* <DateTimePickerModal
                     testID={"2"}
                     isVisible={this.state.show2}
                     mode="date"
                     onConfirm={this.handleConfirm2}
                     onCancel={this.hideDatePicker2}
-                />
+                /> */}
+    {
+                       this.state.show2&&
+                        <MonthPicker
+                            onChange={this.onValueChange}
+                            value={new Date()}
+                            minimumDate={new Date(2019,5)}
+                            maximumDate={new Date()}
+                          
+                        />
+                   }
             </View>
-
+         
         );
     }
 }

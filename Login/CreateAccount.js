@@ -90,6 +90,8 @@ export default class CreateAccount extends Component {
             password:this.state.password,
             bodyType:"formData"
         }
+ 
+       
         let post = await HttpsClient.post(api,sendData)
         console.log(post)
         if(post.type=="success"){
@@ -164,6 +166,7 @@ componentDidMount(){
                                     <Text style={[styles.text, { color: "#fff", fontSize: 22 }]}>Phone No : </Text>
                                 </View>
                                 <TextInput
+                                    maxLength={10}
                                     keyboardType={"numeric"}
                                     value={this.state.phone}
                                     style={{ height: 35, width: width * 0.8, backgroundColor: "#fafafa", marginTop: 10, paddingLeft: 5 }}

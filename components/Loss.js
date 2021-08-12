@@ -294,7 +294,9 @@ class Loss extends Component {
                 <View style={{ flex: 0.2, alignItems: "center", justifyContent: "center" }}>
                     <Text style={[styles.text, { color: "#000" }]}>Price</Text>
                 </View>
-           
+                <View style={{ flex: 0.2, alignItems: "center", justifyContent: "center" }}>
+                    <Text style={[styles.text, { color: "#000" }]}>Expiry Date</Text>
+                </View>
                 <View style={{ flex: 0.2, alignItems: "center", justifyContent: "center" }}>
                     <Text style={[styles.text, { color: "#000" }]}>Edit</Text>
                 </View>
@@ -365,7 +367,9 @@ class Loss extends Component {
                                 <View style={{ flex: 0.2, alignItems: "center", justifyContent: "center" }}>
                                     <Text style={[styles.text, { color: "#000" }]}>{item.price}</Text>
                                 </View>
-                             
+                               <View style={{ flex: 0.2, alignItems: "center", justifyContent: "center" }}>
+                                  <Text style={[styles.text, { color: "#000" }]}>{item.expiry_date}</Text>
+                                </View>
                                 <TouchableOpacity style={{ flex: 0.2, alignItems: "center", justifyContent: "center" }}
                                     onPress={() => { this.editItem(item) }}
                                 >

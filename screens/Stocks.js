@@ -48,9 +48,9 @@ export default class Stocks extends Component {
         if (this.state.itemName == "") {
             return this.showSimpleMessage("Please add Name", "#dd7030",)
         }
-        if (this.state.description == "") {
-            return this.showSimpleMessage("Please add description", "#dd7030",)
-        }
+        // if (this.state.description == "") {
+        //     return this.showSimpleMessage("Please add description", "#dd7030",)
+        // }
         if (this.state.minQty == "") {
             return this.showSimpleMessage("Please add minQty", "#dd7030",)
         }
@@ -188,16 +188,12 @@ export default class Stocks extends Component {
                         <Text style={[styles.text, { textDecorationLine: "underline", color: "#000" }]}>Item</Text>
                     </View>
                 </View>
-                <View style={{flex:0.15,alignItems:"center",justifyContent:"center"}}>
+                <View style={{flex:0.3,alignItems:"center",justifyContent:"center"}}>
                     <View>
-                        <Text style={[styles.text, { textDecorationLine: "underline", color: "#000" }]}>Kg</Text>
+                        <Text style={[styles.text, { textDecorationLine: "underline", color: "#000" }]}>Unit</Text>
                     </View>
                 </View>
-                <View style={{ flex: 0.15, alignItems: "center", justifyContent: "center" }}>
-                    <View>
-                        <Text style={[styles.text, { textDecorationLine: "underline", color: "#000" }]}>gm/pcs</Text>
-                    </View>
-                </View>
+        
                 <View style={{ flex: 0.2, alignItems: "center", justifyContent: "center" }}>
                     <View>
                         <Text style={[styles.text, { textDecorationLine: "underline", color: "#000" }]}>Min Qty</Text>
@@ -281,19 +277,22 @@ export default class Stocks extends Component {
                                         <Text style={[styles.text, {  color: "#000" }]}>{index+1} .{item.title}</Text>
                                     </View>
                                 </View>
-                                <View style={{ flex: 0.15, alignItems: "center", justifyContent: "center" }}>
-                                    <View>
-                                        <Text style={[styles.text, {  color: "#000" }]}>{item.avaliableQty.available_kg}</Text>
-                                    </View>
+                                <View style={{ flex: 0.3, alignItems: "center", justifyContent: "center" }}>
+                                    {
+                                        item.type=="Piece"?<View>
+                                            <Text style={[styles.text, {  color: "#000" }]}>{item.avaliableQty.available_quantity} piece</Text>
+                                        </View>:
+                                        <View>
+                                            <Text style={[styles.text, {  color: "#000" }]}>{item.avaliableQty.available_kg} Kg</Text>
+                                        </View>
+                                    }
+                           
+                            
                                 </View>
-                                <View style={{ flex: 0.15, alignItems: "center", justifyContent: "center" }}>
-                                    <View>
-                                        <Text style={[styles.text, {  color: "#000" }]}>{item.avaliableQty.available_quantity}</Text>
-                                    </View>
-                                </View>
+                             
                                 <View style={{ flex: 0.2, alignItems: "center", justifyContent: "center" }}>
                                     <View>
-                                        <Text style={[styles.text, { color: "#000" }]}>{item.minimum_quantity}</Text>
+                                        <Text style={[styles.text, { color: "#000" }]}>{item.minimum_quantity} {item.type}</Text>
                                     </View>
                                 </View>
                                 <View style={{ flex: 0.2, alignItems: "center", justifyContent: "center" }}>

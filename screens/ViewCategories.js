@@ -69,6 +69,7 @@ class ViewCategories extends Component {
       
     }
     InvalidItem = async(item, index)=>{
+        console.log(item)
         let duplicate = this.state.Items
         let api = `${url}/api/drools/items/${item.id}/`
         let sendData ={

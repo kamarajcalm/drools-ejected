@@ -32,7 +32,7 @@ class SeacrchDishes extends Component {
     }
     searchDishes =async(text)=>{
         this.setState({ selectedCategory:null})
-        let api = `${url}/api/drools/items/?search=${text}`
+        let api = `${url}/api/drools/items/?search=${text}&invalid=false`
         console.log(api)
         let data =await HttpsClient.get(api)
      
@@ -54,7 +54,7 @@ class SeacrchDishes extends Component {
         }
     }
     getItems = async () => {
-        let api = `${url}/api/drools/items/?category=${this.state.selectedCategory.id}`
+        let api = `${url}/api/drools/items/?category=${this.state.selectedCategory.id}&invalid=false`
         let data = await HttpsClient.get(api)
     
         if (data.type == "success") {

@@ -15,7 +15,7 @@ import Constants from 'expo-constants';
 import { CommonNavigationAction, CommonActions } from '@react-navigation/native';
 import * as Notifications from 'expo-notifications';
 import { FontAwesome, MaterialCommunityIcons, MaterialIcons, SimpleLineIcons, Entypo, Fontisto, Feather, Ionicons, FontAwesome5 } from '@expo/vector-icons';
-import * as Updates from 'expo-updates';
+
 import HttpsClient from '../HttpsClient';
 Notifications.setNotificationHandler({
     handleNotification: async () => ({
@@ -113,26 +113,10 @@ class DefaultScreen extends Component {
            )
        }
     }
-    OTAUpdate = async () => {
-        try {
-            const update = await Updates.checkForUpdateAsync();
-            if (update.isAvailable) {
-                try {
-                    await Updates.fetchUpdateAsync();
-                    await Updates.reloadAsync();
-                } catch (e) {
-                    return
-                }
-            }else{
-                this.getUser()
-            }
-        } catch (e) {
-            return this.getUser()
-        }
-    }
+
     componentDidMount(){
-        this.OTAUpdate()
-        // this.getUser()
+        // this.OTAUpdate()
+        this.getUser()
     }
     render() {
 

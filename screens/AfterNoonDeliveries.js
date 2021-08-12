@@ -148,6 +148,8 @@ export default class AfterNoonDeliveries extends Component {
                               </TouchableOpacity>
                                <TouchableOpacity style={{height:26,width:26,backgroundColor:"#fff",elevation:5,alignItems:"center",justifyContent:"center",borderRadius:13}}
                                  onPress={()=>{
+                                   console.log(item.userDetails)
+                                   return
                                       Linking.openURL(
                                     `https://www.google.com/maps/dir/?api=1&destination=` +
                                    item.userDetails.lat +
