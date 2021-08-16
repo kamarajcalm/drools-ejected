@@ -47,7 +47,7 @@ class History extends Component {
         this.setState({show:false})
     };
     handleConfirm = (date) => {
-        this.setState({ today: momemt(date).format("YYYY-MM-DD"), orders:[],offset:0},()=>{
+        this.setState({ today: momemt(date).format("YYYY-MM-DD"), orders:[],offset:0,loadmore:true},()=>{
             this.getOrders()
         })
         this.hideDatePicker();

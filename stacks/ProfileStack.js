@@ -14,6 +14,7 @@ import Discounts from '../screens/Discounts';
 import OtherExpenses from '../screens/OtherExpenses';
 import PasswordScreen from '../customerScreens/PasswordScreen';
 import ProfileInfo from '../screens/ProfileInfo';
+import PrintBills from '../screens/PrintBills';
 const Stack = createStackNavigator();
 export default class ProfileStack extends Component {
     constructor(props) {
@@ -44,6 +45,7 @@ export default class ProfileStack extends Component {
                 <Stack.Screen name="Discounts" component={Discounts} options={{ headerShown: false }} />
                 <Stack.Screen name="PasswordScreen" component={PasswordScreen} options={{ headerShown: false }} />
                 <Stack.Screen name="ProfileInfo" component={ProfileInfo} options={{ headerShown: false }} />
+                <Stack.Screen name="PrintBills" component={PrintBills} options={{ headerShown: false }} />
             </Stack.Navigator>
         );
     }

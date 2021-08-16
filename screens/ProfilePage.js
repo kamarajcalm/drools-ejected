@@ -15,7 +15,7 @@ import orders from '../data/orders';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import momemt from 'moment';
 import { CommonNavigationAction, CommonActions } from '@react-navigation/native'
-import { FontAwesome, MaterialCommunityIcons, MaterialIcons, SimpleLineIcons, Entypo, Fontisto, Feather, Ionicons, FontAwesome5 } from '@expo/vector-icons';
+import { FontAwesome, MaterialCommunityIcons, MaterialIcons, SimpleLineIcons, Entypo, Fontisto, Feather, Ionicons, FontAwesome5,AntDesign } from '@expo/vector-icons';
 class ProfilePage extends Component {
     constructor(props) {
         super(props);
@@ -203,6 +203,22 @@ class ProfilePage extends Component {
                             </View>
                             <View style={{ alignItems: "center", justifyContent: "center", marginLeft: 20 }}>
                                 <Text style={[styles.text, { color: "#fff" }]}>Change Password</Text>
+                            </View>
+                        </View>
+
+                        <View style={{ flex: 0.2, alignItems: "center", justifyContent: 'center' }}>
+                            <Entypo name="triangle-right" size={24} color="#fff" />
+                        </View>
+                    </TouchableOpacity>
+                          <TouchableOpacity style={{ flexDirection: "row", height: height * 0.05, paddingHorizontal: 20, width, marginTop: 20 }}
+                        onPress={() => { this.props.navigation.navigate("PrintBills") }}
+                    >
+                        <View style={{ flex: 0.8, flexDirection: "row" }}>
+                            <View style={{ alignItems: "center", justifyContent: "center" }}>
+                               <AntDesign name="printer" size={24} color="#fff" />
+                            </View>
+                            <View style={{ alignItems: "center", justifyContent: "center", marginLeft: 20 }}>
+                                <Text style={[styles.text, { color: "#fff" }]}>Print Bills</Text>
                             </View>
                         </View>
 

@@ -82,12 +82,12 @@ class ViewOrder extends Component {
         return(
             <View style={{marginVertical:20,flexDirection:"row",alignItems:"center",justifyContent:"center",}}>
                
-                <TouchableOpacity
+                {/* <TouchableOpacity
                     onPress={() => { this.completeAll() }}
                     style={{ height: height * 0.05, width: width * 0.4, alignItems: "center", justifyContent: "center", backgroundColor: primaryColor }}
                 >
                     <Text style={[styles.text, { color: "#fff" }]}>Complete All</Text>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
             </View>
         )
     }
@@ -172,13 +172,20 @@ class ViewOrder extends Component {
             this.showSimpleMessage("Try again", "red", "danger")
         }
     }
+    callApi = async(item)=>{
+       let api = `${url}/api/drools/checkCart/?cart=${this.state.item.cartpk}`
+       let data  = await HttpsClient.get(api)
+       console.log(data)
+    }
     DeclineSingle  = async(item,index)=>{
+     
         let api = `${url}/api/drools/cartitems/${item.pk}/`
         let sendData = {
             item_status: "Declined"
         }
         let patch = await HttpsClient.patch(api, sendData)
         if (patch.type == "success") {
+            this.callApi()
             let duplicate = this.state.item
             duplicate.objs[index].status = "Declined"
             this.setState({ item: duplicate })
