@@ -192,7 +192,7 @@ class LoginScreen extends Component {
                     <TouchableOpacity 
                       onPress={()=>{this.props.navigation.navigate("CreateAccount")}}
                     >
-                        <Text style={[styles.text, { color: "#fff" }]}>Create Account?</Text>
+                        <Text style={[styles.text, { color: "#fff" }]}>Create Account</Text>
                     </TouchableOpacity>
                 </View>
             </View>

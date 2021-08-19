@@ -20,6 +20,7 @@ import MapView,{ Marker, PROVIDER_GOOGLE, Callout } from 'react-native-maps';
 import * as Location from 'expo-location';
 import mapstyle from '../map.json';
 import Geocoder from 'react-native-geocoding';
+import GetLocation from 'react-native-get-location';
 Geocoder.init("AIzaSyCOSH383cU0Ywb6J1JZA_vlRq6Y6I6DgtE");
 export default class SelectAddress extends Component {
   constructor(props) {
@@ -32,29 +33,52 @@ export default class SelectAddress extends Component {
     };
   }
     getLocation = async () => {
+           Location.installWebGeolocationPolyfill();
         let { status } = await Location.requestForegroundPermissionsAsync()
         if (status !== 'granted') {
             console.warn('Permission to access location was denied');
             return;
         }
-        let location = await Location.getCurrentPositionAsync({});
+    //     let location = await Location.getCurrentPositionAsync({});
       
-       let  address = await   Location.reverseGeocodeAsync({
-           latitude: location.coords.latitude,
-           longitude: location.coords.longitude,
-       })
-        this.setState({ address: address[0].name})
+    //    let  address = await   Location.reverseGeocodeAsync({
+    //        latitude: location.coords.latitude,
+    //        longitude: location.coords.longitude,
+    //    })
+    //     this.setState({ address: address[0].name})
      
-        this.setState({
-            location: {
-                latitude: location.coords.latitude,
-                longitude: location.coords.longitude,
-                latitudeDelta: 0.0001,
-                longitudeDelta: 0.0001
-            },
-            latitude: location.coords.latitude,
-            longitude: location.coords.longitude,
-        })
+    //     this.setState({
+    //         location: {
+    //             latitude: location.coords.latitude,
+    //             longitude: location.coords.longitude,
+    //             latitudeDelta: 0.0001,
+    //             longitudeDelta: 0.0001
+    //         },
+    //         latitude: location.coords.latitude,
+    //         longitude: location.coords.longitude,
+    //     })
+                 GetLocation.getCurrentPosition({
+    enableHighAccuracy: true,
+    timeout: 15000,
+})
+.then(async(location) => {
+    console.log(location,"kkkkkk");
+        let  address = await   Location.reverseGeocodeAsync({
+           latitude: location.latitude,
+           longitude: location.longitude,
+           latitudeDelta:0
+       })
+     this.setState({ address: address[0].name})
+      this.setState({ location: {
+        latitude: location.latitude,
+        longitude: location.longitude, 
+        latitudeDelta: 0.001, 
+        longitudeDelta: 0.001
+    },
+        latitude: location.latitude,
+        longitude: location.longitude, 
+    })
+})
  
     }
     handleChange = async(region)=>{
@@ -94,6 +118,13 @@ export default class SelectAddress extends Component {
           </Marker>
        
       </View>
+      if(this.state.location==null){
+          return (
+              <View style={{flex:1,alignItems:"center",justifyContent:"center",backgroundColor:"#fff"}}>
+                    <ActivityIndicator color={primaryColor} size={"large"}/>
+              </View>
+          )
+      }
     return (
       <View style={{flex:1}}>
           <MapView 

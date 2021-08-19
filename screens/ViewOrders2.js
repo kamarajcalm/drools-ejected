@@ -43,6 +43,32 @@ const paymentStatus = [
         value: "NotPaid"
     },
 ]
+const paymentMode = [
+    {
+        label: "Cash",
+        value: "Cash"
+    },
+    {
+        label: "Card",
+        value: "Card"
+    },
+    {
+        label: "OtherUpis",
+        value: "OtherUpis"
+    },
+    {
+        label: "Paytm",
+        value: "Paytm"
+    },
+    {
+        label: "Gpay",
+        value: "Gpay"
+    },
+    {
+        label: "Phonepe",
+        value: "Phonepe"
+    },
+]
 let options = {
     width: 40,
     height: 30,
@@ -66,7 +92,8 @@ class ViewOrders2 extends Component {
             open2: false,
             paymentvalue: paymentStatus[0].value,
             complementModal:false,
-            complementItem:""
+            complementItem:"",
+            paymentmode:null,
         };
     }
     getSubtotal = () => {
@@ -242,6 +269,7 @@ Your feedback is very valuable for us to grow. We’re a new restaurant, please 
 
     getOrders = async () => {
         let api = `${url}/api/drools/cart/${this.state.item.id}/`
+        console.log(api)
         const data = await HttpsClient.get(api)
 
         if (data.type == "success") {
@@ -279,6 +307,24 @@ Your feedback is very valuable for us to grow. We’re a new restaurant, please 
     }
     componentWillUnmount() {
         this._unsubscribe()
+    }
+    editCash = async() =>{
+        if(this.state.paymentmode==null){
+            return this.showSimpleMessage("Please select Payment Mode","orange","info")
+        }
+        let api = `${url}/api/drools/cart/${this.state.item.id}/`
+        let sendData ={
+                payment_mode:this.state.paymentmode
+        }
+        let patch = await HttpsClient.patch(api,sendData)
+        if(patch.type=="success"){
+            this.setState({modal:false})
+            this.getOrders()
+            return this.showSimpleMessage("Edied Successfully","green","success")
+        }else{
+           return this.showSimpleMessage("Try Again","red","danger") 
+        }
+       
     }
     footer = () => {
         return (
@@ -376,9 +422,9 @@ Your feedback is very valuable for us to grow. We’re a new restaurant, please 
                 </View>
                 <View style={{alignItems:"center",justifyContent:"center",marginVertical:20}}>
                     <TouchableOpacity style={{ height: height * 0.05, width: width * 0.4, alignItems: "center", justifyContent: "center", backgroundColor:primaryColor }}
-                      onPress={()=>{this.setState({complementModal:true})}}
+                      onPress={()=>{this.setState({modal:true})}}
                     >
-                           <Text style={[styles.text,{color:"#fff"}]}>Complement</Text>
+                           <Text style={[styles.text,{color:"#fff"}]}>Edit</Text>
                     </TouchableOpacity>
                 </View>
             </View>
@@ -422,6 +468,25 @@ Your feedback is very valuable for us to grow. We’re a new restaurant, please 
             items: callback(state.items)
         }));
     }
+        setOpen3 = (open3) => {
+        this.setState({
+            open3
+        });
+    }
+
+    setValue3 = (callback) => {
+
+        this.setState(state => ({
+            paymentmode: callback(state.value)
+        }));
+    }
+
+    setItems3 = (callback) => {
+
+        this.setState(state => ({
+            items: callback(state.items)
+        }));
+    }
     complementModal =()=>{
         return (
             <Modal
@@ -432,17 +497,22 @@ Your feedback is very valuable for us to grow. We’re a new restaurant, please 
             >
                 <View style={{flex:1,alignItems:"center",marginTop:40}}>
                          <View style={{height:height*0.4,backgroundColor:"#fff",width:width*0.8}}>
-                            <View>
-                                <View>
-                                     <Text style={[styles.text,{color:"#000",fontSize:22}]}>Enter Item :</Text>
-                                </View>
-                                <TextInput 
-                                   selectionColor={primaryColor}
-                                   value= {this.state.complementItem}
-                                   style={{height:35,width:width*0.6,backgroundColor:"#fafafa",paddingLeft:5,marginTop:10,marginLeft:20}}
-                                   onChangeText={(item)=>{this.setState({complementItem:item})}}
-                                />
-                            </View>
+                         <View>
+                            <Text style={[styles.text, { color: "#000", fontSize: 22 }]}>Paid By :</Text>
+                        </View>
+                        <View style={{ marginTop: 10, width: width * 0.7, height: this.state.open3 ? height * 0.3 : height * 0.08 }}>
+                            <DropDownPicker
+                                style={{ height: height * 0.05 }}
+                                containerStyle={{ height: height * 0.05 }}
+                                open={this.state.open3}
+                                value={this.state.paymentmode}
+                                items={paymentMode}
+                                setOpen={this.setOpen3}
+                                setValue={this.setValue3}
+                                setItems={this.setItems3}
+                                placeholder="select a mode"
+                            />
+                        </View>
                                <View style={{ alignItems: "center" ,marginVertical:20}}>
                             <TouchableOpacity style={{ height: height * 0.05, width: width * 0.4, alignItems: "center", justifyContent: "center", backgroundColor: primaryColor }}
                                 onPress={() => {
@@ -467,9 +537,10 @@ Your feedback is very valuable for us to grow. We’re a new restaurant, please 
             </Modal>
         )
     }
-    completeModal = () => {
+
+    cashEditModal =()=>{
         return (
-            <Modal
+                        <Modal
                 statusBarTranslucent={true}
                 isVisible={this.state.modal}
                 deviceHeight={screenHeight}
@@ -477,43 +548,28 @@ Your feedback is very valuable for us to grow. We’re a new restaurant, please 
             >
                 <View style={{}}>
 
-                    <View style={{ height: height * 0.5, backgroundColor: "#fff", borderRadius: 5, alignItems: "center", justifyContent: "space-around" }}>
-                        <View>
-                            <Text style={[styles.text, { color: "#000", fontSize: 22 }]}>Order Status :</Text>
+                    <View style={{ height: height * 0.4, backgroundColor: "#fff", borderRadius: 5, alignItems: "center", justifyContent: "space-around" }}>
+                       
+                         <View>
+                            <Text style={[styles.text, { color: "#000", fontSize: 22 }]}>Paid By :</Text>
                         </View>
-                        <View style={{ marginTop: 10 }}>
+                        <View style={{ marginTop: 10, width: width * 0.7, height: this.state.open3 ? height * 0.3 : height * 0.08 }}>
                             <DropDownPicker
                                 style={{ height: height * 0.05 }}
                                 containerStyle={{ height: height * 0.05 }}
-                                open={this.state.open}
-                                value={this.state.ordervalue}
-                                items={orderStatus}
-                                setOpen={this.setOpen}
-                                setValue={this.setValue}
-                                setItems={this.setItems}
-                                placeholder="select a Table"
-                            />
-                        </View>
-                        <View>
-                            <Text style={[styles.text, { color: "#000", fontSize: 22 }]}>Payment Status :</Text>
-                        </View>
-                        <View style={{ marginTop: 10 }}>
-                            <DropDownPicker
-                                style={{ height: height * 0.05 }}
-                                containerStyle={{ height: height * 0.05 }}
-                                open={this.state.open2}
-                                value={this.state.paymentvalue}
-                                items={paymentStatus}
-                                setOpen={this.setOpen2}
-                                setValue={this.setValue2}
-                                setItems={this.setItems2}
-                                placeholder="select a Table"
+                                open={this.state.open3}
+                                value={this.state.paymentmode}
+                                items={paymentMode}
+                                setOpen={this.setOpen3}
+                                setValue={this.setValue3}
+                                setItems={this.setItems3}
+                                placeholder="select a mode"
                             />
                         </View>
                         <View style={{ alignItems: "center" }}>
                             <TouchableOpacity style={{ height: height * 0.05, width: width * 0.4, alignItems: "center", justifyContent: "center", backgroundColor: primaryColor }}
                                 onPress={() => {
-                                    this.completeOrder()
+                                    this.editCash()
                                 }}
                             >
                                 <Text style={[styles.text, { color: "#fff" }]}>Save</Text>
@@ -590,10 +646,10 @@ Your feedback is very valuable for us to grow. We’re a new restaurant, please 
                         )
                     }}
                 />
-
-                {
-                    this.completeModal()
-                }
+                 {
+                     this.cashEditModal()
+                 }
+           
                 {
                     this.complementModal()
                 }

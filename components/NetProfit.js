@@ -80,6 +80,7 @@ export default class NetProfit extends Component {
     getData = async () => {
         let api = `${url}/api/drools/netProfit/?month=${this.state.value}&year=${this.state.value2}`
         let data = await HttpsClient.get(api)
+        console.log(data)
         console.log(api)
         if (data.type == "success") {
             // let set = {
