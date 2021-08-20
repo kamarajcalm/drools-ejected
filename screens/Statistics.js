@@ -111,7 +111,22 @@ class Statistics extends Component {
                             <Entypo name="triangle-right" size={24} color="#fff" />
                          </View>
                     </TouchableOpacity>
-                    
+                    <TouchableOpacity style={{flexDirection:"row",height:height*0.05,paddingHorizontal:20,width,marginTop:20}}
+                       onPress={() => { this.props.navigation.navigate('MonthlyIncome') }}
+                    >
+                        <View style={{flex:0.8,flexDirection:"row"}}>
+                            <View style={{ alignItems: "center", justifyContent: "center" }}>
+                         <FontAwesome5 name="money-bill" size={24} color="#fff" />
+                            </View>
+                            <View style={{ alignItems: "center", justifyContent: "center", marginLeft: 20 }}>
+                                <Text style={[styles.text, { color: "#fff" }]}>Monthly Income</Text>
+                            </View>
+                        </View>
+                      
+                         <View style={{flex:0.2,alignItems:"center",justifyContent:'center'}}>
+                            <Entypo name="triangle-right" size={24} color="#fff" />
+                         </View>
+                    </TouchableOpacity>
                    
               
                 </ScrollView>
