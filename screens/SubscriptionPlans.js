@@ -156,16 +156,16 @@ export default class SubscriptionPlans extends Component {
         return(
             <View style={{flexDirection:"row",marginTop:10}}>
                   <View style={{flex:0.1,alignItems:"center",justifyContent:"center"}}>
-                         <Text style={[styles.text,{color:"#000",fontSize:22,textDecorationLine:"underline"}]}>#</Text>
+                         <Text style={[styles.text,{color:"#000",textDecorationLine:"underline"}]}>#</Text>
                   </View> 
                   <View style={{flex:0.5,alignItems:"center",justifyContent:"center"}}>
-                    <Text style={[styles.text, { color: "#000", fontSize: 22, textDecorationLine: "underline"}]}>Plan Name</Text>
+                    <Text style={[styles.text, { color: "#000",  textDecorationLine: "underline"}]}>Plan Name</Text>
                   </View>
                   <View style={{flex:0.2,alignItems:"center",justifyContent:"center"}}>
-                    <Text style={[styles.text, { color: "#000", fontSize: 22, textDecorationLine: "underline" }]}>Price</Text>
+                    <Text style={[styles.text, { color: "#000",textDecorationLine: "underline" }]}>Price</Text>
                   </View>
                 <View style={{ flex: 0.2, alignItems: "center", justifyContent: "center" }}>
-                    <Text style={[styles.text, { color: "#000", fontSize: 22, textDecorationLine: "underline" }]}>Action</Text>
+                    <Text style={[styles.text, { color: "#000",textDecorationLine: "underline" }]}>Action</Text>
                 </View>
             </View>
         )

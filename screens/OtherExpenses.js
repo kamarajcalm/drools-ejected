@@ -70,7 +70,7 @@ class OtherExpenses extends Component {
     getExtraExpenses = async () => {
         let api = `${url}/api/drools/otherExpenses/?month=${this.state.month}&year=${this.state.year}`
         let data = await HttpsClient.get(api)
-        console.log(api)
+        console.log(data.data)
         if (data.type == "success") {
             this.setState({ otherExpenses: data.data.expenses,data:data.data})
         }
@@ -165,6 +165,7 @@ class OtherExpenses extends Component {
                         <View style={{ marginTop: 10, marginLeft: 20 }}>
                                 <Text style={[styles.text, { color: "#000", fontSize: 20 }]}>Expense Amount :</Text>
                                 <TextInput
+                                    keyboardType={"numeric"}
                                     value={this.state.expenseAmount}
                                     selectionColor={themeColor}
                                     style={{ height: 35, width: width * 0.7, backgroundColor: "#fafafa",marginTop:10 }}
@@ -218,13 +219,14 @@ class OtherExpenses extends Component {
         )
     }
     deleteItem = async(item,index)=>{
+        console.log(item)
         let api = `${url}/api/drools/otherexpenses/${item.id}/`
+        console.log(api)
         let del = await HttpsClient.delete(api)
+        console.log(del)
         if(del.type =="success"){
             this.showSimpleMessage("deleted successfuly","green","success")
-            let duplicate = this.state.otherExpenses
-            duplicate.splice(index,1)
-            this.setState({ otherExpenses:duplicate})
+             this.getExtraExpenses()
         }else{
             this.showSimpleMessage("Try Again", "red", "danger")
         }

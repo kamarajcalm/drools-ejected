@@ -28,48 +28,32 @@ import MonthPicker from 'react-native-month-year-picker';
 import HttpsClient from '../HttpsClient';
 const url =settings.url
 const months = ["January","Febrauary","March","April","May","June","July","August","September","Octobor","November","December"]
-class MonthlyIncome extends Component {
+class DailyIncomeSheet extends Component {
     constructor(props) {
-       const d = new Date()
-        const month = d.getMonth() + 1
-        const year = d.getFullYear()
+        let item = props.route.params.item
         super(props);
         this.state = {
-             year,
-            month,
-            refreshing:false,
-            show:false,
+            item,
+            incomes: [],
+            refreshing:false
         };
     }
-         getMonthlyIncome = async()=>{
-         this.setState({ refreshing:true})
-         let api = `${url}/api/drools/monthlyIncome/?month=${this.state.month}&year=${this.state.year}`
-         const data = await HttpsClient.get(api)
-         console.log(api,"hjhkjhk")
-         if(data.type=="success"){
-             this.setState({ incomes: data.data.incomes, income: data.data, refreshing:false})
-         }else{
-             this.setState({ refreshing: false })
-         }
+        
+     getBills = async()=>{
+       let api = `${url}/api/drools/bulkBill/?date=${moment(this.state.item.day).format("YYYY-MM-DD")}`
+       const data = await HttpsClient.get(api)
+       console.log(api)
+       if(data.type=="success"){
+           this.setState({incomes:data.data.data,data:data.data})
+       }
      }
     componentDidMount(){
-        this.getMonthlyIncome()
+       this.getBills()
     }
-    onValueChange = (event, newDate)=>{
-         this.setState({show:false})
-         if (event =="dateSetAction"){
-             let d = new Date(newDate)
-             let month = d.getMonth()+1
-             let year = d.getFullYear()
-             this.setState({month,year},()=>{
-                 this.getMonthlyIncome()
-             })
-         }
+         refresh =()=>{
+         this.getBills()
      }
-      refresh =()=>{
-         this.getMonthlyIncome()
-     }
-      footer =()=>{
+     footer =()=>{
          return(
              <View style={{ flexDirection: "row",marginBottom:20}}>
                  <View style={{ flex: 2.5, alignItems: "center", justifyContent: "center",  }}>
@@ -82,7 +66,7 @@ class MonthlyIncome extends Component {
                      <Text style={[styles.text, { color: primaryColor, fontSize:18}]}>Total</Text>
                  </View>
                  <View style={{ flex: 2.5, alignItems: "center", justifyContent: "center", borderColor: "gray", borderWidth: 1,borderRightWidth:0}}>
-                     <Text style={[styles.text, { color: primaryColor, fontSize: 18 }]}> ₹ {this.state?.income?.total_income}</Text>
+                     <Text style={[styles.text, { color: primaryColor, fontSize: 18 }]}> ₹ {this.state?.data?.totalamount}</Text>
                  </View>
              </View>
          )
@@ -91,16 +75,16 @@ class MonthlyIncome extends Component {
          return(
              <View style={{flexDirection:"row",marginTop:10,borderColor:"gray",borderWidth:1,}}>
                  <View style={{ flex: 2.5, alignItems: "center", justifyContent: "center", borderColor: "gray", borderRightWidth: 1,paddingVertical:5}}>
-                        <Text style={[styles.text,{color:primaryColor,}]}>Date</Text>
+                        <Text style={[styles.text,{color:primaryColor,}]}>#</Text>
                   </View>
                  <View style={{ flex: 2.5, alignItems: "center", justifyContent: "center", borderColor: "gray", borderRightWidth: 1, paddingVertical: 5}}>
-                     <Text style={[styles.text, { color: primaryColor, }]}>Online</Text>
+                     <Text style={[styles.text, { color: primaryColor, }]}>Bill No</Text>
                   </View>
                  <View style={{ flex: 2.5, alignItems: "center", justifyContent: "center", borderColor: "gray", borderRightWidth: 1, paddingVertical: 5}}>
-                     <Text style={[styles.text, { color: primaryColor, }]}>Cash</Text>
+                     <Text style={[styles.text, { color: primaryColor, }]}>Mode</Text>
                   </View>
                  <View style={{ flex: 2.5, alignItems: "center", justifyContent: "center"  ,paddingVertical: 5}}>
-                     <Text style={[styles.text, { color:primaryColor, }]}>Total</Text>
+                     <Text style={[styles.text, { color:primaryColor, }]}>Cash</Text>
                   </View>
              </View>
          )
@@ -122,7 +106,7 @@ class MonthlyIncome extends Component {
                             <Ionicons name="caret-back" size={24} color={secondaryColor} />
                         </TouchableOpacity>
                         <View style={{ flex: 0.6, alignItems: "center", justifyContent: "center" }}>
-                            <Text style={[styles.text, { color: "#fff", fontSize: 18 }]}>Monthly Income</Text>
+                            <Text style={[styles.text, { color: "#fff", fontSize: 18 }]}>{moment(this.state.item.day).format("YYYY-MM-DD")}</Text>
 
                         </View>
                         <View style={{ flex: 0.2, alignItems: "center", justifyContent: "center" }}>
@@ -130,15 +114,7 @@ class MonthlyIncome extends Component {
                         </View>
                     </View>
                 </LinearGradient>
-                      <View>
-
-                        <TouchableOpacity style={{alignSelf:"center"}}
-                            onPress={() => { this.setState({ show:true})}}
-                        >
-                            <Text style={[styles.text,{color:"#fff",fontSize:20}]}>{months[this.state.month-1]},{this.state.year}</Text>
-                        </TouchableOpacity>
-                   </View>
-                <FlatList 
+              <FlatList 
                      contentContainerStyle={{paddingBottom:90}}
                      refreshing={this.state.refreshing}
                      onRefresh = {()=>{this.refresh()}}
@@ -149,34 +125,23 @@ class MonthlyIncome extends Component {
                      renderItem ={({item,index})=>{
                          return(
                              <View style={{ flexDirection: "row", borderColor: "gray", borderBottomWidth: 1, }}>
-                                 <TouchableOpacity style={{ flex: 2.5, alignItems: "center", justifyContent: "center", borderColor: "gray", borderRightWidth: 1, paddingVertical: 5 }}
-                                   onPress={()=>{this.props.navigation.navigate("DailyIncomeSheet",{item})}}
-                                 >
-                                     <Text style={[styles.text, { color: "#fff", textDecorationLine:"underline"}]}>{moment(item.day).format("DD/MM/YYYY")}</Text>
-                                 </TouchableOpacity>
                                  <View style={{ flex: 2.5, alignItems: "center", justifyContent: "center", borderColor: "gray", borderRightWidth: 1, paddingVertical: 5 }}>
-                                     <Text style={[styles.text, { color: "#fff", }]}> ₹ {item.online}</Text>
+                                     <Text style={[styles.text, { color: "#fff", }]}>{index+1}</Text>
                                  </View>
                                  <View style={{ flex: 2.5, alignItems: "center", justifyContent: "center", borderColor: "gray", borderRightWidth: 1, paddingVertical: 5 }}>
-                                     <Text style={[styles.text, { color: "#fff", }]}> ₹ {item.offline}</Text>
+                                     <Text style={[styles.text, { color: "#fff", }]}> {item.billno}</Text>
+                                 </View>
+                                 <View style={{ flex: 2.5, alignItems: "center", justifyContent: "center", borderColor: "gray", borderRightWidth: 1, paddingVertical: 5 }}>
+                                     <Text style={[styles.text, { color: "#fff", }]}> {item.mode}</Text>
                                  </View>
                                  <View style={{ flex: 2.5, alignItems: "center", justifyContent: "center",paddingVertical:5 }}>
-                                     <Text style={[styles.text, { color: "#fff", }]}> ₹ {(item.online + item.offline)}</Text>
+                                     <Text style={[styles.text, { color: "#fff", }]}> ₹ {item.amount}</Text>
                                  </View>
                              </View>
                          )
                      }}
                    />
-                {
-                       this.state.show&&
-                        <MonthPicker
-                            onChange={this.onValueChange}
-                            value={new Date()}
-                            minimumDate={new Date(2019,5)}
-                            maximumDate={new Date()}
-                          
-                        />
-                   }
+                
             </View>
         );
     }
@@ -192,4 +157,4 @@ const mapStateToProps = (state) => {
         theme: state.selectedTheme,
     }
 }
-export default connect(mapStateToProps, { selectTheme })(MonthlyIncome);
+export default connect(mapStateToProps, { selectTheme })(DailyIncomeSheet);
