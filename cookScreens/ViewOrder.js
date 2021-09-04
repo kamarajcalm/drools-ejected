@@ -56,18 +56,13 @@ class ViewOrder extends Component {
 
         showMessage(message);
     }
-    completeAll = async()=>{
-      let items = []
-
-        this.state.item.objs.forEach((i)=>{
-           
-            items.push(i.pk)
-        })
-        
+    completeAll = async(item)=>{
+      let items = [item.pk]
        let api =`${url}/api/drools/cookComplete/`
        let sendData ={
            items,
-           status:"Finished"
+           status:"Finished",
+           json:item
        }
        let post = await HttpsClient.post(api,sendData)
        if(post.type =="success"){
@@ -122,55 +117,54 @@ class ViewOrder extends Component {
         }
     }
     completeSingle = async()=>{
-        let api = `${url}/api/drools/cartitems/${this.state.selectedItem.pk}/`
-        let sendData = {
-            item_status:"Finished",
-            finished_quantity:this.state.finishAll,
-            quantity: this.state.selectedItem.quantity - this.state.finishAll,
+    
+       return
+        // let api = `${url}/api/drools/cartitems/${this.state.selectedItem.pk}/`
+        // let sendData = {
+        //     item_status:"Finished",
+        //     finished_quantity:this.state.finishAll,
+        //     quantity: this.state.selectedItem.quantity - this.state.finishAll,
        
-        }
+        // }
        
       
-        let patch = await HttpsClient.patch(api, sendData)
-        console.log(patch)
-        if (patch.type == "success") {
+        // let patch = await HttpsClient.patch(api, sendData)
+        // console.log(patch)
+        // if (patch.type == "success") {
          
-            let duplicate = this.state.item
-            duplicate.itemcount = duplicate.itemcount-this.state.finishAll
-            duplicate.objs[this.state.selectedIndex].status = "Finished"
-            duplicate.objs[this.state.selectedIndex].quantity = duplicate.objs[this.state.selectedIndex].quantity-this.state.finishAll
-            this.setState({ item: duplicate ,modal:false},()=>{
-                this.cookOrderComplete()
-            })
-            return this.showSimpleMessage("Finished SuccessFully", "#00A300", "success")
-        } else {
-            this.showSimpleMessage("Try again", "red", "danger")
-        }
+        //     let duplicate = this.state.item
+        //     duplicate.itemcount = duplicate.itemcount-this.state.finishAll
+        //     duplicate.objs[this.state.selectedIndex].status = "Finished"
+        //     duplicate.objs[this.state.selectedIndex].quantity = duplicate.objs[this.state.selectedIndex].quantity-this.state.finishAll
+        //     this.setState({ item: duplicate ,modal:false},()=>{
+        //         this.cookOrderComplete()
+        //     })
+        //     return this.showSimpleMessage("Finished SuccessFully", "#00A300", "success")
+        // } else {
+        //     this.showSimpleMessage("Try again", "red", "danger")
+        // }
     }
     completethisOnly = async()=>{
-        let api = `${url}/api/drools/cartitems/${this.state.selectedItem.pk}/`
-        let sendData = {
-            finished_quantity: Number(this.state.finishQty),
-            quantity: this.state.selectedItem.quantity - Number(this.state.finishQty)
-        }
-        if (this.state.finishQty == this.state.selectedItem.quantity){
-            sendData.item_status = "Finished"
-        }
-        let patch = await HttpsClient.patch(api, sendData)
-        if (patch.type == "success"){
-            let duplicate = this.state.item
-            duplicate.itemcount = duplicate.itemcount - Number(this.state.finishQty)
-            duplicate.objs[this.state.selectedIndex].quantity = duplicate.objs[this.state.selectedIndex].quantity - Number(this.state.finishQty)
-            if (sendData.item_status){
-                duplicate.objs[this.state.selectedIndex].status = "Finished"
-            }
-            this.setState({ item: duplicate,modal:false},()=>{
-                this.cookOrderComplete()
-            })
-            return this.showSimpleMessage("Finished SuccessFully", "#00A300", "success")
+       let items = [this.state.selectedItem.pk]
+       let api =`${url}/api/drools/cookComplete/`
+       let sendData ={
+           items,
+           status:"Finished",
+           json:this.state.selectedItem,
+           updateQuantity:this.state.finishQty
+       }
+  
+       let post = await HttpsClient.post(api,sendData)
+       console.log(post)
+       if (post.type == "success"){
+          this.setState({modal:false})
+          this.showSimpleMessage("Finished SuccessFully", "#00A300", "success")
+          return this.props.navigation.goBack()
+
         } else {
             this.showSimpleMessage("Try again", "red", "danger")
         }
+
     }
     callApi = async(item)=>{
        let api = `${url}/api/drools/checkCart/?cart=${this.state.item.cartpk}`
@@ -223,9 +217,14 @@ class ViewOrder extends Component {
                 <>
                     <TouchableOpacity
                         onPress={() => {
-                            this.setState({ selectedItem: item,finishQty:item.quantity.toString(), selectedIndex: index,finishAll:item.quantity},()=>{
-                            this.setState({modal:true})
-                        })}}
+                            if(item.quantity==1){
+                               this.completeAll(item)
+                            }else{
+                                 this.setState({ selectedItem: item,finishQty:item.quantity.toString(), selectedIndex: index,finishAll:item.quantity},()=>{
+                                     this.setState({modal:true})
+                                  }) 
+                            }
+                    }}
                         style={{ height: height * 0.05, width: "80%", alignItems: "center", justifyContent: "center", backgroundColor: "green" }}
                     >
                         <Text style={[styles.text, { color: "#fff" }]}>Complete</Text>
@@ -271,7 +270,7 @@ class ViewOrder extends Component {
                          <View>
                    
                                 <TouchableOpacity 
-                                   onPress={()=>{this.completeSingle()}}
+                                   onPress={()=>{this.completeAll(this.state.selectedItem)}}
                                   style ={{height:height*0.05,width:width*0.4,alignItems:'center',justifyContent:"center",backgroundColor:primaryColor}}
                                 >
                                      <Text style={[styles.text,{color:"#fff"}]}>Complete All</Text>

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Dimensions, TouchableOpacity, StyleSheet, FlatList, Image, TextInput, ScrollView, ActivityIndicator, Alert } from 'react-native';
+import { View, Text, Dimensions, TouchableOpacity, StyleSheet, FlatList, Image, TextInput, ScrollView, ActivityIndicator, Alert,Keyboard} from 'react-native';
 const { height, width } = Dimensions.get('window')
 import settings from '../AppSettings'
 import { connect } from 'react-redux';
@@ -22,7 +22,7 @@ import HttpsClient from '../HttpsClient';
 import MonthPicker from 'react-native-month-year-picker';
 const months = ["January","Febrauary","March","April","May","June","July","August","September","Octobor","November","December"]
 const screenHeight =Dimensions.get("screen").height
-class OtherExpenses extends Component {
+class DailyExpenses extends Component {
     constructor(props) {
          const d = new Date()
         const month = d.getMonth() + 1
@@ -41,6 +41,7 @@ class OtherExpenses extends Component {
             year,
             month,
             data:null,
+            keyBoardHeight:0,
             refreshing:false
         };
     }
@@ -53,7 +54,7 @@ class OtherExpenses extends Component {
     };
     handleConfirm = (date) => {
         this.setState({ date: momemt(date).format("YYYY-MM-DD"), }, () => {
-            
+       
         })
         this.hideDatePicker();
     };
@@ -69,29 +70,33 @@ class OtherExpenses extends Component {
         this.hideDatePicker2();
     };
     getExtraExpenses = async () => {
-        let api = `${url}/api/drools/otherExpenses/?month=${this.state.month}&year=${this.state.year}`
+        let api = `${url}/api/drools/otherExpenses/?date=${this.state.date2}`
         let data = await HttpsClient.get(api)
+        console.log(api)
         console.log(data.data)
         if (data.type == "success") {
             this.setState({ otherExpenses: data.data.expenses,data:data.data})
         }
     }
-       onValueChange = (event, newDate)=>{
-         this.setState({show2:false})
-         if (event =="dateSetAction"){
-             let d = new Date(newDate)
-             let month = d.getMonth()+1
-             let year = d.getFullYear()
-             this.setState({month,year},()=>{
-                  this.getExtraExpenses()
-             })
-         }
-     }
+   
     componentDidMount() {
-      
+                        Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
+        Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
         this.getExtraExpenses()
     }
+         _keyboardDidShow = (e) => {
+            console.log()
+        this.setState({keyBoardHeight:e.endCoordinates.height})
+    };
 
+    _keyboardDidHide = () => {
+        this.setState({ keyBoardHeight: 0 })
+    };
+       componentWillUnmount(){
+   
+             Keyboard.removeListener('keyboardDidShow', this._keyboardDidShow);
+        Keyboard.removeListener('keyboardDidHide', this._keyboardDidHide);
+   }
     showSimpleMessage(content, color, type = "info", props = {}) {
         const message = {
             message: content,
@@ -142,6 +147,7 @@ class OtherExpenses extends Component {
     modal =()=>{
         return(
         <Modal 
+          style={{marginBottom:this.state.keyBoardHeight}}
           isVisible={this.state.modal}
           deviceHeight={screenHeight}
           statusBarTranslucent={true}
@@ -296,13 +302,13 @@ class OtherExpenses extends Component {
                             <Ionicons name="caret-back" size={24} color={secondaryColor} />
                         </TouchableOpacity>
                         <View style={{ flex: 0.5,alignItems:"flex-end" }}>
-                            <Text style={[styles.text, { color: "#fff", fontSize: 18 ,}]}>Monthly Expenses</Text>
+                            <Text style={[styles.text, { color: "#fff", fontSize: 18 ,}]}>Daily Expenses</Text>
 
                         </View>
                         <TouchableOpacity style={{ flex: 0.35, alignItems: "center", justifyContent: "center" ,flexDirection:"row"}}
                          onPress={()=>{this.setState({show2:true})}}
                         >
-                            <Text style={[styles.text,{color:"#fff"}]}>{months[this.state.month-1]},{this.state.year}</Text>
+                            <Text style={[styles.text,{color:"#fff"}]}>{this.state.date2}</Text>
                             <MaterialIcons name="date-range" size={24} color="#fff" />
                         </TouchableOpacity>
                     </View>
@@ -371,23 +377,14 @@ class OtherExpenses extends Component {
                     onConfirm={this.handleConfirm}
                     onCancel={this.hideDatePicker}
                 />
-                {/* <DateTimePickerModal
+                <DateTimePickerModal
                     testID={"2"}
                     isVisible={this.state.show2}
                     mode="date"
                     onConfirm={this.handleConfirm2}
                     onCancel={this.hideDatePicker2}
-                /> */}
-    {
-                       this.state.show2&&
-                        <MonthPicker
-                            onChange={this.onValueChange}
-                            value={new Date()}
-                            minimumDate={new Date(2019,5)}
-                            maximumDate={new Date()}
-                          
-                        />
-                   }
+                />
+
             </View>
          
         );
@@ -404,4 +401,4 @@ const mapStateToProps = (state) => {
         theme: state.selectedTheme,
     }
 }
-export default connect(mapStateToProps, { selectTheme })(OtherExpenses);
+export default connect(mapStateToProps, { selectTheme })(DailyExpenses);

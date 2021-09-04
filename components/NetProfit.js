@@ -80,7 +80,7 @@ export default class NetProfit extends Component {
     getData = async () => {
         let api = `${url}/api/drools/netProfit/?month=${this.state.value}&year=${this.state.value2}`
         let data = await HttpsClient.get(api)
-        console.log(data)
+       
         console.log(api)
         if (data.type == "success") {
             // let set = {
@@ -138,11 +138,17 @@ export default class NetProfit extends Component {
                  <View style={{ flex: 0.1, alignItems: "center", justifyContent: "center", borderColor: "gray", borderRightWidth: 1,paddingVertical:5}}>
                         <Text style={[styles.text,{color:primaryColor,}]}>#</Text>
                   </View>
-                 <View style={{ flex: 0.7, alignItems: "center", justifyContent: "center", borderColor: "gray", borderRightWidth: 1, paddingVertical: 5}}>
+                 <View style={{ flex: 0.3, alignItems: "center", justifyContent: "center", borderColor: "gray", borderRightWidth: 1, paddingVertical: 5}}>
                      <Text style={[styles.text, { color: primaryColor, }]}>Title</Text>
                   </View>
+                     <View style={{ flex: 0.2, alignItems: "center", justifyContent: "center", borderColor: "gray", borderRightWidth: 1, paddingVertical: 5}}>
+                     <Text style={[styles.text, { color: primaryColor, }]}>Income</Text>
+                  </View>
+                            <View style={{ flex: 0.2, alignItems: "center", justifyContent: "center", borderColor: "gray", borderRightWidth: 1, paddingVertical: 5}}>
+                     <Text style={[styles.text, { color: primaryColor, }]}>Expense</Text>
+                  </View>
                  <View style={{ flex: 0.2, alignItems: "center", justifyContent: "center", borderColor: "gray", borderRightWidth: 1, paddingVertical: 5}}>
-                     <Text style={[styles.text, { color: primaryColor, }]}>Amount</Text>
+                     <Text style={[styles.text, { color: primaryColor, }]}>Profit</Text>
                   </View>
               
              </View>
@@ -194,11 +200,17 @@ export default class NetProfit extends Component {
                  <View style={{ flex: 0.1, alignItems: "center", justifyContent: "center", borderColor: "gray", borderRightWidth: 1,paddingVertical:5}}>
                         <Text style={[styles.text,{color:"#fff",}]}>{index+1}</Text>
                   </View>
-                 <View style={{ flex: 0.7, alignItems: "center", justifyContent: "center", borderColor: "gray", borderRightWidth: 1, paddingVertical: 5}}>
+                 <View style={{ flex: 0.3, alignItems: "center", justifyContent: "center", borderColor: "gray", borderRightWidth: 1, paddingVertical: 5}}>
                      <Text style={[styles.text, { color: "#fff", }]}>{item.title}</Text>
                   </View>
+                  <View style={{ flex: 0.2, alignItems: "center", justifyContent: "center", borderColor: "gray", borderRightWidth: 1, paddingVertical: 5}}>
+                     <Text style={[styles.text, { color: "#fff", }]}>{item.amount}</Text>
+                  </View>
+                   <View style={{ flex: 0.2, alignItems: "center", justifyContent: "center", borderColor: "gray", borderRightWidth: 1, paddingVertical: 5}}>
+                     <Text style={[styles.text, { color: "#fff", }]}>{item.expense}</Text>
+                  </View>
                  <View style={{ flex: 0.2, alignItems: "center", justifyContent: "center", borderColor: "gray", borderRightWidth: 1, paddingVertical: 5}}>
-                     <Text style={[styles.text, { color:"#fff", }]}>{item.amount}</Text>
+                     <Text style={[styles.text, { color:"#fff", }]}>{item.profit}</Text>
                   </View>
               
              </View>

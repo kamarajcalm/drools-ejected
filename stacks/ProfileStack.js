@@ -17,6 +17,7 @@ import ProfileInfo from '../screens/ProfileInfo';
 import PrintBills from '../screens/PrintBills';
 import MonthlyIncome from '../screens/MonthlyIncome';
 import DailyIncomeSheet from '../screens/DailyIncomeSheet';
+import DailyExpenses from '../screens/DailyExpenses';
 const Stack = createStackNavigator();
 export default class ProfileStack extends Component {
     constructor(props) {
@@ -50,6 +51,7 @@ export default class ProfileStack extends Component {
                 <Stack.Screen name="PrintBills" component={PrintBills} options={{ headerShown: false }} />
                 <Stack.Screen name="MonthlyIncome" component={MonthlyIncome} options={{ headerShown: false }} />
                 <Stack.Screen name="DailyIncomeSheet" component={DailyIncomeSheet} options={{ headerShown: false }} />
+                <Stack.Screen name="DailyExpenses" component={DailyExpenses} options={{ headerShown: false }} />
             </Stack.Navigator>
         );
     }

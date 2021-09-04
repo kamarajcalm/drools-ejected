@@ -225,7 +225,7 @@ const Month = ["Janauary","Feb"]
                     </View>
                     </LinearGradient>
                 <TabView
-                    style={{ backgroundColor: "#ffffff" }}
+                    style={{ backgroundColor: "#ffffff"}}
                     navigationState={{ index, routes }}
                     renderScene={this.renderScene}
                     onIndexChange={(index) => { this.setState({ index }) }}
