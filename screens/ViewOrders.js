@@ -117,7 +117,7 @@ class ViewOrders extends Component {
             status:this.state.ordervalue,
             payment_status:this.state.paymentvalue,
             cart_id:this.state.item.id,
-            discount:this.state.discount,
+            discount:Number(this.state.discount),
             payment_mode:this.state.paymentmode
         }
         if (this.props.oneplusOne){

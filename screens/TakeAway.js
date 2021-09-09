@@ -68,6 +68,12 @@ class TakeAway extends Component {
         this.getOrders();
         this.getIncome()
     }
+    validateColor2=(item)=>{
+         if (item.finished_cooking == "Finished") {
+             return "green"
+         }
+         return "orange"
+     }
     render() {
         
         return (
@@ -121,7 +127,7 @@ class TakeAway extends Component {
                                     <View style={{ flexDirection: "row", flex: 0.35, alignItems: "center", justifyContent: "space-between", paddingHorizontal: 10 }}>
                                         <View style={{ flexDirection: "row" }}>
                                             <Text style={[styles.text, { color: "#fff" }]}>Cooking : </Text>
-                                            <Text style={[styles.text, { color: this.validateColor(item) }]}>{item.cart_status}</Text>
+                                            <Text style={[styles.text, { color: this.validateColor2(item) }]}>{item.finished_cooking}</Text>
                                         </View>
                                         <View style={{ flexDirection: "row" }}>
                                             <Text style={[styles.text, { color: "#fff" }]}>Bill : </Text>

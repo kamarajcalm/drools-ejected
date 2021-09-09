@@ -314,6 +314,7 @@ class DailyExpenses extends Component {
                     </View>
                 </LinearGradient>
                  <FlatList 
+                    contentContainerStyle={{paddingBottom:90}}
                     refreshing={this.state.refreshing}
                     onRefresh={()=>{this.getExtraExpenses()}}
                     ListFooterComponent={this.footer()} 
