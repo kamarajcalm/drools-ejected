@@ -45,13 +45,16 @@ export default class Stocks extends Component {
         showMessage(message);
     }
     addItem =async () => {
+        this.setState({creating:true})
         if (this.state.itemName == "") {
+               this.setState({creating:false})
             return this.showSimpleMessage("Please add Name", "#dd7030",)
         }
         // if (this.state.description == "") {
         //     return this.showSimpleMessage("Please add description", "#dd7030",)
         // }
         if (this.state.minQty == "") {
+                   this.setState({creating:false})
             return this.showSimpleMessage("Please add minQty", "#dd7030",)
         }
         const api = `${url}/api/drools/ingridents/`
@@ -64,11 +67,13 @@ export default class Stocks extends Component {
         let post = await HttpsClient.post(api,sendData)
         console.log(post,sendData)
         if(post.type =="success"){
+                   this.setState({creating:false})
             this.getItems()
              this.setState({modal:false})
             this.setState({ title: "", description: "", minimum_quantity:""})
             this.showSimpleMessage("Added SuccessFully", "#00A300", "success")
         }else{
+                   this.setState({creating:false})
             return this.showSimpleMessage("Try again", "#B22222", "danger")
         }
       
@@ -100,6 +105,37 @@ export default class Stocks extends Component {
        }
        return "black"
     }
+    edit = async()=>{
+        this.setState({creating:true})
+              if (this.state.itemName == "") {
+                   this.setState({creating:false})
+            return this.showSimpleMessage("Please add Name", "#dd7030",)
+        }
+ 
+        if (this.state.minQty == "") {
+              this.setState({creating:false})
+            return this.showSimpleMessage("Please add minQty", "#dd7030",)
+        }
+        const api = `${url}/api/drools/ingridents/${this.state.selectedItem.id}/`
+        let sendData = {
+            title: this.state.itemName,
+            description:this.state.description,
+            minimum_quantity:Number(this.state.minQty),
+            type:this.state.selectedType
+        }
+        let post = await HttpsClient.patch(api,sendData)
+        console.log(post,sendData)
+        if(post.type =="success"){
+              this.setState({creating:false})
+            this.getItems()
+            this.setState({modal:false})
+            this.setState({ title: "", description: "", minimum_quantity:""})
+            this.showSimpleMessage("Edited SuccessFully", "#00A300", "success")
+        }else{
+              this.setState({creating:false})
+            return this.showSimpleMessage("Try again", "#B22222", "danger")
+        }  
+    }
     ItemAddModal = () => {
       
         return (
@@ -118,7 +154,7 @@ export default class Stocks extends Component {
                             <View style={{ padding: 20 }}>
                                 <Text style={[styles.text]}>Enter Item</Text>
                                 <TextInput
-                                    value={this.state.searchName}
+                                    value={this.state.itemName}
                                     style={{ height: 38, width: width * 0.8, backgroundColor: "#fafafa", borderRadius: 5, marginTop: 5 }}
                                     selectionColor={primaryColor}
                                     onChangeText={(itemName) => { this.setState({ itemName }) }}
@@ -166,11 +202,23 @@ export default class Stocks extends Component {
                                 }
                             </View>
                             <View style={{ alignItems: "center" }}>
-                                <TouchableOpacity style={{ height: height * 0.05, width: width * 0.4, alignItems: "center", justifyContent: "center", backgroundColor: primaryColor }}
-                                    onPress={() => { this.addItem() }}
+                             {!this.state.creating?   <TouchableOpacity style={{ height: height * 0.05, width: width * 0.4, alignItems: "center", justifyContent: "center", backgroundColor: primaryColor }}
+                                    onPress={() => { 
+                                        if(this.state.edit){
+                                           this.edit()
+                                        }else{
+                                                this.addItem() 
+                                        }
+                                    
+                                    
+                                    }}
                                 >
-                                    <Text style={[styles.text, { color: "#fff" }]}>Add</Text>
-                                </TouchableOpacity>
+                                    <Text style={[styles.text, { color: "#fff" }]}>{this.state.edit?"Edit":"Add"}</Text>
+                                </TouchableOpacity>:
+                                <View style={{ height: height * 0.05, width: width * 0.4, alignItems: "center", justifyContent: "center", backgroundColor: primaryColor }}>
+                                    <ActivityIndicator size={"large"}  color={"#fff"}/>
+                                </View>
+                                }
                             </View>
                       
                         </ScrollView>
@@ -183,7 +231,7 @@ export default class Stocks extends Component {
     header = () => {
         return (
             <View style={{ flexDirection: "row", paddingVertical: 10, flex: 1 }}>
-                <View style={{ flex: 0.2, alignItems: "center", justifyContent: "center" }}>
+                <View style={{ flex: 0.3, alignItems: "center", justifyContent: "center" }}>
                     <View>
                         <Text style={[styles.text, { textDecorationLine: "underline", color: "#000" }]}>Item</Text>
                     </View>
@@ -199,9 +247,9 @@ export default class Stocks extends Component {
                         <Text style={[styles.text, { textDecorationLine: "underline", color: "#000" }]}>Min Qty</Text>
                     </View>
                 </View>
-                <View style={{ flex: 0.2, alignItems: "center", justifyContent: "center" }}>
+                <View style={{ flex: 0.1, alignItems: "center", justifyContent: "center" }}>
                     <View>
-                        <Text style={[styles.text, { textDecorationLine: "underline", color: "#000" }]}>Action</Text>
+                        <Text style={[styles.text, { textDecorationLine: "underline", color: "#000" }]}>Edit</Text>
                     </View>
                 </View>
                 <View style={{flex:0.1}}>
@@ -264,6 +312,7 @@ export default class Stocks extends Component {
             <View style={{ flex: 1 }}>
              
                 <FlatList
+                    contentContainerStyle={{paddingBottom:90}}
                     refreshing={this.state.refreshing}
                     onRefresh={()=>{this.getItems()}}
                     data={this.state.Items}
@@ -271,10 +320,15 @@ export default class Stocks extends Component {
                     ListHeaderComponent={this.header()}
                     renderItem={({ item, index }) => {
                         return (
-                            <View style={{ flexDirection: "row", paddingVertical: 10, flex: 1 }}>
-                                <View style={{ flex: 0.2, alignItems: "center", justifyContent: "center" }}>
-                                    <View>
-                                        <Text style={[styles.text, {  color: "#000" }]}>{index+1} .{item.title}</Text>
+                            <TouchableOpacity style={{ flexDirection: "row", paddingVertical: 10, flex: 1 }}
+                             onPress={()=>{this.props.navigation.navigate('ViewIngredients',{item})}}
+                            >
+                                <View style={{ flex: 0.3, flexDirection:"row"}}>
+                                    <View style={{}}>
+                                              <Text style={[styles.text, {  color: "#000" }]}> {index+1} .</Text> 
+                                    </View>
+                                    <View style={{alignItems:"center",justifyContent:"center",flexWrap:"wrap",}}>
+                                        <Text style={[styles.text, {  color: "#000",}]}>{item.title}</Text>
                                     </View>
                                 </View>
                                 <View style={{ flex: 0.3, alignItems: "center", justifyContent: "center" }}>
@@ -295,11 +349,13 @@ export default class Stocks extends Component {
                                         <Text style={[styles.text, { color: "#000" }]}>{item.minimum_quantity} {item.type}</Text>
                                     </View>
                                 </View>
-                                <View style={{ flex: 0.2, alignItems: "center", justifyContent: "center" }}>
+                                <View style={{ flex: 0.1, alignItems: "center", justifyContent: "center" }}>
                                     <TouchableOpacity 
-                                     onPress={()=>{this.props.navigation.navigate('ViewIngredients',{item})}}
+                                     onPress={()=>{
+                                         this.setState({edit:true,modal:true,itemName:item.title,minQty:item.minimum_quantity.toString(),selectedType:item.type,selectedItem:item})
+                                     }} 
                                     >
-                                        <Text style={[styles.text, { textDecorationLine: "underline", color: "#000" }]}>View</Text>
+                                       <Entypo name="edit" size={24} color={"orange"} />
                                     </TouchableOpacity>
                                 </View>
                                 <TouchableOpacity style={{flex:0.1,alignItems:"center",justifyContent:"center"}}
@@ -307,7 +363,7 @@ export default class Stocks extends Component {
                                 >
                                     <Entypo name="circle-with-cross" size={24} color="red" />
                                 </TouchableOpacity>
-                            </View>
+                            </TouchableOpacity>
                         )
                     }}
                 />
