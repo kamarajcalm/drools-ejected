@@ -66,7 +66,7 @@ class SearchDishes2 extends Component {
         }
     }
     getItems = async () => {
-        let api = `${url}/api/drools/items/?category=${this.state.selectedCategory.id}&invalid=false`
+        let api = `${url}/api/drools/items/?category=${this.state.selectedCategory.id}`
         let data = await HttpsClient.get(api)
         console.log(data)
         if (data.type == "success") {

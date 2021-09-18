@@ -113,7 +113,7 @@ class OtherExpenses extends Component {
         }
         let post = await HttpsClient.post(api,sendData)
         if(post.type =="success"){
-            this.setState({creating:false,modal:false})
+            this.setState({creating:false,modal:false,expenseAmount:"",expenseTitle:""})
             this.showSimpleMessage("Added Successfully","green","success")
             this.getExtraExpenses()
         }else{

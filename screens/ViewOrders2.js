@@ -183,7 +183,7 @@ Your feedback is very valuable for us to grow. We’re a new restaurant, please 
         await BluetoothEscposPrinter.printText("--------------------------------\n\r", {});
         await BluetoothEscposPrinter.printColumn(columnWidth0,
             [BluetoothEscposPrinter.ALIGN.LEFT, BluetoothEscposPrinter.ALIGN.CENTER, BluetoothEscposPrinter.ALIGN.RIGHT],
-            [``, ``, `${(this.state.item.cart_bill + this.state.item.gst)}`], {});
+              [``, ``, `${(this.state.item.cart_bill+this.state.item.gst+this.state.item.money_saved)}`], {});
         if (this.state.item.oneplusone) {
             await BluetoothEscposPrinter.printColumn(columnWidth0,
                 [BluetoothEscposPrinter.ALIGN.LEFT, BluetoothEscposPrinter.ALIGN.CENTER, BluetoothEscposPrinter.ALIGN.RIGHT],

@@ -54,7 +54,7 @@ class SeacrchDishes extends Component {
         }
     }
     getItems = async () => {
-        let api = `${url}/api/drools/items/?category=${this.state.selectedCategory.id}&invalid=false`
+        let api = `${url}/api/drools/items/?category=${this.state.selectedCategory.id}`
         let data = await HttpsClient.get(api)
     
         if (data.type == "success") {

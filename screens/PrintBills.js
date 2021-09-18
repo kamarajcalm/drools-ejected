@@ -117,7 +117,7 @@ this.getBills()
         await BluetoothEscposPrinter.printText("--------------------------------\n\r", {});
         await BluetoothEscposPrinter.printColumn(columnWidth0,
             [BluetoothEscposPrinter.ALIGN.LEFT, BluetoothEscposPrinter.ALIGN.CENTER, BluetoothEscposPrinter.ALIGN.RIGHT],
-            [``, ``, `${(item.cart_bill + item.gst)}`], {});
+            [``, ``, `${(item.cart_bill+item.gst+item.money_saved)}`], {});
         if (item.oneplusone) {
             await BluetoothEscposPrinter.printColumn(columnWidth0,
                 [BluetoothEscposPrinter.ALIGN.LEFT, BluetoothEscposPrinter.ALIGN.CENTER, BluetoothEscposPrinter.ALIGN.RIGHT],
