@@ -30,11 +30,11 @@ class AccountsScreen extends Component {
            data :[],
             date2: momemt(new Date()).format("YYYY-MM-DD"),
             totalPrice:"",
-            phonepeTotal:"",
-            cashTotal:"",
-            onlineTotal:"",
-            personal1Total:"",
-            personal2Total:"",
+            phonepeTotaldown:"",
+            cashTotaldown:"",
+            onlineTotaldown:"",
+            personal1Totaldown:"",
+            personal2Totaldown:"",
             refreshing:false,
             cashTotal:null,
             onlineTotal:null,
@@ -74,11 +74,11 @@ class AccountsScreen extends Component {
            this.setState({
              data:dataa,
              totalPrice:data.data.total_price,
-             phonepeTotal:total.Phonepetotal,
-             cashTotal:total.Cashtotal,
-             onlineTotal:total.Onlinetotal,
-             personal1Total:total.Personal1total,
-             personal2Total:total.Personal2total
+             phonepeTotaldown:total.Phonepetotal,
+             cashTotaldown:total.Cashtotal,
+             onlineTotaldown:total.Onlinetotal,
+             personal1Totaldown:total.Personal1total,
+             personal2Totaldown:total.Personal2total
             })
       }
    } 
@@ -163,19 +163,19 @@ class AccountsScreen extends Component {
                 
             </View>
             <View style={{width:width*0.3,alignItems:"center",justifyContent:"center",borderColor: "gray", borderRightWidth: 1,}}>
-                <Text style={[styles.text,{color:"#fff"}]}>{this.state.phonepeTotal}</Text>
+                <Text style={[styles.text,{color:"#fff"}]}>{this.state.phonepeTotaldown}</Text>
             </View>
             <View style={{width:width*0.3,alignItems:"center",justifyContent:"center",borderColor: "gray", borderRightWidth: 1,}}>
-                <Text style={[styles.text,{color:"#fff"}]}>{this.state.cashTotal}</Text>
+                <Text style={[styles.text,{color:"#fff"}]}>{this.state.cashTotaldown}</Text>
             </View>
             <View style={{width:width*0.3,alignItems:"center",justifyContent:"center",borderColor: "gray", borderRightWidth: 1,}}>
-                <Text style={[styles.text,{color:"#fff"}]}>{this.state.onlineTotal}</Text>
+                <Text style={[styles.text,{color:"#fff"}]}>{this.state.onlineTotaldown}</Text>
             </View>
               <View style={{width:width*0.3,alignItems:"center",justifyContent:"center",borderColor: "gray", borderRightWidth: 1,}}>
-                <Text style={[styles.text,{color:"#fff"}]}>{this.state.personal1Total}</Text>
+                <Text style={[styles.text,{color:"#fff"}]}>{this.state.personal1Totaldown}</Text>
             </View>
             <View style={{width:width*0.3,alignItems:"center",justifyContent:"center",borderColor: "gray", borderRightWidth: 1,}}>
-                <Text style={[styles.text,{color:"#fff"}]}>{this.state.personal2Total}</Text>
+                <Text style={[styles.text,{color:"#fff"}]}>{this.state.personal2Totaldown}</Text>
             </View>
          
          </View>

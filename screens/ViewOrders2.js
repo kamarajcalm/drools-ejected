@@ -48,25 +48,22 @@ const paymentMode = [
         label: "Cash",
         value: "Cash"
     },
-    {
-        label: "Card",
-        value: "Card"
-    },
-    {
-        label: "OtherUpis",
-        value: "OtherUpis"
-    },
-    {
-        label: "Paytm",
-        value: "Paytm"
-    },
-    {
-        label: "Gpay",
-        value: "Gpay"
-    },
+
     {
         label: "Phonepe",
         value: "Phonepe"
+    },
+    {
+        label: "Online",
+        value: "Online"
+    },
+    {
+        label: "Personal1",
+        value: "Personal1"
+    },
+    {
+        label: "Personal2",
+        value: "Personal2"
     },
 ]
 let options = {
