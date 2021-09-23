@@ -48,25 +48,22 @@ const paymentMode = [
         label: "Cash",
         value: "Cash"
     },
-    {
-        label: "Card",
-        value: "Card"
-    },
-    {
-        label: "OtherUpis",
-        value: "OtherUpis"
-    },
-    {
-        label: "Paytm",
-        value: "Paytm"
-    },
-    {
-        label: "Gpay",
-        value: "Gpay"
-    },
+
     {
         label: "Phonepe",
         value: "Phonepe"
+    },
+    {
+        label: "Online",
+        value: "Online"
+    },
+    {
+        label: "Personal1",
+        value: "Personal1"
+    },
+    {
+        label: "Personal2",
+        value: "Personal2"
     },
 ]
 class ViewOrders extends Component {
@@ -201,7 +198,7 @@ Your feedback is very valuable for us to grow. We’re a new restaurant, please 
             let columnWidth = [16, 6, 5, 5]
             await BluetoothEscposPrinter.printColumn(columnWidth,
                 [BluetoothEscposPrinter.ALIGN.LEFT, BluetoothEscposPrinter.ALIGN.CENTER, BluetoothEscposPrinter.ALIGN.CENTER, BluetoothEscposPrinter.ALIGN.RIGHT],
-                [`${i.itemTitle}`, `${i.item_price - Math.ceil((i.item_price * 5) / 100)}`, `${i.quantity}`, `${(i.item_price - Math.ceil((i.item_price * 5) / 100)) * i.quantity}`], {});
+                [`${i.itemTitle}`, `${Math.round(i.item_price * 100/105,2)}`, `${i.quantity}`, `${(Math.round(i.item_price * 100/105,2)) * i.quantity}`], {});
         })
         let columnWidth0 = [9, 12, 11]
         await BluetoothEscposPrinter.printText("--------------------------------\n\r", {});

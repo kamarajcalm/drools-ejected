@@ -162,7 +162,7 @@ Your feedback is very valuable for us to grow. We’re a new restaurant, please 
             let columnWidth = [16, 6, 5, 5]
             await BluetoothEscposPrinter.printColumn(columnWidth,
                 [BluetoothEscposPrinter.ALIGN.LEFT, BluetoothEscposPrinter.ALIGN.CENTER, BluetoothEscposPrinter.ALIGN.CENTER, BluetoothEscposPrinter.ALIGN.RIGHT],
-                [`${i.itemTitle}`, `${i.item_price - Math.ceil((i.item_price * 5) / 100)}`, `${i.quantity}`, `${(i.item_price - Math.ceil((i.item_price * 5) / 100)) * i.quantity}`], {});
+                [`${i.itemTitle}`, `${Math.round(i.item_price * 100/105,2)}`, `${i.quantity}`, `${(Math.round(i.item_price * 100/105,2)) * i.quantity}`], {});
         })
         let columnWidth0 = [9, 12, 11]
         await BluetoothEscposPrinter.printText("--------------------------------\n\r", {});
@@ -286,7 +286,9 @@ Your feedback is very valuable for us to grow. We’re a new restaurant, please 
         let sendData = {
             status: this.state.ordervalue,
             payment_status: this.state.paymentvalue,
-            cart_id: this.state.item.id
+            cart_id: this.state.item.id,
+            discount:Number(this.state.discount),
+            payment_mode:this.state.paymentmode
         }
         let post = await HttpsClient.post(api, sendData)
         console.log(post)

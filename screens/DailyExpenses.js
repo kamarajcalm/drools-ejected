@@ -22,6 +22,30 @@ import HttpsClient from '../HttpsClient';
 import MonthPicker from 'react-native-month-year-picker';
 const months = ["January","Febrauary","March","April","May","June","July","August","September","Octobor","November","December"]
 const screenHeight =Dimensions.get("screen").height
+import DropDownPicker from 'react-native-dropdown-picker';
+const paymentMode = [
+    {
+        label: "Cash",
+        value: "Cash"
+    },
+
+    {
+        label: "Phonepe",
+        value: "Phonepe"
+    },
+    {
+        label: "Online",
+        value: "Online"
+    },
+    {
+        label: "Personal1",
+        value: "Personal1"
+    },
+    {
+        label: "Personal2",
+        value: "Personal2"
+    },
+]
 class DailyExpenses extends Component {
     constructor(props) {
          const d = new Date()
@@ -42,8 +66,28 @@ class DailyExpenses extends Component {
             month,
             data:null,
             keyBoardHeight:0,
-            refreshing:false
+            refreshing:false,
+            paymentmode:null,
         };
+    }
+     setOpen3 = (open3) => {
+        this.setState({
+            open3
+        });
+    }
+
+    setValue3 = (callback) => {
+
+        this.setState(state => ({
+            paymentmode: callback(state.value)
+        }));
+    }
+
+    setItems3 = (callback) => {
+
+        this.setState(state => ({
+            items: callback(state.items)
+        }));
     }
     hideDatePicker = () => {
         this.setState({ show: false },()=>{
@@ -109,14 +153,19 @@ class DailyExpenses extends Component {
         showMessage(message);
     }
     create = async()=>{
+        if(this.state.paymentmode==null){
+            return this.showSimpleMessage("please select payment mode","orange","info")
+        }
         this.setState({ creating: true })
-        let api = `${url}/api/drools/otherexpenses/`
+        let api = `${url}/api/drools/createExpense/`
         let sendData ={
             date:this.state.date,
-            expense:this.state.expenseAmount,
-            comments:this.state.expenseTitle
+            expense:Number(this.state.expenseAmount),
+            comments:this.state.expenseTitle,
+            payment_mode:this.state.paymentmode
         }
         let post = await HttpsClient.post(api,sendData)
+        console.log(post)
         if(post.type =="success"){
             this.setState({creating:false,modal:false})
             this.showSimpleMessage("Added Successfully","green","success")
@@ -127,14 +176,20 @@ class DailyExpenses extends Component {
         }
     }
     edit = async()=>{
+          if(this.state.paymentmode==null){
+            return this.showSimpleMessage("Please Enter payment Mode","orange","info")
+        }
         this.setState({ creating: true })
-        let api = `${url}/api/drools/otherexpenses/${this.state.selectedItem.id}/`
+        let api = `${url}/api/drools/createExpense/`
         let sendData = {
             date: this.state.date,
-            expense: this.state.expenseAmount,
-            comments: this.state.expenseTitle
+            expense: Number(this.state.expenseAmount),
+            comments: this.state.expenseTitle,
+            edit:this.state.selectedItem.id,
+            payment_mode:this.state.paymentmode
         }
-        let post = await HttpsClient.patch(api, sendData)
+        let post = await HttpsClient.post(api, sendData)
+        console.log(post)
         if (post.type == "success") {
             this.setState({ creating: false, modal: false })
             this.showSimpleMessage("Edited Successfully", "green", "success")
@@ -154,7 +209,7 @@ class DailyExpenses extends Component {
           onBackdropPress={()=>{this.setState({modal:false})}}
         >
           <View style={{flex:1,alignItems:"center",justifyContent:"center"}}>
-                    <View style={{ height: height * 0.5, width: width * 0.8, borderRadius: 10, backgroundColor: "#fff", marginTop: 20}}>
+                    <View style={{ height: height * 0.6, width: width * 0.8, borderRadius: 10, backgroundColor: "#fff", marginTop: 20}}>
 
           
                <ScrollView 
@@ -169,6 +224,22 @@ class DailyExpenses extends Component {
                                 onChangeText={(expenseTitle) => { this.setState({ expenseTitle})}}
                        />
                    </View>
+                   <View style={{marginLeft:10}}>
+                            <Text style={[styles.text, { color: "#000", fontSize: 22 }]}>Paid By :</Text>
+                        </View>
+                        <View style={{ marginTop: 10, width: width * 0.7, height: this.state.open3 ? height * 0.3 : height * 0.08,marginLeft:20 }}>
+                            <DropDownPicker
+                                style={{ height: height * 0.05 }}
+                                containerStyle={{ height: height * 0.05 }}
+                                open={this.state.open3}
+                                value={this.state.paymentmode}
+                                items={paymentMode}
+                                setOpen={this.setOpen3}
+                                setValue={this.setValue3}
+                                setItems={this.setItems3}
+                                placeholder="select a mode"
+                            />
+                        </View>
                         <View style={{ marginTop: 10, marginLeft: 20 }}>
                                 <Text style={[styles.text, { color: "#000", fontSize: 20 }]}>Expense Amount :</Text>
                                 <TextInput
@@ -207,7 +278,7 @@ class DailyExpenses extends Component {
                               </TouchableOpacity>
                       
                         </View>:
-                                <View style={{ marginTop: 15, alignItems: "center", justifyContent: "center" }}>
+                                <View style={{ marginVertical: 15, alignItems: "center", justifyContent: "center" }}>
                                     <TouchableOpacity style={{ height: height * 0.05, width: width * 0.4, backgroundColor: primaryColor, alignItems: "center", justifyContent: "center" }}
                                         onPress={() => {
                                             this.edit()
@@ -251,7 +322,7 @@ class DailyExpenses extends Component {
                     <Text style={[styles.text, { color: "#fff", fontSize: 18 }]}>Amount</Text>
                 </View>
                 <View style={{ flex: 0.2, alignItems: "center", justifyContent: "center" }}>
-                    <Text style={[styles.text, { color: "#fff", fontSize: 18 }]}>Date</Text>
+                    <Text style={[styles.text, { color: "#fff", fontSize: 18 }]}>Mode</Text>
                 </View>
                 <View style={{ flex: 0.2, alignItems: "center", justifyContent: "center" }}>
                     <Text style={[styles.text, { color: "#fff", fontSize: 18 }]}>Actions</Text>
@@ -334,11 +405,11 @@ class DailyExpenses extends Component {
                                         <Text style={[styles.text, { color: "#fff", }]}>₹ {item.expense}</Text>
                                     </View>
                                     <View style={{ flex: 0.2, alignItems: "center", justifyContent: "center" }}>
-                                        <Text style={[styles.text, { color: "#fff", }]}>{item.date}</Text>
+                                        <Text style={[styles.text, { color: "#fff", }]}>{item.payment_mode}</Text>
                                     </View>
                                     <View style={{ flex: 0.2, alignItems: "center", justifyContent: "space-around" ,flexDirection:"row"}}>
                                         <TouchableOpacity 
-                                            onPress={() => { this.setState({ expenseAmount: item.expense.toString(), expenseTitle: item.comments, date: item.date, modal: true, edit: true, selectedItem:item})}}
+                                            onPress={() => { this.setState({ expenseAmount: item.expense.toString(), expenseTitle: item.comments, date: item.date, modal: true, edit: true, selectedItem:item,paymentmode:item.payment_mode})}}
                                         >
                                             <Entypo name="edit" size={24} color="orange" />
                                         </TouchableOpacity>
