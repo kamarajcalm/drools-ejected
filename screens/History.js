@@ -119,8 +119,12 @@ class History extends Component {
      
     }
     deleteItem = async(item,index)=>{
-        let api = `${url}/api/drools/cart/${item.id}/`
-        let del = await HttpsClient.delete(api)
+        let api = `${url}/api/drools/deleteOrder/`
+        let sendData ={
+            order:item.id
+        }
+        let del = await HttpsClient.post(api,sendData)
+        console.log(del)
         if(del.type=="success"){
             let duplicate =  this.state.orders
             duplicate.splice(index,1)

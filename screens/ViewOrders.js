@@ -198,7 +198,7 @@ Your feedback is very valuable for us to grow. We’re a new restaurant, please 
             let columnWidth = [16, 6, 5, 5]
             await BluetoothEscposPrinter.printColumn(columnWidth,
                 [BluetoothEscposPrinter.ALIGN.LEFT, BluetoothEscposPrinter.ALIGN.CENTER, BluetoothEscposPrinter.ALIGN.CENTER, BluetoothEscposPrinter.ALIGN.RIGHT],
-                [`${i.itemTitle}`, `${Math.round(i.item_price * 100/105,2)}`, `${i.quantity}`, `${(Math.round(i.item_price * 100/105,2)) * i.quantity}`], {});
+                [`${i.itemTitle}`, `${parseFloat(i.item_price * 100/105).toFixed(3)}`, `${i.quantity}`, `${parseFloat((i.item_price * 100/105)*( i.quantity)).toFixed(3)}`], {});
         })
         let columnWidth0 = [9, 12, 11]
         await BluetoothEscposPrinter.printText("--------------------------------\n\r", {});
@@ -345,7 +345,7 @@ Your feedback is very valuable for us to grow. We’re a new restaurant, please 
                     <View style={{ flex: 0.2 }}>
 
                     </View>
-                    <View style={{ flex: 0.6, alignItems: "center", justifyContent: "center"}}>
+                    <View style={{ flex: 0.5, alignItems: "center", justifyContent: "center"}}>
                         <View style={{ alignSelf: "flex-end", marginRight:20 }}>
                             <Text style={[styles.text, { color: "#fff", fontSize: 22, }]}>bill :</Text>
                         </View>
@@ -359,12 +359,12 @@ Your feedback is very valuable for us to grow. We’re a new restaurant, please 
                             <Text style={[styles.text, { color: "#fff", fontSize: 22, }]}>Money Saved :</Text>
                         </View>
                     </View>
-                    <View style={{flex:0.2,alignItems:"center",justifyContent:"center"}}>
-                        {this.state.item.cart_status!="Completed"?<Text style={[styles.text, { color: primaryColor, fontSize: 25 }]}>₹ {(this.state.item.cart_bill - Math.ceil((this.state.item.cart_bill * 5) / 100))}</Text>:
+                    <View style={{flex:0.3,alignItems:"center",justifyContent:"center"}}>
+                        {this.state.item.cart_status!="Completed"?<Text style={[styles.text, { color: primaryColor, fontSize: 25 }]}>₹ {parseFloat(this.state.item.cart_bill*100/105).toFixed(3)}</Text>:
                         
                             <Text style={[styles.text, { color: primaryColor, fontSize: 25 }]}>₹ {this.state.item.cart_bill}</Text>
                         }
-                        {this.state.item.cart_status != "Completed" ? <Text style={[styles.text, { color: primaryColor, fontSize: 25 }]}>₹ {(Math.ceil((this.state.item.cart_bill * 5) / 100))} </Text>:
+                        {this.state.item.cart_status != "Completed" ? <Text style={[styles.text, { color: primaryColor, fontSize: 25 }]}>₹ {parseFloat((this.state.item.cart_bill*100/105)*5/100).toFixed(3)} </Text>:
                             <Text style={[styles.text, { color: primaryColor, fontSize: 25 }]}>₹ {this.state.item.gst}</Text>
                       }
                         <Text style={[styles.text, { color: primaryColor, fontSize: 25 }]}>₹ {this.state.item.total_price}</Text>
@@ -837,7 +837,7 @@ Your feedback is very valuable for us to grow. We’re a new restaurant, please 
                                 </View>
                                 <View style={{flex:0.2,alignItems:"center",justifyContent:"center",flexDirection:"row"}}>
                                      <View>
-                                        <Text style={[styles.text, { color: primaryColor, fontSize: 22 }]}>₹ {(item.total_price) - Math.ceil((item.total_price * 5) / 100)}</Text>
+                                        <Text style={[styles.text, { color: primaryColor, fontSize: 22 }]}>₹ {parseFloat((item.item_price * 100/105)*( item.quantity)).toFixed(3)}</Text>
                                     </View>
                                    
                                    

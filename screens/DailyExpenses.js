@@ -298,9 +298,11 @@ class DailyExpenses extends Component {
     }
     deleteItem = async(item,index)=>{
         console.log(item)
-        let api = `${url}/api/drools/otherexpenses/${item.id}/`
-        console.log(api)
-        let del = await HttpsClient.delete(api)
+        let api = `${url}/api/drools/deleteOrder/`
+        let sendData ={
+            expense:item.id
+        }
+        let del = await HttpsClient.post(api,sendData)
         console.log(del)
         if(del.type =="success"){
             this.showSimpleMessage("deleted successfuly","green","success")
