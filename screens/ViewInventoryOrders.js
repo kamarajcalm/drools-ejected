@@ -151,7 +151,7 @@ class ViewInventoryOrders extends Component {
         let sendData ={
             order:this.state.item.id,
             status:this.state.ordervalue,
-            amount:this.state.Amount,
+            amount:Number(this.state.Amount),
         }
         let patch = await HttpsClient.post(api,sendData)
         console.log(patch)
@@ -285,14 +285,16 @@ class ViewInventoryOrders extends Component {
 
                
 
-                    <ScrollView style={{ height: height * 0.3, backgroundColor: "#fff", width: width * 0.9, borderRadius: 10 }}>
+                    <ScrollView style={{ height: height * 0.4, backgroundColor: "#fff", width: width * 0.9, borderRadius: 10 }}
+                     contentContainerStyle={{paddingHorizontal:20}}
+                    >
                       
 
 
                             <View>
                                 <Text style={[styles.text, { color: "#000", fontSize: 22 }]}>Order Status :</Text>
                             </View>
-                            <View style={{ marginTop: 10 ,height:this.state.open?height*0.1:height*0.05}}>
+                            <View style={{ marginTop: 10 ,height:this.state.open?height*0.15:height*0.05}}>
                                 <DropDownPicker
                                     style={{ height: height * 0.05 }}
                                     containerStyle={{ height: height * 0.05 }}

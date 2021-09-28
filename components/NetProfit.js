@@ -204,13 +204,13 @@ export default class NetProfit extends Component {
                      <Text style={[styles.text, { color: "#fff", }]}>{item.title}</Text>
                   </View>
                   <View style={{ flex: 0.2, alignItems: "center", justifyContent: "center", borderColor: "gray", borderRightWidth: 1, paddingVertical: 5}}>
-                     <Text style={[styles.text, { color: "#fff", }]}>{item.amount}</Text>
+                     <Text style={[styles.text, { color: "#fff", }]}>{Math.round(item.amount)}</Text>
                   </View>
                    <View style={{ flex: 0.2, alignItems: "center", justifyContent: "center", borderColor: "gray", borderRightWidth: 1, paddingVertical: 5}}>
-                     <Text style={[styles.text, { color: "#fff", }]}>{item.expense}</Text>
+                     <Text style={[styles.text, { color: "#fff", }]}>{Math.round(item.expense)}</Text>
                   </View>
                  <View style={{ flex: 0.2, alignItems: "center", justifyContent: "center", borderColor: "gray", borderRightWidth: 1, paddingVertical: 5}}>
-                     <Text style={[styles.text, { color:"#fff", }]}>{item.profit}</Text>
+                     <Text style={[styles.text, { color:"#fff", }]}>{Math.round(item.profit)}</Text>
                   </View>
               
              </View>

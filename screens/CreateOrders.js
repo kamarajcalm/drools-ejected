@@ -20,8 +20,31 @@ import FlashMessage, { showMessage, hideMessage } from "react-native-flash-messa
 import HttpsClient from '../HttpsClient';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 const screenHeight = Dimensions.get("screen").height;
+const paymentMode = [
+    {
+        label: "Cash",
+        value: "Cash"
+    },
 
+    {
+        label: "Phonepe",
+        value: "Phonepe"
+    },
+    {
+        label: "Online",
+        value: "Online"
+    },
+    {
+        label: "Personal1",
+        value: "Personal1"
+    },
+    {
+        label: "Personal2",
+        value: "Personal2"
+    },
+]
 import moment from 'moment';
+import DropDownPicker from 'react-native-dropdown-picker';
 export default class CreateOrders extends Component {
     constructor(props) {
         super(props);
@@ -34,6 +57,7 @@ export default class CreateOrders extends Component {
             Quantity:"",
             arrivingDate:"",
             show: false,
+            paymentmode:null,
         };
     }
     getItems =()=>{
@@ -68,7 +92,7 @@ export default class CreateOrders extends Component {
         if (this.state.Quantity == "") {
             return this.showSimpleMessage("Please add Qty", "#dd7030",)
         }
- 
+       
       let pushObj ={
           ingridient:this.state.selectedItem.id,
           quantity:this.state.Quantity,
@@ -124,10 +148,14 @@ export default class CreateOrders extends Component {
         if (this.state.arrivingDate == "") {
             return this.showSimpleMessage("Please add Arriving Date", "#dd7030",)
         }
+        if(this.state.paymentmode==null){
+            return this.showSimpleMessage("Please Select payment Mode", "#dd7030",)
+        }
         let api =`${url}/api/drools/createPurchaseOrder/`
         let sendData ={
               items:this.state.orders,
-              date:this.state.arrivingDate
+              date:this.state.arrivingDate,
+              payment_mode:this.state.paymentmode
         }
         let post = await HttpsClient.post(api,sendData)
         if(post.type =="success"){
@@ -229,6 +257,25 @@ export default class CreateOrders extends Component {
          duplicate.splice(index,1)
         this.setState({ orders: duplicate })
     }
+         setOpen3 = (open3) => {
+        this.setState({
+            open3
+        });
+    }
+
+    setValue3 = (callback) => {
+
+        this.setState(state => ({
+            paymentmode: callback(state.value)
+        }));
+    }
+
+    setItems3 = (callback) => {
+
+        this.setState(state => ({
+            items: callback(state.items)
+        }));
+    }
     render() {
         return (
             <View style={{ flex: 1 }}>
@@ -275,6 +322,22 @@ export default class CreateOrders extends Component {
                                 <Text style={[styles.text,{color:'#fff'}]}>Create Purchase Order</Text>
                             </TouchableOpacity>
                       </View>
+                      <View style={{marginTop:20,marginLeft:20}}>
+                          <Text style={[styles.text,{color:"#000",fontSize:16}]}>Select Payment Mode</Text>
+                      </View>
+                         <View style={{ marginTop: 10, width: width * 0.7, height: this.state.open3 ? height * 0.3 : height * 0.08,marginLeft:20 }}>
+                            <DropDownPicker
+                                style={{ height: height * 0.05 }}
+                                containerStyle={{ height: height * 0.05 }}
+                                open={this.state.open3}
+                                value={this.state.paymentmode}
+                                items={paymentMode}
+                                setOpen={this.setOpen3}
+                                setValue={this.setValue3}
+                                setItems={this.setItems3}
+                                placeholder="select a mode"
+                            />
+                        </View>
                     <View style={{ padding: 20 }}>
                         <Text style={[styles.text]}>Enter Arriving date</Text>
                         <TouchableOpacity
