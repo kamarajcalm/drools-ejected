@@ -130,7 +130,7 @@ class ProfilePage extends Component {
                             <Entypo name="triangle-right" size={24} color="#fff" />
                         </View>
                     </TouchableOpacity> */}
-                          <TouchableOpacity style={{ flexDirection: "row", height: height * 0.05, paddingHorizontal: 20, width, marginTop: 20 }}
+               {  this.props.user.is_manager&& <TouchableOpacity style={{ flexDirection: "row", height: height * 0.05, paddingHorizontal: 20, width, marginTop: 20 }}
                         onPress={() => { this.props.navigation.navigate('EditAccounts') }}
                     >
                         <View style={{ flex: 0.8, flexDirection: "row" }}>
@@ -145,7 +145,7 @@ class ProfilePage extends Component {
                         <View style={{ flex: 0.2, alignItems: "center", justifyContent: 'center' }}>
                             <Entypo name="triangle-right" size={24} color="#fff" />
                         </View>
-                    </TouchableOpacity>
+                    </TouchableOpacity>}
                     <TouchableOpacity style={{ flexDirection: "row", height: height * 0.05, paddingHorizontal: 20, width, marginTop: 20 }}
                         onPress={() => { this.props.navigation.navigate('Statistics') }}
                     >
@@ -256,6 +256,7 @@ const mapStateToProps = (state) => {
 
     return {
         theme: state.selectedTheme,
+        user:state.selectedUser
     }
 }
 export default connect(mapStateToProps, { selectTheme })(ProfilePage);
